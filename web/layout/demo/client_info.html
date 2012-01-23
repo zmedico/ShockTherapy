@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN"
+    "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=yes" />
+<title>Client Info</title>
+</head>
+<body>
+<p>Client Info:</p>
+<script type="text/javascript">
+<!--
+	(function(global) {
+		var names = ["navigator"];
+		var objects = {};
+		for (var i = 0; i < names.length; i++) {
+			var name = names[i];
+			var object = global[name]
+			objects[name] = {};
+			for (var k in object)
+				if (typeof object[k] === "string")
+					objects[name][k] = object[k];
+		}
+		document.write("<p><pre>");
+		document.write(JSON.stringify(objects, null, "\t"));
+		document.write("</pre></p>");
+		document.write("<p>");
+		if (navigator.appVersion.toLowerCase().indexOf("mobile") > -1)
+			document.write("Mobile: yes");
+		else
+			document.write("Mobile: no");
+		document.write("</p>");
+			
+	}(this));
+-->
+</script>
+</body>
+</html>

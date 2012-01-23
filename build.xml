@@ -1,0 +1,243 @@
+<project name="ShockTherapy" default="dist" basedir=".">
+	<description>
+		Plasma globe simulator
+	</description>
+<property name="app_name"  value="${ant.project.name}"/>
+<property name="android_target_id"  value="android-15"/>
+<property name="android_activity"  value="ShockTherapyActivity"/>
+<property name="android_package"  value="com.googlecode.electroshocktherapy"/>
+<property name="android.key.store" location="../keys/ShockTherapy.keystore"/>
+<property name="android.key.alias" value="shocktherapy"/>
+<property name="android.ant.target" value="debug"/>
+<property name="chrome_key"  location="../keys/ShockTherapy.pem"/>
+
+<property name="build" location="build"/>
+<property name="dist"  location="dist"/>
+<property name="android_project_build"  location="${build}/android_project"/>
+<property name="chrome_build"  location="${build}/chrome_app"/>
+
+<property name="exec_search_list">
+android
+chrome
+</property>
+
+<property name="exec_search_android">
+android
+/opt/android-sdk-update-manager/tools/android
+android.bat
+C:/Program File/Android/android-sdk/tools/android.bat
+C:/Program Files (x86)/Android/android-sdk/tools/android.bat
+</property>
+
+<property name="exec_search_chrome">
+chromium-browser
+google-chrome
+chrome
+chrome.exe
+C:/Program Files/Google/Chrome/Application/chrome.exe
+C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
+</property>
+
+<script language="javascript"> <![CDATA[
+
+	importClass(java.io.File);
+	importClass(java.lang.System);
+
+	var envKeys = System.getenv().keySet().toArray();
+	var path = null;
+	for (var i = 0; i < envKeys.length; i++)
+		if (envKeys[i].toUpperCase() == "PATH") {
+			path = System.getenv(envKeys[i]).split(File.pathSeparator);
+			break;
+		}
+
+	if (path === null)
+		throw "PATH variable not found";
+
+	var resolvePath = function(filename) {
+		var f = new File(filename);
+		if (f.isAbsolute()) {
+			if (f.exists())
+				return filename;
+			return null;
+		}
+
+		for (var i = 0; i < path.length; i++) {
+			f = new File(path[i], filename);
+			if (f.exists())
+				return f.getAbsolutePath();
+		}
+		return null;
+	}
+
+	var searchPaths = function(paths) {
+		var p;
+		for (var i = 0; i < paths.length; i++) {
+			p = paths[i];
+			if (p.length > 0) {
+				p = resolvePath(p);
+				if (p !== null)
+					return p;
+			}
+		}
+		return null;
+	}
+
+	var prop_list = new String(
+		project.getProperty("exec_search_list")).split("\n")
+
+	for (var i = 0; i < prop_list.length; i++) {
+		var name = prop_list[i];
+		if (name.length == 0)
+			continue
+		var result = searchPaths(new String(
+			project.getProperty("exec_search_" + name)).split("\n"));
+		if (result !== null) {
+			System.out.println("INFO: " + name + " _exec=" + result);
+			project.setProperty(name + "_exec", result);
+		}
+		else
+			System.err.println(
+				"ERROR: could not locate " + name + " executable");
+	}
+
+]]></script>
+
+<target name="clean"
+		description="clean up" >
+	<delete dir="${build}"/>
+	<delete dir="${dist}"/>
+</target>
+
+<target name="init" depends="clean">
+<mkdir dir="${build}"/>
+<mkdir dir="${dist}"/>
+</target>
+
+<target name="dist.android.release">
+	<antcall target="dist.android">
+		<param name="android.ant.target" value="release"/>
+	</antcall>
+</target>
+
+<target name="dist.android" depends="init">
+	<exec executable="${android_exec}" searchpath="true" failonerror="true">
+		<arg value="create"/>
+		<arg value="project"/>
+		<arg value="--target"/>
+		<arg value="${android_target_id}"/>
+		<arg value="--name"/>
+		<arg value="${app_name}"/>
+		<arg value="--path"/>
+		<arg value="${android_project_build}"/>
+		<arg value="--activity"/>
+		<arg value="${android_activity}"/>
+		<arg value="--package"/>
+		<arg value="${android_package}"/>
+	</exec>
+	<copy todir="${android_project_build}" overwrite="true">
+		<fileset dir="android">
+		</fileset>
+	</copy>
+	<copy todir="${android_project_build}/assets" overwrite="true">
+		<fileset dir="web">
+			<exclude name="icons/**"/>
+			<exclude name="layout/demo/**"/>
+			<exclude name="manifest.json"/>
+			<!-- the android app uses a smaller sound file from res/raw -->
+			<exclude name="sounds/**"/>
+		</fileset>
+	</copy>
+	<copy todir="${android_project_build}/assets" overwrite="true">
+		<fileset dir="web">
+			<include name="icons/High_voltage_warning_48.png"/>
+		</fileset>
+	</copy>
+	<mkdir dir="${android_project_build}/res/drawable-ldpi"/>
+	<copy file="web/icons/High_voltage_warning_36.png"
+		tofile="${android_project_build}/res/drawable-ldpi/ic_launcher.png"
+		overwrite="true"></copy>
+	<mkdir dir="${android_project_build}/res/drawable-mdpi"/>
+	<copy file="web/icons/High_voltage_warning_48.png"
+		tofile="${android_project_build}/res/drawable-mdpi/ic_launcher.png"
+		overwrite="true"></copy>
+	<mkdir dir="${android_project_build}/res/drawable-hdpi"/>
+	<copy file="web/icons/High_voltage_warning_72.png"
+		tofile="${android_project_build}/res/drawable-hdpi/ic_launcher.png"
+		overwrite="true"></copy>
+	<mkdir dir="${android_project_build}/res/drawable-xhdpi"/>
+	<copy file="web/icons/High_voltage_warning_96.png"
+		tofile="${android_project_build}/res/drawable-xhdpi/ic_launcher.png"
+		overwrite="true"></copy>
+
+	<concat destfile="${android_project_build}/ant.properties" append="yes">
+		<string value="key.store=${android.key.store}&#10;"></string>
+		<string value="key.alias=${android.key.alias}&#10;"></string>
+	</concat>
+
+	<subant target="${android.ant.target}">
+		<fileset file="${android_project_build}/build.xml"/>
+	</subant>
+
+	<move file="${android_project_build}/bin/${app_name}-${android.ant.target}.apk"
+		tofile="${dist}/${app_name}.apk"/>
+</target>
+
+<target name="dist.chrome" depends="init">
+	<mkdir dir="${chrome_build}"/>
+	<copy todir="${chrome_build}">
+		<fileset dir="web">
+			<!-- chrome only needs the ogg files -->
+			<exclude name="icons/**"/>
+			<exclude name="layout/demo/**"/>
+			<exclude name="sounds/*.mp3"/>
+		</fileset>
+	</copy>
+
+	<copy todir="${chrome_build}" overwrite="true">
+		<fileset dir="web">
+			<include name="icons/High_voltage_warning_16.png"/>
+			<include name="icons/High_voltage_warning_48.png"/>
+			<include name="icons/High_voltage_warning_128.png"/>
+		</fileset>
+	</copy>
+
+	<script language="javascript"> <![CDATA[
+
+		importClass(java.io.File);
+		importClass(java.lang.System);
+
+		var arg, args, exec, chrome_key;
+
+		args = [
+			"--no-message-box",
+			"--pack-extension=" + project.getProperty("chrome_build")
+		];
+
+		chrome_key = project.getProperty("chrome_key");
+		if (chrome_key !== null && new File(chrome_key).exists())
+			args.push("--pack-extension-key=" + chrome_key);
+		else
+			System.out.println(
+				"INFO: file not found: chrome_key=" + chrome_key);
+
+		exec = project.createTask("exec");
+		exec.setExecutable(project.getProperty("chrome_exec"));
+		exec.setFailonerror(true);
+
+		for (var i = 0; i < args.length; i++) {
+			arg = exec.createArg();
+			arg.setValue(args[i]);
+		}
+
+        exec.perform();
+	]]></script>
+
+	<move file="${chrome_build}.crx"
+		tofile="${dist}/${app_name}.crx"/>
+</target>
+
+<target name="dist" depends="dist.android, dist.chrome"
+	description="generate the distribution" >
+</target>
+</project>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN"
+    "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<title>Shock Therapy &rarr; About</title>
+<style type="text/css">
+<!--
+/* Start with black background-color, in order to avoid a white
+ * flash when the page is loaded on a mobile browser.
+ */
+body {
+	background-color: black;
+}
+
+-->
+</style>
+<script type="text/javascript">"use strict";</script>
+<script src="../js/Function.prototype.bind.js" type="text/javascript"></script>
+<script src="../js/require.js" type="text/javascript"></script>
+<script type="text/javascript">require.path = "../js";</script>
+<script src="loadTheme.js" type="text/javascript"></script>
+<script type="text/javascript">
+<!--
+	loadTheme("..", function(shockTherapyConfig,
+		resourceFactory, resources) {
+		var global = this;
+		var curtain = global.window.document.getElementById("curtain");
+		curtain.style.visiblity = "hidden";
+		global.window.document.body.style.visibility = "visible";
+		global.window.document.body.removeChild(curtain);
+	});
+-->
+</script>
+</head>
+<body style="visibility: hidden">
+<div id="curtain" style="width:100%; height:100%; position: absolute;"></div>
+<div class="header pageHeader">
+	<div class="vertCenter headerIconBox">
+		<img src="../icons/High_voltage_warning_48.png" class="headerIcon" alt="icon" ></img>
+	</div>
+	<div class="vertCenter">
+		<div>
+		<a href="main.html" style="text-decoration: none; color: inherit;">
+		Shock Therapy</a> &rarr; About
+		</div>
+	</div>
+</div>
+<div class="content">
+<p style="font-size: 1.25em; text-align: center">
+<a href="http://electroshocktherapy.googlecode.com/">
+Visit Project Website</a>
+</p>
+<hr class="listViewBorder"/>
+<p>
+Copyright &copy; 2012 <a href="mailto:zmedico@gmail.com">Zac Medico</a>
+</p>
+<p>
+Licensed under the terms of three licenses: Apache License 2.0, GPL
+Version 2 or later, and MIT. You may select the license of your choice.
+</p>
+<p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</p>
+</div>
+</body>
+</html>

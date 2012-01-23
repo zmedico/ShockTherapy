@@ -1,0 +1,46 @@
+{
+
+	"Theme" : {
+		"name" : "Dark",
+		"scheme" : "light-on-dark",
+		"css" : ["Theme"],
+		"resources" : {
+			"Checkbox.Box.color" : "ref:Color.Gray30",
+			"Checkbox.Check.color" : "ref:Color.HoloBlue",
+			"Checkbox.Class" : "js:CheckboxDrawable",
+			"Color.Gray14" : "str:hsl(0,0%,14%)",
+			"Color.Gray20" : "str:hsl(0,0%,20%)",
+			"Color.Gray30" : "str:hsl(0,0%,30%)",
+			"Color.HoloBlueAlpha80" : "str:hsla(196,71%,54%,0.8)",
+			"Color.HoloBlue" : "str:hsl(196,71%,54%)",
+			"ColorSlider.Class" : "js:ColorSliderDrawable",
+			"Dialog.Canvas.background-color" : "ref:Color.Gray14",
+			"Dialog.Canvas.width" : "str:16em",
+			"Dialog.Button.height" : "str:3.2em",
+			"RadioButton.Class" : "js:RadioButtonDrawable",
+			"Screen.background-color" : "str:black",
+			"Slider.Class" : "js:SliderDrawable",
+			"Slider.Knob.color" : "ref:Color.HoloBlueAlpha80",
+			"Slider.Track.background-color" : "ref:Color.Gray20",
+			"Slider.Track.color" : "ref:Color.HoloBlue",
+			"Text.Primary.color" : "str:gainsboro",
+			"Text.Primary.font-size" : "str:1.25em",
+			"Text.Secondary.color" : "str:gray"
+		}
+	},
+
+	"Theme.Light" : {
+		"name" : "Light",
+		"scheme" : "dark-on-light",
+		"parent" : "Theme",
+		"css" : ["Theme.Light"],
+		"resources" : {
+			"Checkbox.Box.color" : "str:silver",
+			"Dialog.Canvas.background-color" : "str:white",
+			"Screen.background-color" : "str:white",
+			"Text.Primary.color" : "str:black",
+			"Text.Secondary.color" : "ref:Color.Gray20"
+		}
+	}
+
+}

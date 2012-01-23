@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN"
+    "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../css/fullscreen.css" />
+<style type="text/css">
+<!--
+
+body.center {
+	display: table;
+	text-align: center;
+}
+
+-->
+</style>
+<script type="text/javascript">"use strict";</script>
+<script src="../../js/Function.prototype.bind.js" type="text/javascript"></script>
+<script src="../../js/require.js" type="text/javascript"></script>
+<script type="text/javascript">require.path = "../../js";</script>
+<script src="../loadTheme.js" type="text/javascript"></script>
+<script type="text/javascript">
+<!--
+	loadTheme("../..", function(shockTherapyConfig,
+		resourceFactory, resources) {
+			require([
+				"ColorSlider"
+			], function() {
+				var testSlider = new ColorSlider(
+					document.getElementById("testSlider"), resources);
+				testSlider.repaint();
+			});
+	});
+-->
+</script>
+</head>
+<body class="fullscreen center">
+	<div id="content" class="vertCenter">
+		<object id="testSlider" class="slider colorSliderHorizontal dialogWidth"></object>
+	</div>
+</body>
+</html>
