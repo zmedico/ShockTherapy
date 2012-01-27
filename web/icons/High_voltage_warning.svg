@@ -10,11 +10,11 @@
 	preserveAspectRatio="xMinYMin meet"
 	viewBox="0 0 704.26434 590.513">
 	<path d="M 666.47925,585.0466 L 32.300316,585.513 C 7.5127563,585.5312 -2.9165737,560.5736 11.673946,536.1534 L 316.35135,26.219891 C 333.75225,-2.0776085 366.01115,-2.3856085 383.41185,27.175191 L 691.58575,535.6866 C 708.53825,559.9672 696.21235,585.4819 666.47925,585.0466 z"
-		style="font-size:12px;fill-rule:evenodd;stroke:#ffe600;stroke-width:10;stroke-linejoin:round"/>
+		style="fill-rule:evenodd;stroke:#ffe600;stroke-width:10;stroke-linejoin:round"/>
 	<path d="M 507.62415,360.3595 L 597.02545,514.1739 L 289.55595,516.7779 L 109.31145,515.0113 L 259.31035,252.8062 L 350.15355,100.7586 L 507.62415,360.3595 z"
-		style="font-size:12px;fill:#ffe600;fill-rule:evenodd"/>
+		style="fill:#ffe600;fill-rule:evenodd"/>
 	<path d="M 331.92655,194.7886 L 255.15095,382.5935 L 362.63675,345.9776 L 324.83955,486.5358 L 405.15855,314.0861 L 290.58585,349.5209 L 373.26725,193.6075 L 331.92655,194.7886 z"
-		style="font-size:12px;fill-rule:evenodd"/>
+		style="fill-rule:evenodd"/>
 	<path d="M 316.57135,434.5647 L 326.02075,492.4416 L 367.36135,444.0139 L 337.83235,451.1009 L 316.57135,434.5647 z"
-		style="font-size:12px;fill-rule:evenodd"/>
+		style="fill-rule:evenodd"/>
 </svg>
