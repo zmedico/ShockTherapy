@@ -114,13 +114,29 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 <mkdir dir="${dist}"/>
 </target>
 
+<target name="build.icons">
+	<mkdir dir="${build}/util/svg"/>
+	<javac srcdir="util/svg" destdir="${build}/util/svg" includeantruntime="false"/>
+	<mkdir dir="${build}/icons"/>
+	<java classname="CreateIcon" failonerror="true">
+		<arg file="web/icons/High_voltage_warning.svg"/>
+		<arg file="${build}/icons"/>
+		<arg value="512 128 96 72 48 36 16"/>
+		<arg value="2.0"/>
+		<arg value="0.5"/>
+		<classpath>
+		<pathelement path="${build}/util/svg"/>
+		</classpath>
+	</java>
+</target>
+
 <target name="dist.android.release">
 	<antcall target="dist.android">
 		<param name="android.ant.target" value="release"/>
 	</antcall>
 </target>
 
-<target name="dist.android" depends="init">
+<target name="dist.android" depends="init, build.icons">
 	<exec executable="${android_exec}" searchpath="true" failonerror="true">
 		<arg value="create"/>
 		<arg value="project"/>
@@ -148,25 +164,24 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 			<exclude name="sounds/**"/>
 		</fileset>
 	</copy>
-	<copy todir="${android_project_build}/assets" overwrite="true">
-		<fileset dir="web">
-			<include name="icons/High_voltage_warning_48.png"/>
-		</fileset>
+	<mkdir dir="${android_project_build}/assets/icons"/>
+	<copy file="${build}/icons/High_voltage_warning_48.png"
+		tofile="${android_project_build}/assets/icons/High_voltage_warning_48.png">
 	</copy>
 	<mkdir dir="${android_project_build}/res/drawable-ldpi"/>
-	<copy file="web/icons/High_voltage_warning_36.png"
+	<copy file="${build}/icons/High_voltage_warning_36.png"
 		tofile="${android_project_build}/res/drawable-ldpi/ic_launcher.png"
 		overwrite="true"></copy>
 	<mkdir dir="${android_project_build}/res/drawable-mdpi"/>
-	<copy file="web/icons/High_voltage_warning_48.png"
+	<copy file="${build}/icons/High_voltage_warning_48.png"
 		tofile="${android_project_build}/res/drawable-mdpi/ic_launcher.png"
 		overwrite="true"></copy>
 	<mkdir dir="${android_project_build}/res/drawable-hdpi"/>
-	<copy file="web/icons/High_voltage_warning_72.png"
+	<copy file="${build}/icons/High_voltage_warning_72.png"
 		tofile="${android_project_build}/res/drawable-hdpi/ic_launcher.png"
 		overwrite="true"></copy>
 	<mkdir dir="${android_project_build}/res/drawable-xhdpi"/>
-	<copy file="web/icons/High_voltage_warning_96.png"
+	<copy file="${build}/icons/High_voltage_warning_96.png"
 		tofile="${android_project_build}/res/drawable-xhdpi/ic_launcher.png"
 		overwrite="true"></copy>
 
@@ -183,7 +198,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		tofile="${dist}/${app_name}.apk"/>
 </target>
 
-<target name="dist.chrome" depends="init">
+<target name="dist.chrome" depends="init, build.icons">
 	<mkdir dir="${chrome_build}"/>
 	<copy todir="${chrome_build}">
 		<fileset dir="web">
@@ -195,7 +210,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	</copy>
 
 	<copy todir="${chrome_build}" overwrite="true">
-		<fileset dir="web">
+		<fileset dir="${build}">
 			<include name="icons/High_voltage_warning_16.png"/>
 			<include name="icons/High_voltage_warning_48.png"/>
 			<include name="icons/High_voltage_warning_128.png"/>
