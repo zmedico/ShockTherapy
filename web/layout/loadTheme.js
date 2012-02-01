@@ -8,7 +8,9 @@ this.loadTheme = (function(global) {
 		"ThemeFactory"
 	], function() {
 
-		var shockTherapyConfig = new ShockTherapyConfig("shockTherapy");
+		var shockTherapyConfig = new ShockTherapyConfig("shockTherapy",
+		function() {
+
 		var themeFactory = new ThemeFactory(uri);
 		themeFactory.load(function() {
 			var profile, resources;
@@ -45,6 +47,8 @@ this.loadTheme = (function(global) {
 						}
 					);
 			});
+		});
+
 		});
 	});
 

@@ -1,11 +1,28 @@
 
 this.ShockTherapyConfig = (function(global) {
 
-	var constructor = function(prefix)
+	var constructor = function(prefix, callback)
 	{
 		this.prefix = prefix;
 		this.android = / android:com\.googlecode\.electroshocktherapy$/.exec(
 			global.window.navigator.userAgent) !== null;
+		this.sugar = / sugar:com\.googlecode\.electroshocktherapy$/.exec(
+			global.window.navigator.userAgent) !== null;
+		this._callback = callback;
+		this._data = null;
+		this._req = null;
+		if (this.sugar) {
+			this._load();
+			var _this = this;
+			global.window.onunload = function() {
+				global.window.document.title = "ShockTherapyConfig.persist:" +
+					JSON.stringify(_this.exportConfig(), null, "\t");
+			}
+		}
+		else {
+			this._callback.apply(global);
+			this._callback = null;
+		}
 	}
 
 	constructor.prototype._known_keys = [
@@ -22,6 +39,27 @@ this.ShockTherapyConfig = (function(global) {
 		"VibratorIntensity"
 	];
 
+	constructor.prototype._load = function() {
+		this._req = new XMLHttpRequest();
+		this._req.onreadystatechange = this._loadComplete.bind(this);
+		this._req.open("GET", "/data/options.json", true);
+		this._req.send(null);
+	}
+
+	constructor.prototype._loadComplete = function(e) {
+		if (this._req.readyState === 4) {
+			if (this._req.status == 404)
+				this._data = {}
+			else if (this._req.status == 200)
+				this._data = JSON.parse(this._req.responseText);
+			else
+				throw this._req.statusText;
+			this._req = null;
+			this._callback.apply(global);
+			this._callback = null;
+		}
+	}
+
 	constructor.prototype.getString = function(key, defValue)
 	{
 		var value;
@@ -30,6 +68,13 @@ this.ShockTherapyConfig = (function(global) {
 			value = global.Android.getItem(key);
 			// The Android interface does not return the global null value.
 			if (value == null)
+				value = null;
+		}
+		else if (this.sugar)
+		{
+			if (this._data.hasOwnProperty(key))
+				value = this._data[key];
+			else
 				value = null;
 		}
 		else
@@ -49,6 +94,10 @@ this.ShockTherapyConfig = (function(global) {
 		{
 			global.Android.setItem(key, value);
 		}
+		else if (this.sugar)
+		{
+			this._data[key] = value;
+		}
 		else
 		{
 			localStorage.setItem(this.prefix + key, value);
@@ -60,6 +109,10 @@ this.ShockTherapyConfig = (function(global) {
 		if (this.android)
 		{
 			global.Android.remove(key);
+		}
+		else if (this.sugar)
+		{
+			delete this._data[key];
 		}
 		else
 		{

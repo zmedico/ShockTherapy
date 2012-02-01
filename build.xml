@@ -15,6 +15,7 @@
 <property name="dist"  location="dist"/>
 <property name="android_project_build"  location="${build}/android_project"/>
 <property name="chrome_build"  location="${build}/chrome_app"/>
+<property name="sugar_build"  location="${build}/ShockTherapy.activity"/>
 
 <property name="exec_search_list">
 android
@@ -252,7 +253,69 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		tofile="${dist}/${app_name}.crx"/>
 </target>
 
-<target name="dist" depends="dist.android, dist.chrome"
+<target name="dist.sugar" depends="init, build.icons">
+	<property name="sugar_activity_src" location="sugar/ShockTherapy.activity"/>
+	<copy todir="${sugar_build}">
+		<fileset dir="${sugar_activity_src}">
+			<exclude name="MANIFEST"/>
+		</fileset>
+	</copy>
+	<copy todir="${sugar_build}/web">
+		<fileset dir="web">
+			<!-- WebKitGTK+ only needs the ogg files -->
+			<exclude name="icons/**"/>
+			<exclude name="layout/demo/**"/>
+			<exclude name="sounds/*.mp3"/>
+		</fileset>
+	</copy>
+	<mkdir dir="${sugar_build}/web/icons"/>
+	<copy file="${build}/icons/High_voltage_warning_48.png"
+		tofile="${sugar_build}/web/icons/High_voltage_warning_48.png">
+	</copy>
+	<script language="javascript"> <![CDATA[
+
+		importClass(java.io.File);
+		importClass(java.lang.System);
+
+		function recursiveFileList(base_dir) {
+			var child_f, current, dir_list, f, i, result, stack;
+			stack = [base_dir]
+			result = [];
+			while (stack.length > 0) {
+				current = stack.pop();
+				f = new File(current);
+				dir_list = f.list();
+				for (i = 0; i < dir_list.length; i++) {
+					child_f = new File(current, dir_list[i]);
+					if (child_f.isDirectory())
+						stack.push(child_f.getAbsolutePath());
+					else {
+						child_f = child_f.getAbsolutePath();
+						child_f = child_f.substring(base_dir.length()+1, child_f.length());
+						result.push(child_f);
+					}
+				}
+			}
+			return result;
+		}
+
+		var i, result;
+		result = recursiveFileList(project.getProperty("sugar_build"));
+		result.sort();
+		result.push("");
+		result = result.join("\n");
+		project.setProperty("sugar_manifest_content", result);
+	]]></script>
+	<concat destfile="${sugar_build}/MANIFEST">
+		<string value="${sugar_manifest_content}"></string>
+	</concat>
+	<zip destfile="${dist}/ShockTherapy.xo"
+		basedir="${sugar_build}/.."
+		includes="ShockTherapy.activity/**"
+	/>
+</target>
+
+<target name="dist" depends="dist.android, dist.chrome, dist.sugar"
 	description="generate the distribution" >
 </target>
 </project>

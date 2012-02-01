@@ -152,6 +152,16 @@ loadTheme("..", function (shockTherapyConfig,
 		function(e) {
 			var options = shockTherapyConfig.exportConfig();
 
+			if (/ sugar:com\.googlecode\.electroshocktherapy$/.exec(
+				global.window.navigator.userAgent) !== null)
+			{
+				var realTitle = global.window.document.title;
+				global.window.document.title = "ShockTherapyConfig.export:" +
+					JSON.stringify(options, null, "\t");
+				global.window.document.title = realTitle;
+				return;
+			}
+
 			/*
 			* This is handled in our android app by overriding
 			* WebViewClient.shouldOverrideUrlLoading to parse
@@ -184,6 +194,14 @@ loadTheme("..", function (shockTherapyConfig,
 				}
 				Android.getTextFile(
 					"application/json", encoding, "Import Options");
+			}
+			else if (/ sugar:com\.googlecode\.electroshocktherapy$/.exec(
+				global.window.navigator.userAgent) !== null)
+			{
+				var realTitle = global.window.document.title;
+				global.window.document.title = "ShockTherapyConfig.import:"
+				global.window.document.title = realTitle;
+				return;
 			}
 			else
 			{

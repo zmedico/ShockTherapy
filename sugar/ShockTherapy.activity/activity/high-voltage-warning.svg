@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY stroke_color "#666666">
+	<!ENTITY fill_color "#ffffff">
+]>
+<!-- Derived from http://en.wikipedia.org/wiki/File:High_voltage_warning.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+	x="0"
+	y="0"
+	height="55"
+	width="55"
+	preserveAspectRatio="xMinYMin meet"
+	viewBox="0 0 55 55">
+	<path d="m 49.588982,47.863381 -44.5633779,0.03277 c -1.741808,0.0013 -2.474671,-1.752477 -1.449403,-3.46847 L 24.985702,8.5949572 c 1.222751,-1.9884488 3.489565,-2.0100917 4.712302,0.067128 L 51.353202,44.394883 c 1.19124,1.706183 0.32511,3.499086 -1.76422,3.468498 z"
+	style="fill:&fill_color;;stroke:&stroke_color;;stroke-width:3.5;stroke-linejoin:round"/>
+	<path d="m 25.96013,19.84335 -5.85106,14.312593 8.191482,-2.790494 -2.880521,10.711927 6.121103,-13.142375 -8.731574,2.700482 6.301141,-11.882144 -3.150571,0.09001 z"
+	style="fill:&stroke_color;;fill-rule:evenodd"/>
+	<path d="m 24.789912,38.116663 0.720138,4.410793 3.150563,-3.69067 -2.250402,0.540099 -1.620299,-1.260222 z"
+	style="fill:&stroke_color;;fill-rule:evenodd"/>
+</svg>
