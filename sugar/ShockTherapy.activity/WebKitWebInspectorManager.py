@@ -78,7 +78,6 @@ class WebKitWebInspectorManager(object):
 			self._inspector_web_view = webkit.WebView()
 			self._inspector_scrolled_window.add(self._inspector_web_view)
 			self._inspector_scrolled_window.show_all()
-			self.hide()
 
 		return self._inspector_web_view
 
