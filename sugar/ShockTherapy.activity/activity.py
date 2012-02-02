@@ -1,12 +1,10 @@
 
 import errno
 import logging
-import io
 import os
 import socket
 import tempfile
 import threading
-import time
 
 from gettext import gettext as _
 
@@ -24,7 +22,7 @@ import gtk
 import webkit
 
 from WebKitWebInspectorManager import WebKitWebInspectorManager
-from HttpServer import RequestResult, ThreadedHttpServer
+from HttpServer import ThreadedHttpServer
 
 class ShockTherapyActivity(activity.Activity):
 
@@ -45,20 +43,13 @@ class ShockTherapyActivity(activity.Activity):
 		activity.Activity.__init__(self, handle)
 		#logging.getLogger().setLevel(logging.DEBUG)
 
-		self.__options = self.metadata.get("options")
-		logging.debug("ShockTherapyActivity.__init__ options: %s" %
-			(self.__options,))
-		self.__options_lock = threading.RLock()
-
 		http_dir = activity.get_bundle_path() + '/web'
 		host = "localhost"
 		port = 30000
 		max_port = 31000
-		listeners = (self._req_listener,)
 		while True:
 			try:
-				self._server = ThreadedHttpServer((host, port), http_dir,
-					listeners=listeners)
+				self._server = ThreadedHttpServer((host, port), http_dir)
 			except socket.error as e:
 				if e.errno != errno.EADDRINUSE:
 					raise
@@ -210,23 +201,6 @@ class ShockTherapyActivity(activity.Activity):
 		logging.debug("_navigate_cb reject: %s" % (uri,))
 		return True
 
-	def __set_options(self, options):
-		self.__options_lock.acquire()
-		try:
-			self.__options = options
-		finally:
-			self.__options_lock.release()
-
-	def __get_options(self):
-		"""
-		Thread-safe accessor for the http server thread.
-		"""
-		self.__options_lock.acquire()
-		try:
-			return self.__options
-		finally:
-			self.__options_lock.release()
-
 	def _dom_title_cb(self, view, gParamSpec):
 		"""
 		Use document.title to grab data, as described here:
@@ -236,16 +210,23 @@ class ShockTherapyActivity(activity.Activity):
 		logging.debug("_dom_title_cb: %s" % (title,))
 		if title is not None:
 			if title.startswith("ShockTherapyConfig."):
-				if title.startswith("ShockTherapyConfig.persist:"):
+				if title.startswith("ShockTherapyConfig.load:"):
+					command = "ShockTherapyConfig.load:"
+					logging.debug("_dom_title_cb command: %s" % (command,))
+					options = self.metadata.get("options")
+					if options is None:
+						options = "{}"
+					self._webview.execute_script("shockTherapyConfigLoad(\"%s\")" %
+						(options.replace("\"", "\\\""),))
+				elif title.startswith("ShockTherapyConfig.persist:"):
 					command = "ShockTherapyConfig.persist:"
 					logging.debug("_dom_title_cb command: %s" % (command,))
-					self.__set_options(title[len(command):])
-					self.metadata['options'] = self.__options
+					self.metadata['options'] = title[len(command):]
 				elif title.startswith("ShockTherapyConfig.export:"):
 					command = "ShockTherapyConfig.export:"
 					logging.debug("_dom_title_cb command: %s" % (command,))
 					options = title[len(command):]
-					self.__set_options(options)
+					self.metadata['options'] = options
 					dsobject = self._save_dsobject(
 						"ShockTherapyOptions.json",
 						options.encode(encoding='utf_8', errors='replace'))
@@ -262,8 +243,9 @@ class ShockTherapyActivity(activity.Activity):
 							options = f.read()
 						finally:
 							f.close()
-						options = options.decode('utf_8')
-						self.__set_options(options)
+						options = options.decode(
+							encoding='utf_8', errors='replace')
+						self.metadata['options'] = options
 						self._webview.reload()
 
 	def _save_dsobject(self, filename, content,
@@ -313,26 +295,6 @@ class ShockTherapyActivity(activity.Activity):
 		saved_alert.connect('response', response_cb)
 		self.add_alert(saved_alert)
 		saved_alert.show_all()
-
-	def _req_listener(self, request):
-		if request.path == '/data/options.json':
-			options = self.__get_options()
-			if options is None:
-				request.send_error(404, "File not found")
-				return RequestResult(True, None)
-			options_bytes = options.encode('utf_8')
-			ctype = request.guess_type(request.path)
-			request.send_response(200)
-			request.send_header("Content-type", ctype)
-			request.send_header("Content-Length", len(options_bytes))
-			request.send_header("Last-Modified",
-				request.date_time_string(time.time()))
-			request.end_headers()
-			logging.debug("_req_listener: options.json")
-			bytesio = io.BytesIO(options_bytes)
-			return RequestResult(True, bytesio)
-
-		return RequestResult(False, None)
 
 	def can_close(self):
 		logging.debug("can_close")

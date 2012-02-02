@@ -36,24 +36,17 @@ this.ShockTherapyConfig = (function(global) {
 	];
 
 	constructor.prototype._load = function() {
-		this._req = new XMLHttpRequest();
-		this._req.onreadystatechange = this._loadComplete.bind(this);
-		this._req.open("GET", "/data/options.json", true);
-		this._req.send(null);
+		global.shockTherapyConfigLoad = this._loadComplete.bind(this);
+		var title = global.document.title;
+		global.document.title = "ShockTherapyConfig.load:";
+		global.document.title = title;
 	}
 
-	constructor.prototype._loadComplete = function(e) {
-		if (this._req.readyState === 4) {
-			if (this._req.status == 404)
-				this._data = {}
-			else if (this._req.status == 200)
-				this._data = JSON.parse(this._req.responseText);
-			else
-				throw this._req.statusText;
-			this._req = null;
-			this._callback.apply(global);
-			this._callback = null;
-		}
+	constructor.prototype._loadComplete = function(data) {
+		delete global.shockTherapyConfigLoad;
+		this._data = JSON.parse(data);
+		this._callback.apply(global);
+		this._callback = null;
 	}
 
 	constructor.prototype._commit = function() {
