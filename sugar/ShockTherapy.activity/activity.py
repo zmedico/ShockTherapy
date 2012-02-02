@@ -264,9 +264,6 @@ class ShockTherapyActivity(activity.Activity):
 							f.close()
 						options = options.decode('utf_8')
 						self.__set_options(options)
-						# Prevent onunload from trying to save stale options
-						# which are being replaced by the imported ones.
-						self._webview.execute_script('window.onunload = null;')
 						self._webview.reload()
 
 	def _save_dsobject(self, filename, content,
@@ -339,10 +336,6 @@ class ShockTherapyActivity(activity.Activity):
 
 	def can_close(self):
 		logging.debug("can_close")
-
-		# Trigger the onunload event, so ShockTherapyConfig
-		# will save its state.
-		self._webview.load_uri("about:")
 
 		if self._server is not None:
 			self._server.shutdown()

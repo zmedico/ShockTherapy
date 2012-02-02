@@ -11,13 +11,9 @@ this.ShockTherapyConfig = (function(global) {
 		this._callback = callback;
 		this._data = null;
 		this._req = null;
+		this._disable_commit = 0;
 		if (this.sugar) {
 			this._load();
-			var _this = this;
-			global.window.onunload = function() {
-				global.window.document.title = "ShockTherapyConfig.persist:" +
-					JSON.stringify(_this.exportConfig(), null, "\t");
-			}
 		}
 		else {
 			this._callback.apply(global);
@@ -60,6 +56,17 @@ this.ShockTherapyConfig = (function(global) {
 		}
 	}
 
+	constructor.prototype._commit = function() {
+		if (this._disable_commit > 0)
+			return;
+		if (this.sugar) {
+			var title = global.window.document.title;
+			global.window.document.title = "ShockTherapyConfig.persist:" +
+				JSON.stringify(this.exportConfig(), null, "\t");
+			global.window.document.title = title;
+		}
+	}
+
 	constructor.prototype.getString = function(key, defValue)
 	{
 		var value;
@@ -97,6 +104,8 @@ this.ShockTherapyConfig = (function(global) {
 		else if (this.sugar)
 		{
 			this._data[key] = value;
+			this._commit();
+
 		}
 		else
 		{
@@ -113,6 +122,7 @@ this.ShockTherapyConfig = (function(global) {
 		else if (this.sugar)
 		{
 			delete this._data[key];
+			this._commit();
 		}
 		else
 		{
@@ -122,8 +132,15 @@ this.ShockTherapyConfig = (function(global) {
 
 	constructor.prototype.clear = function(key)
 	{
-		for (var i = 0; i < this._known_keys.length; i++)
-			this.remove(this._known_keys[i]);
+		this._disable_commit += 1;
+		try {
+			for (var i = 0; i < this._known_keys.length; i++)
+				this.remove(this._known_keys[i]);
+		}
+		finally {
+			this._disable_commit -= 1;
+		}
+		this._commit();
 	}
 
 	constructor.prototype.exportConfig = function() {
@@ -176,18 +193,25 @@ this.ShockTherapyConfig = (function(global) {
 			}
 		}.bind(this);
 
-		this.clear();
-		importString("Theme");
-		importBoolean("Sound");
-		importFloat("SoundVolume", 0, 100);
-		importBoolean("Vibrator");
-		importFloat("VibratorIntensity", 0, 100);
-		importColor("Color");
-		importFloat("HueVariance", 0, 100);
-		importFloat("BrightnessVariance", 0, 100);
-		importFloat("Thickness", 0, 100);
-		importFloat("Density", 0, 100);
-		importFloat("Duration", 0, 100);
+		this._disable_commit += 1;
+		try {
+			this.clear();
+			importString("Theme");
+			importBoolean("Sound");
+			importFloat("SoundVolume", 0, 100);
+			importBoolean("Vibrator");
+			importFloat("VibratorIntensity", 0, 100);
+			importColor("Color");
+			importFloat("HueVariance", 0, 100);
+			importFloat("BrightnessVariance", 0, 100);
+			importFloat("Thickness", 0, 100);
+			importFloat("Density", 0, 100);
+			importFloat("Duration", 0, 100);
+		}
+		finally {
+			this._disable_commit -= 1;
+		}
+		this._commit();
 	}
 
 	constructor.prototype.getBoolean = function(key, defValue)
