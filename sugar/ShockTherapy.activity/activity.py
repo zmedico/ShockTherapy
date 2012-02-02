@@ -4,6 +4,7 @@ import logging
 import io
 import os
 import socket
+import tempfile
 import threading
 import time
 
@@ -12,11 +13,11 @@ from gettext import gettext as _
 from sugar import mime
 from sugar.activity import activity
 from sugar.datastore import datastore
+from sugar.graphics.alert import Alert
 from sugar.graphics.icon import Icon
 from sugar.graphics.toolbarbox import ToolbarBox
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.objectchooser import ObjectChooser
-from sugar.activity.widgets import TitleEntry
 from sugar.activity.widgets import StopButton
 
 import gtk
@@ -243,18 +244,12 @@ class ShockTherapyActivity(activity.Activity):
 				elif title.startswith("ShockTherapyConfig.export:"):
 					command = "ShockTherapyConfig.export:"
 					logging.debug("_dom_title_cb command: %s" % (command,))
-					filename = "ShockTherapyOptions.json"
-					file_dsobject = datastore.create()
-					file_dsobject.metadata['title'] = "ShockTherapyOptions.json"
-					file_dsobject.metadata['mime_type'] = 'text/plain'
-					file_path = os.path.join(self.get_activity_root(), 'instance', filename)
-					f = open(file_path, 'wb')
-					try:
-						f.write(title[len(command):])
-					finally:
-						f.close()
-					file_dsobject.set_file_path(file_path)
-					datastore.write(file_dsobject)
+					options = title[len(command):]
+					self.__set_options(options)
+					dsobject = self._save_dsobject(
+						"ShockTherapyOptions.json",
+						options.encode(encoding='utf_8', errors='replace'))
+					self._saved_dsobject_alert(dsobject)
 				elif title.startswith("ShockTherapyConfig.import:"):
 					command = "ShockTherapyConfig.import:"
 					logging.debug("_dom_title_cb command: %s" % (command,))
@@ -273,6 +268,54 @@ class ShockTherapyActivity(activity.Activity):
 						# which are being replaced by the imported ones.
 						self._webview.execute_script('window.onunload = null;')
 						self._webview.reload()
+
+	def _save_dsobject(self, filename, content,
+		mime_type=None, description=None):
+		parent_dir = os.path.join(self.get_activity_root(), 'tmp')
+		try:
+			os.makedirs(parent_dir)
+		except OSError:
+			pass
+		fd, tmp_filename = tempfile.mkstemp(dir=parent_dir,
+			suffix=filename, prefix='tmp')
+		try:
+			os.write(fd, content)
+		except:
+			raise
+		else:
+			dsobject = datastore.create()
+			dsobject.metadata['title'] = filename
+			if mime_type is None:
+				mime_type = mime.get_for_file(tmp_filename)
+			dsobject.metadata['mime_type'] = mime_type
+			if description is None:
+				description = _('From: %s')  % (self.metadata['title'],)
+			dsobject.metadata['description'] = description
+			dsobject.set_file_path(tmp_filename)
+			datastore.write(dsobject)
+		finally:
+			os.close(fd)
+			os.unlink(tmp_filename)
+
+		return dsobject
+
+	def _saved_dsobject_alert(self, dsobject):
+		saved_alert = Alert()
+		saved_alert.props.title = _('Download completed')
+		saved_alert.props.msg = dsobject.metadata['title']
+		saved_alert.add_button(gtk.RESPONSE_APPLY,
+			_('Show in Journal'), Icon(icon_name='zoom-activity'))
+		saved_alert.add_button(gtk.RESPONSE_OK, _('Ok'),
+			Icon(icon_name='dialog-ok'))
+
+		def response_cb(alert, response_id):
+			if response_id is gtk.RESPONSE_APPLY:
+				activity.show_object_in_journal(dsobject.object_id)
+			self.remove_alert(alert)
+
+		saved_alert.connect('response', response_cb)
+		self.add_alert(saved_alert)
+		saved_alert.show_all()
 
 	def _req_listener(self, request):
 		if request.path == '/data/options.json':
