@@ -1,24 +1,21 @@
 
+require([
+	"require"
+], function() {
+
 this.ShockTherapyConfig = (function(global) {
 
-	var constructor = function(prefix, callback)
+	var constructor = function(prefix)
 	{
 		this.prefix = prefix;
 		this.android = / android:com\.googlecode\.electroshocktherapy$/.exec(
 			global.window.navigator.userAgent) !== null;
 		this.sugar = / sugar:com\.googlecode\.electroshocktherapy$/.exec(
 			global.window.navigator.userAgent) !== null;
-		this._callback = callback;
+		this._callback = null;
 		this._data = null;
 		this._req = null;
 		this._disable_commit = 0;
-		if (this.sugar) {
-			this._load();
-		}
-		else {
-			this._callback.apply(global);
-			this._callback = null;
-		}
 	}
 
 	constructor.prototype._known_keys = [
@@ -35,28 +32,46 @@ this.ShockTherapyConfig = (function(global) {
 		"VibratorIntensity"
 	];
 
-	constructor.prototype._load = function() {
-		global.shockTherapyConfigLoad = this._loadComplete.bind(this);
-		var title = global.document.title;
-		global.document.title = "ShockTherapyConfig.load:";
-		global.document.title = title;
+	constructor.prototype.load = function(callback) {
+		this._callback = callback;
+		if (this.sugar) {
+			require(["ShockTherapySugarRequest"], this._load.bind(this));
+		}
+		else {
+			this._callback.apply(global);
+			this._callback = null;
+		}
 	}
 
-	constructor.prototype._loadComplete = function(data) {
-		delete global.shockTherapyConfigLoad;
-		this._data = JSON.parse(data);
-		this._callback.apply(global);
-		this._callback = null;
+	constructor.prototype._load = function() {
+		global.XMLHttpRequest = ShockTherapySugarRequest;
+		this._req = new ShockTherapySugarRequest()
+		this._req.onreadystatechange = this._loadComplete.bind(this);
+		this._req.open("GET", "/ShockTherapyConfig.load");
+		this._req.send(null);
+	}
+
+	constructor.prototype._loadComplete = function(e) {
+		if (this._req.readyState === 4) {
+			if (this._req.status !== 200)
+				throw this._req.statusText;
+			this._data = JSON.parse(this._req.responseText);
+			this._req = null;
+			if (this._callback !== null) {
+				this._callback.apply(global);
+				this._callback = null;
+			}
+		}
 	}
 
 	constructor.prototype._commit = function() {
 		if (this._disable_commit > 0)
 			return;
 		if (this.sugar) {
-			var title = global.window.document.title;
-			global.window.document.title = "ShockTherapyConfig.persist:" +
-				JSON.stringify(this.exportConfig(), null, "\t");
-			global.window.document.title = title;
+			var req = new ShockTherapySugarRequest();
+			req.open("GET", "/ShockTherapyConfig.persist:" +
+				JSON.stringify(this.exportConfig(), null, "\t"));
+			req.send(null);
 		}
 	}
 
@@ -248,3 +263,5 @@ this.ShockTherapyConfig = (function(global) {
 	return constructor;
 
 }(this));
+
+});

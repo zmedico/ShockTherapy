@@ -1,10 +1,12 @@
 
-import errno
 import logging
 import os
-import socket
 import tempfile
-import threading
+
+try:
+	from urllib.parse import quote, unquote
+except ImportError:
+	from urllib import quote, unquote
 
 from gettext import gettext as _
 
@@ -22,7 +24,6 @@ import gtk
 import webkit
 
 from WebKitWebInspectorManager import WebKitWebInspectorManager
-from HttpServer import ThreadedHttpServer
 
 class ShockTherapyActivity(activity.Activity):
 
@@ -43,28 +44,8 @@ class ShockTherapyActivity(activity.Activity):
 		activity.Activity.__init__(self, handle)
 		#logging.getLogger().setLevel(logging.DEBUG)
 
-		http_dir = activity.get_bundle_path() + '/web'
-		host = "localhost"
-		port = 30000
-		max_port = 31000
-		while True:
-			try:
-				self._server = ThreadedHttpServer((host, port), http_dir)
-			except socket.error as e:
-				if e.errno != errno.EADDRINUSE:
-					raise
-				if port >= max_port:
-					raise
-				port += 1
-			else:
-				break
-
-		self._server_thread = threading.Thread(
-			target=self._server.serve_forever)
-		self._server_thread.setDaemon(True)
-		self._server_thread.start()
-
-		self._base_uri = 'http://localhost:%s/' % (port,)
+		self._http_dir = activity.get_bundle_path() + '/web/'
+		self._base_uri = "file://" + self._http_dir
 
 		# toolbar with the new toolbar redesign
 		toolbar_box = ToolbarBox()
@@ -157,7 +138,8 @@ class ShockTherapyActivity(activity.Activity):
 		settings.set_property('user-agent', settings.get_property('user-agent') +
 			" sugar:com.googlecode.electroshocktherapy")
 		self._webview.connect('notify::uri', self._uri_cb)
-		self._webview.connect('notify::title', self._dom_title_cb)
+		self._title_req_ids = set()
+		self._webview.connect_after('notify::title', self._dom_title_cb)
 		self._webview.connect('navigation-policy-decision-requested',
 			self._navigate_cb)
 		self._scrolled_window = gtk.ScrolledWindow()
@@ -203,50 +185,91 @@ class ShockTherapyActivity(activity.Activity):
 
 	def _dom_title_cb(self, view, gParamSpec):
 		"""
-		Use document.title to grab data, as described here:
+		Use the document.title notify::title property change signal to call
+		Python from JavaScript, as suggested here:
 		http://code.google.com/p/pywebkitgtk/wiki/HowDoI
 		"""
 		title = self._webview.get_main_frame().get_title()
-		logging.debug("_dom_title_cb: %s" % (title,))
-		if title is not None:
-			if title.startswith("ShockTherapyConfig."):
-				if title.startswith("ShockTherapyConfig.load:"):
-					command = "ShockTherapyConfig.load:"
-					logging.debug("_dom_title_cb command: %s" % (command,))
-					options = self.metadata.get("options")
-					if options is None:
-						options = "{}"
-					self._webview.execute_script("shockTherapyConfigLoad(\"%s\")" %
-						(options.replace("\"", "\\\""),))
-				elif title.startswith("ShockTherapyConfig.persist:"):
-					command = "ShockTherapyConfig.persist:"
-					logging.debug("_dom_title_cb command: %s" % (command,))
-					self.metadata['options'] = title[len(command):]
-				elif title.startswith("ShockTherapyConfig.export:"):
-					command = "ShockTherapyConfig.export:"
-					logging.debug("_dom_title_cb command: %s" % (command,))
-					options = title[len(command):]
-					self.metadata['options'] = options
-					dsobject = self._save_dsobject(
-						"ShockTherapyOptions.json",
-						options.encode(encoding='utf_8', errors='replace'))
-					self._saved_dsobject_alert(dsobject)
-				elif title.startswith("ShockTherapyConfig.import:"):
-					command = "ShockTherapyConfig.import:"
-					logging.debug("_dom_title_cb command: %s" % (command,))
-					chooser = ObjectChooser(parent=self,
-						what_filter=mime.GENERIC_TYPE_TEXT)
-					result = chooser.run()
-					if result == gtk.RESPONSE_ACCEPT:
-						f = open(chooser.get_selected_object().get_file_path(), 'rb')
-						try:
-							options = f.read()
-						finally:
-							f.close()
-						options = options.decode(
-							encoding='utf_8', errors='replace')
-						self.metadata['options'] = options
-						self._webview.reload()
+		#logging.debug("_dom_title_cb: %s" % (title,))
+		if title is None:
+			self._title_req_ids.clear()
+		else:
+			if title.startswith("ShockTherapySugarRequest:"):
+				parts = title.split(":", 2)
+				if len(parts) != 3:
+					raise ValueError(title)
+				callback = parts[1]
+				path = parts[2]
+				req_id = int(callback[len("shockTherapySugarRequest"):])
+				if req_id in self._title_req_ids:
+					# suppress event with duplicate req_id
+					pass
+				else:
+					self._title_req_ids.add(req_id)
+
+					if path.startswith("file:///ShockTherapyConfig."):
+						command = path[len("file:///ShockTherapyConfig."):]
+						status = 200
+						content = b''
+						if command == "load":
+							content = self.metadata.get("options")
+							if content is None:
+								content = b"{}"
+							else:
+								content = content.decode(
+									encoding="utf_8", errors="replace")
+						elif command.startswith("persist:"):
+							self.metadata['options'] = unquote(command[len("persist:"):])
+						elif command.startswith("export:"):
+							options = unquote(command[len("export:"):])
+							self.metadata['options'] = options
+							options.encode(encoding='utf_8', errors='replace')
+							dsobject = self._save_dsobject(
+								"ShockTherapyOptions.json", options)
+							self._saved_dsobject_alert(dsobject)
+						elif command == "import":
+							chooser = ObjectChooser(parent=self,
+								what_filter=mime.GENERIC_TYPE_TEXT)
+							result = chooser.run()
+							if result == gtk.RESPONSE_ACCEPT:
+								f = open(chooser.get_selected_object().get_file_path(), 'rb')
+								try:
+									options = f.read()
+								finally:
+									f.close()
+								options = options.decode(
+									encoding='utf_8', errors='replace')
+								self.metadata['options'] = options
+								self._webview.reload()
+
+					else:
+						path = path[len(self._base_uri):]
+						path = os.path.join(self._http_dir, path)
+						path = os.path.normpath(path)
+						if not (path.startswith(self._http_dir)):
+							# don't allow traversal above _http_dir via ../
+							status = 404
+							content = ""
+						else:
+							f = None
+							try:
+								f = open(path, 'rb')
+								content = f.read()
+							except OSError:
+								status = 404
+								content = ""
+							else:
+								status = 200
+							finally:
+								if f is not None:
+									f.close()
+
+					content = content.decode(encoding="utf_8", errors="replace")
+					#logging.debug(
+					#	"ShockTherapySugarRequest: %s status: %s content: %s" %
+					#	(path, status, content))
+					self._webview.execute_script("%s(%s, \"%s\")" %
+						(callback, status, quote(content)))
 
 	def _save_dsobject(self, filename, content,
 		mime_type=None, description=None):
@@ -295,18 +318,6 @@ class ShockTherapyActivity(activity.Activity):
 		saved_alert.connect('response', response_cb)
 		self.add_alert(saved_alert)
 		saved_alert.show_all()
-
-	def can_close(self):
-		logging.debug("can_close")
-
-		if self._server is not None:
-			self._server.shutdown()
-			self._server.server_close()
-			self._server_thread.join()
-			self._server_thread = None
-			self._server = None
-
-		return True
 
 	def _uri_cb(self, view, gParamSpec):
 		self._back.props.sensitive = self._webview.can_go_back()

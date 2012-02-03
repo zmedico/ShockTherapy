@@ -155,10 +155,10 @@ loadTheme("..", function (shockTherapyConfig,
 			if (/ sugar:com\.googlecode\.electroshocktherapy$/.exec(
 				global.window.navigator.userAgent) !== null)
 			{
-				var realTitle = global.window.document.title;
-				global.window.document.title = "ShockTherapyConfig.export:" +
-					JSON.stringify(options, null, "\t");
-				global.window.document.title = realTitle;
+				var req = new ShockTherapySugarRequest();
+				req.open("GET", "/ShockTherapyConfig.export:" +
+					JSON.stringify(options, null, "\t"));
+				req.send(null);
 				return;
 			}
 
@@ -198,9 +198,9 @@ loadTheme("..", function (shockTherapyConfig,
 			else if (/ sugar:com\.googlecode\.electroshocktherapy$/.exec(
 				global.window.navigator.userAgent) !== null)
 			{
-				var realTitle = global.window.document.title;
-				global.window.document.title = "ShockTherapyConfig.import:"
-				global.window.document.title = realTitle;
+				var req = new ShockTherapySugarRequest();
+				req.open("GET", "/ShockTherapyConfig.import");
+				req.send(null);
 				return;
 			}
 			else
