@@ -255,7 +255,7 @@ class ShockTherapyActivity(activity.Activity):
 							try:
 								f = open(path, 'rb')
 								content = f.read()
-							except OSError:
+							except IOError:
 								status = 404
 								content = ""
 							else:
