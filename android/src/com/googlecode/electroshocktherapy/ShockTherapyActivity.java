@@ -22,11 +22,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.util.Log;
+//import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.webkit.ConsoleMessage;
+//import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -121,8 +121,6 @@ public class ShockTherapyActivity extends Activity {
 		// Before showing the menu, we need to decide whether the clear
 		// item is enabled depending on whether there is text to clear.
 		String url = webview.getUrl();
-		menu.findItem(R.id.back_menu).setVisible(
-			!url.equals(MAIN_URL));
 		menu.findItem(R.id.options_menu).setVisible(
 			!url.equals(OPTIONS_URL));
 		menu.findItem(R.id.about_menu).setVisible(
@@ -134,12 +132,6 @@ public class ShockTherapyActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.back_menu:
-			if (webview.canGoBack())
-				webview.goBack();
-			else
-				loadUrl(MAIN_URL);
-			return true;
 		case R.id.options_menu:
 			loadUrl(OPTIONS_URL);
 			return true;
