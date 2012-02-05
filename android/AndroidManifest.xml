@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.googlecode.electroshocktherapy"
-    android:versionCode="2"
-    android:versionName="1.0.0.1" >
+    android:versionCode="4"
+    android:versionName="1.0.0.4" >
 
     <!--
     Set targetSdkVersion less than 14 so that the system navigation bar
@@ -12,8 +12,19 @@
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="13" />
-    <uses-feature android:name="android.hardware.faketouch"
-        android:required="true" />
+	<!--
+	Don't require android.hardware.touchscreen, for compatibility with devices
+	that have mouse or remote control input, and no touchscreen.
+
+	Also, don't require android.hardware.faketouch, since that would rule out
+	Google TV as discussed here:
+
+		https://developers.google.com/tv/android/docs/gtv_android_features#Touchscreen
+
+	Additionally, faketouch has been reported to trigger market filtering issues:
+
+		http://code.google.com/p/android/issues/detail?id=23984
+	-->
     <uses-feature android:name="android.hardware.touchscreen"
         android:required="false" />
     <uses-permission android:name="android.permission.VIBRATE" />
