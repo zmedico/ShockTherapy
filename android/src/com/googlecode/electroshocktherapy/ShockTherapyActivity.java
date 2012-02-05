@@ -41,6 +41,7 @@ public class ShockTherapyActivity extends Activity {
 	private static final String OPTIONS_URL = BASE_URL + "options.html";
 	private static final String ABOUT_URL = BASE_URL + "about.html";
 	private static final String FILE_CHOOSER_LOC = "FileChooser";
+	private static final String DEFAULT_EXPORT_FILE_NAME = "ShockTherapyOptions.json";
 	private static final int SOUND_RESOURCE = R.raw.electric_discharge_5_clicks;
 	private static final int WEBVIEW_FILE_INPUT_RESULTCODE = RESULT_FIRST_USER;
 	private static final int WEBVIEW_FILE_INPUT_JS_RESULTCODE = RESULT_FIRST_USER + 1;
@@ -367,8 +368,9 @@ public class ShockTherapyActivity extends Activity {
 
 			// setup starting directory
 			String fileName = getItem(FILE_CHOOSER_LOC);
-			if (fileName != null)
-				intent.setData(Uri.fromFile(new File(fileName)));
+			if (fileName == null)
+				fileName = DEFAULT_EXPORT_FILE_NAME;
+			intent.setData(Uri.fromFile(new File(fileName)));
 
 			//intent.putExtra(FileManagerIntents.EXTRA_TITLE, getString(R.string.save_title));
 			//intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, getString(R.string.save_button));
@@ -506,8 +508,9 @@ public class ShockTherapyActivity extends Activity {
 
 			// setup starting directory
 			String fileName = getItem(FILE_CHOOSER_LOC);
-			if (fileName != null)
-				intent.setData(Uri.fromFile(new File(fileName)));
+			if (fileName == null)
+				fileName = DEFAULT_EXPORT_FILE_NAME;
+			intent.setData(Uri.fromFile(new File(fileName)));
 
 			//intent.putExtra(FileManagerIntents.EXTRA_TITLE, getString(R.string.save_title));
 			//intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, getString(R.string.save_button));
