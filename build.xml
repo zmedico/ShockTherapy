@@ -131,13 +131,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	</java>
 </target>
 
-<target name="dist.android.release">
-	<antcall target="dist.android">
-		<param name="android.ant.target" value="release"/>
-	</antcall>
-</target>
-
-<target name="dist.android" depends="init, build.icons">
+<target name="build.android" depends="init, build.icons">
 	<exec executable="${android_exec}" searchpath="true" failonerror="true">
 		<arg value="create"/>
 		<arg value="project"/>
@@ -190,13 +184,21 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		<string value="key.store=${android.key.store}&#10;"></string>
 		<string value="key.alias=${android.key.alias}&#10;"></string>
 	</concat>
+</target>
 
+<target name="dist.android" depends="build.android">
 	<subant target="${android.ant.target}">
 		<fileset file="${android_project_build}/build.xml"/>
 	</subant>
 
 	<move file="${android_project_build}/bin/${app_name}-${android.ant.target}.apk"
 		tofile="${dist}/${app_name}.apk"/>
+</target>
+
+<target name="dist.android.release">
+	<antcall target="dist.android">
+		<param name="android.ant.target" value="release"/>
+	</antcall>
 </target>
 
 <target name="dist.chrome" depends="init, build.icons">
