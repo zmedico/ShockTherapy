@@ -12,6 +12,10 @@
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="13" />
+    <uses-feature android:name="android.hardware.faketouch"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.touchscreen"
+        android:required="false" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
