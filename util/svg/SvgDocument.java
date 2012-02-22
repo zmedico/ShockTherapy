@@ -150,22 +150,71 @@ public  class SvgDocument {
 			throws SvgDocumentError{
 			String[] s = d.split("[\\s,]");
 			int i = 0;
-			String cmd;
+			double x = 0;
+			double y = 0;
+			double prevX = 0;
+			double prevY = 0;
+			String cmd = null;
+			String prev_cmd = null;
 			try {
 				while (i < s.length) {
+					prev_cmd = cmd;
 					cmd = s[i++];
-					if (cmd.equalsIgnoreCase("M"))
-						p.moveTo(Double.parseDouble(s[i++]), Double.parseDouble(s[i++]));
-					else if (cmd.equalsIgnoreCase("L"))
-						p.lineTo(Double.parseDouble(s[i++]), Double.parseDouble(s[i++]));
-					else if (cmd.equalsIgnoreCase("C"))
-						p.curveTo(Double.parseDouble(s[i++]), Double.parseDouble(s[i++]),
-							Double.parseDouble(s[i++]), Double.parseDouble(s[i++]),
-							Double.parseDouble(s[i++]), Double.parseDouble(s[i++]));
+					if (prev_cmd != null) {
+						try {
+							Double.parseDouble(cmd);
+							if (Character.isLowerCase(prev_cmd.charAt(0)))
+								cmd = "l";
+							else
+								cmd = "L";
+							i--;
+						}
+						catch (NumberFormatException e) {
+						}
+					}
+
+					if (cmd.equalsIgnoreCase("M")) {
+						x = Double.parseDouble(s[i++]);
+						y = Double.parseDouble(s[i++]);
+						if (Character.isLowerCase(cmd.charAt(0))) {
+							x += prevX;
+							y += prevY;
+						}
+						p.moveTo(x, y);
+					}
+					else if (cmd.equalsIgnoreCase("L")) {
+						x = Double.parseDouble(s[i++]);
+						y = Double.parseDouble(s[i++]);
+						if (Character.isLowerCase(cmd.charAt(0))) {
+							x += prevX;
+							y += prevY;
+						}
+						p.lineTo(x, y);
+					}
+					else if (cmd.equalsIgnoreCase("C")) {
+						double x1 = Double.parseDouble(s[i++]);
+						double y1 =  Double.parseDouble(s[i++]);
+						double x2 = Double.parseDouble(s[i++]);
+						double y2 =  Double.parseDouble(s[i++]);
+						x = Double.parseDouble(s[i++]);
+						y =  Double.parseDouble(s[i++]);
+						if (Character.isLowerCase(cmd.charAt(0))) {
+							x1 += prevX;
+							y1 += prevY;
+							x2 += prevX;
+							y2 += prevY;
+							x += prevX;
+							y += prevY;
+						}
+						p.curveTo(x1, y1, x2, y2, x, y);
+					}
 					else if (cmd.equalsIgnoreCase("Z"))
 						p.closePath();
 					else throw new SvgDocumentError(
 						"path contains unrecognized command: " + cmd);
+
+					prevX = x;
+					prevY = y;
 				}
 			}
 			catch (NumberFormatException e) {
