@@ -66,10 +66,10 @@ public  class SvgDocument {
 		g2.setRenderingHints(rh);
 		AffineTransform backupTranform = g2.getTransform();
 		AffineTransform t = g2.getTransform();
+		double scale = image.getWidth() / width;
 		t.concatenate(AffineTransform.getTranslateInstance(
-			0, -1*(image.getHeight() - height)/2.0));
-		t.concatenate(AffineTransform.getScaleInstance(
-			image.getWidth()/width, image.getWidth()/width));
+			0, (image.getHeight() - height * scale)/2.0));
+		t.concatenate(AffineTransform.getScaleInstance(scale, scale));
 		g2.setTransform(t);
 		ListIterator<SvgDocument.SvgNode> listIterator = nodes.listIterator();
 		while (listIterator.hasNext())
