@@ -66,7 +66,13 @@ public  class SvgDocument {
 		g2.setRenderingHints(rh);
 		AffineTransform backupTranform = g2.getTransform();
 		AffineTransform t = g2.getTransform();
-		double scale = image.getWidth() / width;
+		double docAspectRatio = width / height;
+		double imageAspectRatio = image.getWidth() / (double) image.getHeight();
+		double scale;
+		if (imageAspectRatio > docAspectRatio)
+			scale = image.getHeight() / height;
+		else
+			scale = image.getWidth() / width;
 		t.concatenate(AffineTransform.getTranslateInstance(
 			0, (image.getHeight() - height * scale)/2.0));
 		t.concatenate(AffineTransform.getScaleInstance(scale, scale));
