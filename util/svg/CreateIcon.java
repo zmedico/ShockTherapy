@@ -25,13 +25,12 @@ public class CreateIcon {
 		String sizesArg = args[2];
 		float blurScale = Float.parseFloat(args[3]);
 		float blurSigma = Float.parseFloat(args[4]);
+		boolean square = Boolean.parseBoolean(args[5]);
 		String [] sizesArgSplit = sizesArg.split("[\\s]");
 		int [] sizesInts = new int[sizesArgSplit.length];
 		for (int i = 0; i < sizesInts.length; i++)
 			sizesInts[i] = Integer.parseInt(sizesArgSplit[i]);
 		Arrays.sort(sizesInts);
-		int imageWidth = sizesInts[sizesInts.length-1];
-		int imageHeight = sizesInts[sizesInts.length-1];
 
 		logger.log(Level.INFO, "parsing xml");
 		Document doc = null;
@@ -45,6 +44,23 @@ public class CreateIcon {
 			e.printStackTrace();
 			logger.log(Level.SEVERE, "Fatal Error!");
 			System.exit(1);
+		}
+
+		double docAspectRatio = svgDoc.getWidth() / svgDoc.getHeight();
+		int imageWidth;
+		int imageHeight;
+
+		if (square) {
+			imageWidth = sizesInts[sizesInts.length-1];
+			imageHeight = sizesInts[sizesInts.length-1];
+		}
+		else if (docAspectRatio > 1) {
+			imageWidth = sizesInts[sizesInts.length-1];
+			imageHeight = (int) Math.round(imageWidth / docAspectRatio);
+		}
+		else {
+			imageHeight = sizesInts[sizesInts.length-1];
+			imageWidth = (int) Math.round(imageHeight * docAspectRatio);
 		}
 
 		logger.log(Level.INFO, "rendering");
@@ -84,8 +100,22 @@ public class CreateIcon {
 			if (sizesInts[i] == imageWidth)
 				scaledImage = blurredImage;
 			else {
+				int scaledWidth;
+				int scaledHeight;
+				if (square) {
+					scaledWidth = sizesInts[i];
+					scaledHeight = sizesInts[i];
+				}
+				else if (docAspectRatio > 1) {
+					scaledWidth = sizesInts[i];
+					scaledHeight = (int) Math.round(scaledWidth / docAspectRatio);
+				}
+				else {
+					scaledHeight = sizesInts[i];
+					scaledWidth = (int) Math.round(scaledHeight * docAspectRatio);
+				}
 				scaledImage = new BufferedImage(
-					sizesInts[i], sizesInts[i],
+					scaledWidth, scaledHeight,
 					BufferedImage.TYPE_INT_ARGB);
 				g2 = (Graphics2D)scaledImage.getGraphics();
 				g2.drawRenderedImage(blurredImage,

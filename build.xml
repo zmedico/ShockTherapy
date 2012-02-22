@@ -125,6 +125,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		<arg value="512 128 96 72 48 36 16"/>
 		<arg value="2.0"/>
 		<arg value="0.5"/>
+		<arg value="true"/>
 		<classpath>
 		<pathelement path="${build}/util/svg"/>
 		</classpath>
