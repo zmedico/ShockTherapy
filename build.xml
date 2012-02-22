@@ -130,6 +130,17 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		<pathelement path="${build}/util/svg"/>
 		</classpath>
 	</java>
+	<java classname="CreateIcon" failonerror="true">
+		<arg file="web/icons/Up_button.svg"/>
+		<arg file="${build}/icons"/>
+		<arg value="48"/>
+		<arg value="2.0"/>
+		<arg value="0.5"/>
+		<arg value="false"/>
+		<classpath>
+		<pathelement path="${build}/util/svg"/>
+		</classpath>
+	</java>
 </target>
 
 <target name="build.android" depends="init, build.icons">
