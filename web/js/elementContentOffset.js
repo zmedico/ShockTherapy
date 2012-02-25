@@ -2,12 +2,11 @@
 function elementContentOffset(element)
 {
 
-	var x = 0, y = 0;
-
+	var x = element.offsetLeft, y = element.offsetTop;
 	while (element.offsetParent != null) {
+		element = element.offsetParent;
 		x += element.offsetLeft;
 		y += element.offsetTop;
-		element = element.offsetParent;
 	}
 
 	return {x: x, y: y};
