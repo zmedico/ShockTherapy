@@ -70,31 +70,39 @@ public class CreateIcon {
 
 		for (int i = 0; i < sizesInts.length; i++) {
 
-			int blurRadius = (int)Math.round(0.5 * imageWidth / sizesInts[i]);
-			if (blurRadius < 1)
-				blurRadius = 1;
-			logger.log(Level.INFO, "smoothing " + sizesInts[i] + " " + blurRadius);
-			/* Pad with blurRadius pixels just for the blur operation,
-			 * and crop it off later, since otherwise ConvolveOp distorts
-			 * edges.
-			 */
-			BufferedImage blurredImage = new BufferedImage(
-				imageWidth + 2*blurRadius, imageHeight+2*blurRadius,
-				BufferedImage.TYPE_INT_ARGB);
-			Kernel kernel = new GaussianBlur(blurScale, blurSigma, blurRadius);
-			ConvolveOp cop = new ConvolveOp(kernel,
-				ConvolveOp.EDGE_NO_OP, null);
-			BufferedImage masterBlurSource = new BufferedImage(
-				imageWidth + 2*blurRadius, imageHeight+2*blurRadius,
-				BufferedImage.TYPE_INT_ARGB);
+			BufferedImage blurredImage;
 			Graphics2D g2;
-			g2 = (Graphics2D)masterBlurSource.getGraphics();
-			g2.drawRenderedImage(masterImage,
-				AffineTransform.getTranslateInstance(
-				blurRadius, blurRadius));
-			cop.filter(masterBlurSource, blurredImage);
-			blurredImage = blurredImage.getSubimage(
-					blurRadius, blurRadius, imageWidth, imageHeight);
+			if (blurScale > 0) {
+				int blurRadius = (int)Math.round(0.5 *
+					imageWidth / sizesInts[i]);
+				if (blurRadius < 1)
+					blurRadius = 1;
+				logger.log(Level.INFO, "smoothing " +
+					sizesInts[i] + " " + blurRadius);
+				/* Pad with blurRadius pixels just for the blur operation,
+				* and crop it off later, since otherwise ConvolveOp distorts
+				* edges.
+				*/
+				blurredImage = new BufferedImage(
+					imageWidth + 2*blurRadius, imageHeight+2*blurRadius,
+					BufferedImage.TYPE_INT_ARGB);
+				Kernel kernel =
+					new GaussianBlur(blurScale, blurSigma, blurRadius);
+				ConvolveOp cop = new ConvolveOp(kernel,
+					ConvolveOp.EDGE_NO_OP, null);
+				BufferedImage masterBlurSource = new BufferedImage(
+					imageWidth + 2*blurRadius, imageHeight+2*blurRadius,
+					BufferedImage.TYPE_INT_ARGB);
+				g2 = (Graphics2D)masterBlurSource.getGraphics();
+				g2.drawRenderedImage(masterImage,
+					AffineTransform.getTranslateInstance(
+					blurRadius, blurRadius));
+				cop.filter(masterBlurSource, blurredImage);
+				blurredImage = blurredImage.getSubimage(
+						blurRadius, blurRadius, imageWidth, imageHeight);
+			}
+			else
+				blurredImage = masterImage;
 
 			BufferedImage scaledImage = null;
 			if (sizesInts[i] == imageWidth)
