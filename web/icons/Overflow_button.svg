@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY color "#9a9a9a">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+	x="0"
+	y="0"
+	width="128"
+	height="128"
+	preserveAspectRatio="xMinYMin meet"
+	viewBox="0 0 128 128">
+	<path d="m 52,24 20,0 0,20 -20,0 z"
+		style="fill:&color;"/>
+	<path d="m 52,56 20,0 0,20 -20,0 z"
+		style="fill:&color;"/>
+	<path d="m 52,88 20,0 0,20 -20,0 z"
+		style="fill:&color;"/>
+</svg>

@@ -131,6 +131,17 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		</classpath>
 	</java>
 	<java classname="CreateIcon" failonerror="true">
+		<arg file="web/icons/Overflow_button.svg"/>
+		<arg file="${build}/icons"/>
+		<arg value="32"/>
+		<arg value="0"/>
+		<arg value="0"/>
+		<arg value="true"/>
+		<classpath>
+		<pathelement path="${build}/util/svg"/>
+		</classpath>
+	</java>
+	<java classname="CreateIcon" failonerror="true">
 		<arg file="web/icons/Up_button.svg"/>
 		<arg file="${build}/icons"/>
 		<arg value="48"/>
@@ -174,6 +185,12 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	<mkdir dir="${android_project_build}/assets/icons"/>
 	<copy file="${build}/icons/High_voltage_warning_48.png"
 		tofile="${android_project_build}/assets/icons/High_voltage_warning_48.png">
+	</copy>
+	<copy file="${build}/icons/Overflow_button_32.png"
+		tofile="${android_project_build}/assets/icons/Overflow_button_32.png">
+	</copy>
+	<copy file="${build}/icons/Up_button_48.png"
+		tofile="${android_project_build}/assets/icons/Up_button_48.png">
 	</copy>
 	<mkdir dir="${android_project_build}/res/drawable-ldpi"/>
 	<copy file="${build}/icons/High_voltage_warning_36.png"
@@ -229,6 +246,8 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 			<include name="icons/High_voltage_warning_16.png"/>
 			<include name="icons/High_voltage_warning_48.png"/>
 			<include name="icons/High_voltage_warning_128.png"/>
+			<include name="icons/Overflow_button_32.png"/>
+			<include name="icons/Up_button_48.png"/>
 		</fileset>
 	</copy>
 

@@ -6,3 +6,9 @@
 .listViewBorder {
 	background-color: gainsboro;
 }
+
+.actionBarMenu {
+	border-color: OverflowMenu.Canvas.border-color;
+	border-style: solid;
+	border-width: 1px;
+}

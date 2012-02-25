@@ -21,6 +21,10 @@ loadTheme("..", function (shockTherapyConfig,
 		"ThemeFactory",
 	], function() {
 
+	getElementById("actionBarOverflowButton").addEventListener("click",
+		createNavigationMenu(["Main", "About"],
+		getElementById("actionBarButtonPanel")));
+
 	function sliderDialog(button, title, key)
 	{
 		var content, dialog, slider;
@@ -240,6 +244,13 @@ loadTheme("..", function (shockTherapyConfig,
 			dialog.show();
 		});
 	});
+
+	var pageHeader = getElementById("pageHeader");
+	if (pageHeader.clientWidth > global.window.innerWidth) {
+		pageHeader.style.setProperty(
+			"width", global.window.innerWidth + "px", null);
+	}
+
 	var curtain = getElementById("curtain");
 	curtain.style.visiblity = "hidden";
 	global.window.document.body.style.visibility = "visible";

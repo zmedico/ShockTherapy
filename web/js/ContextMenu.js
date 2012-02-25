@@ -25,8 +25,16 @@ this.ContextMenu = (function() {
 			position.y = this.parent.clientHeight - this.container.clientHeight;
 		position.x += offset.x;
 		position.y += offset.y;
-		this.container.style.setProperty("left", position.x + "px", null);
-		this.container.style.setProperty("top", position.y + "px", null);
+		this.moveTo(position.x, position.y);
+		this.show();
+	}
+
+	constructor.prototype.moveTo = function(x, y) {
+		this.container.style.setProperty("left", x + "px", null);
+		this.container.style.setProperty("top", y + "px", null);
+	}
+
+	constructor.prototype.show = function(position) {
 		this.container.style.setProperty("visibility", "visible", null);
 	}
 

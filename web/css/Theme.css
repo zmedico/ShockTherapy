@@ -12,8 +12,12 @@ body {
 	border-bottom-color: Color.HoloBlue;
 	border-width: 2px;
 	display: table;
-	font-size: 1.25em;
 	padding: 0.75em;
+}
+
+.headerTitle {
+	font-size: Text.Primary.font-size;
+	color: Text.Primary.color;
 }
 
 .pageHeader {
@@ -24,8 +28,8 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	background-color: Screen.background-color;
-	height: 3em;
-	width: 20em;
+	height: 4em;
+	width: 25em;
 }
 
 .headerIconBox {
@@ -36,8 +40,8 @@ body {
 }
 
 .headerIcon {
-	width: 1.25em;
-	height: 1.25em;
+	width: 1.8em;
+	height: 1.8em;
 	padding: 0;
 	margin: 0;
 	border-style: none;
@@ -45,11 +49,60 @@ body {
 }
 
 .headerUpButton {
-	height: 0.6em;
+	height: 1em;
 	padding: 0;
 	margin: 0;
 	border-style: none;
 	vertical-align: middle;
+}
+
+.overflowButton {
+	width: OverflowButton.width;
+	height: OverflowButton.width;
+	padding: 0;
+	margin: 0;
+	border-style: none;
+	/*	"background-color: inherit" does not work for
+		buttons with Microsoft Internet Explorer 9.0. */
+	background-color: Screen.background-color;
+	color: inherit;
+	box-sizing: content-box;
+	vertical-align: middle;
+	float: right;
+}
+
+.overflowButtonIcon {
+	width: OverflowButton.width;
+	height: OverflowButton.width;
+	padding: 0;
+	margin: 0;
+	border-style: none;
+}
+
+.actionBarMenu {
+	background-color: OverflowMenu.Canvas.background-color;
+}
+
+.actionBarMenuSeparator {
+	height: 1px;
+	margin: 0;
+	border-style: none;
+	background-color: OverflowMenu.Canvas.border-color;
+}
+
+.actionBarMenuButton {
+	border-style: none;
+	text-align: left;
+	font-size: Text.Primary.font-size;
+	color: Text.Primary.color;
+	padding: 1em;
+	margin: 0;
+	width: OverflowMenu.Canvas.width;
+	/*	"background-color: inherit" does not work for
+		buttons with Microsoft Internet Explorer 9.0. */
+	background-color: OverflowMenu.Canvas.background-color;
+	box-sizing: content-box;
+	display: table;
 }
 
 .option_title {
@@ -120,7 +173,9 @@ button {
 	border-style: none;
 	box-sizing: content-box;
 	margin: 0;
-	background-color: inherit;
+	/*	"background-color: inherit" does not work for
+		buttons with Microsoft Internet Explorer 9.0. */
+	background-color: Dialog.Canvas.background-color;
 	color: inherit;
 }
 
