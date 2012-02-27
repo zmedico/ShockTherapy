@@ -21,10 +21,6 @@ loadTheme("..", function (shockTherapyConfig,
 		"ThemeFactory",
 	], function() {
 
-	getElementById("actionBarOverflowButton").addEventListener("click",
-		createNavigationMenu(["Main", "About"],
-		getElementById("actionBarButtonPanel")));
-
 	function sliderDialog(button, title, key)
 	{
 		var content, dialog, slider;
@@ -245,9 +241,21 @@ loadTheme("..", function (shockTherapyConfig,
 		});
 	});
 
-	var pageHeader = getElementById("pageHeader");
-	if (pageHeader.clientWidth > global.window.innerWidth) {
-		pageHeader.style.setProperty(
+	var actionBarUpButton = getElementById("actionBarUpButton");
+	actionBarUpButton.href = "main.html";
+	actionBarUpButton.style.cursor = "pointer";
+	actionBarUpButton.onclick = null;
+	getElementById("actionBarUpButtonIcon").style.visibility = "visible";
+	getElementById("actionBarTitle").innerText = "Options";
+	getElementById("actionBar").style.zIndex = 0;
+
+	getElementById("actionBarOverflowButton").addEventListener("click",
+		createNavigationMenu(["Main", "About"],
+		getElementById("actionBarButtonPanel")));
+
+	var actionBar = getElementById("actionBar");
+	if (actionBar.clientWidth > global.window.innerWidth) {
+		actionBar.style.setProperty(
 			"width", global.window.innerWidth + "px", null);
 	}
 

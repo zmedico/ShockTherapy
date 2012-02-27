@@ -30,19 +30,22 @@ body {
 </head>
 <body style="visibility: hidden">
 <div id="curtain" style="width:100%; height:100%; position: absolute;"></div>
-<div id="pageHeader" class="header pageHeader">
-	<a href="main.html" class="vertCenter headerIconBox">
-		<img src="../icons/Up_button_48.png" class="headerUpButton" alt="Up button"></img>
-		<img src="../icons/High_voltage_warning_48.png" class="headerIcon" alt="icon" ></img>
+<div id="actionBar" class="header pageHeader" style="z-index: -1">
+	<a id="actionBarUpButton" href="#" class="vertCenter headerIconBox"
+		style="cursor: default" onclick="return false;">
+		<img id="actionBarUpButtonIcon" src="../icons/Up_button_48.png"
+			class="headerUpButton" alt="Up button"
+			style="visibility: hidden"></img>
+		<img src="../icons/High_voltage_warning_48.png"
+			class="headerIcon" alt="icon" ></img>
 	</a>
 	<div class="vertCenter">
-		<div class="headerTitle">
-		Options
-		</div>
+		<div id="actionBarTitle" class="headerTitle"></div>
 	</div>
 	<div id="actionBarButtonPanel" class="vertCenter">
 		<button id="actionBarOverflowButton" class="overflowButton">
-		<img src="../icons/Overflow_button_32.png" class="overflowButtonIcon" alt="icon"></img>
+		<img src="../icons/Overflow_button_32.png"
+			class="overflowButtonIcon" alt="icon"></img>
 		</button>
 	</div>
 </div>

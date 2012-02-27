@@ -26,9 +26,29 @@ body .black {
 <script type="text/javascript">require.path = "../js";</script>
 <script src="../js/ShockTherapy.js" type="text/javascript"></script>
 <script src="loadTheme.js" type="text/javascript"></script>
+<script src="createNavigationMenu.js" type="text/javascript"></script>
 <script src="main.js" type="text/javascript"></script>
 </head>
 <body>
+<div id="actionBar" class="header pageHeader" style="z-index: -1">
+	<a id="actionBarUpButton" href="#" class="vertCenter headerIconBox"
+		style="cursor: default" onclick="return false;">
+		<img id="actionBarUpButtonIcon" src="../icons/Up_button_48.png"
+			class="headerUpButton" alt="Up button"
+			style="visibility: hidden"></img>
+		<img src="../icons/High_voltage_warning_48.png"
+			class="headerIcon" alt="icon" ></img>
+	</a>
+	<div class="vertCenter">
+		<div id="actionBarTitle" class="headerTitle"></div>
+	</div>
+	<div id="actionBarButtonPanel" class="vertCenter">
+		<button id="actionBarOverflowButton" class="overflowButton">
+		<img src="../icons/Overflow_button_32.png"
+			class="overflowButtonIcon" alt="icon"></img>
+		</button>
+	</div>
+</div>
 	<div>
 		<object class="fullscreen black" id="mainCanvas"></object>
 	</div>

@@ -6,8 +6,25 @@ loadTheme("..", function (shockTherapyConfig,
 		"ContextMenu",
 		"ShockTherapyWidget"
 	], function() {
-	var global = this;
-	var c = global.window.document.getElementById("mainCanvas");
+	var getElementById, global;
+	global = this;
+	getElementById = global.window.document.getElementById.bind(
+		global.window.document);
+	getElementById("actionBarOverflowButton").addEventListener("click",
+		createNavigationMenu(["Options", "About"],
+		getElementById("actionBarButtonPanel")));
+
+	var actionBarUpButton = getElementById("actionBarUpButton");
+	actionBarUpButton.href = "#";
+	actionBarUpButton.style.cursor = "default";
+	actionBarUpButton.onclick = function () {
+			return false;
+		}
+	getElementById("actionBarUpButtonIcon").style.visibility = "hidden";
+	getElementById("actionBarTitle").innerText = "Shock Therapy";
+	getElementById("actionBar").style.zIndex = -1;
+
+	var c = getElementById("mainCanvas");
 	c.width = global.window.innerWidth;
 	c.height = global.window.innerHeight;
 	var widget = new ShockTherapyWidget("..", shockTherapyConfig, c);
