@@ -23,6 +23,7 @@ body {
 <script src="../js/Function.prototype.bind.js" type="text/javascript"></script>
 <script src="../js/require.js" type="text/javascript"></script>
 <script type="text/javascript">require.path = "../js";</script>
+<script src="../js/ShockTherapy.js" type="text/javascript"></script>
 <script src="loadTheme.js" type="text/javascript"></script>
 <script src="createNavigationMenu.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -47,6 +48,8 @@ body {
 		curtain.style.visiblity = "hidden";
 		global.window.document.body.style.visibility = "visible";
 		global.window.document.body.removeChild(curtain);
+
+		ShockTherapy.viewChanged(global.window.location.href);
 	});
 -->
 </script>

@@ -50,21 +50,6 @@ class ShockTherapyActivity(activity.Activity):
 		# toolbar with the new toolbar redesign
 		toolbar_box = ToolbarBox()
 
-		self._back = ToolButton('go-previous-paired')
-		self._back.set_tooltip(_('Back'))
-		self._back.connect('clicked', self._go_back_cb)
-		toolbar_box.toolbar.insert(self._back, -1)
-
-		self._forward = ToolButton('go-next-paired')
-		self._forward.set_tooltip(_('Forward'))
-		self._forward.connect('clicked', self._go_forward_cb)
-		toolbar_box.toolbar.insert(self._forward, -1)
-
-		separator = gtk.SeparatorToolItem()
-		separator.props.draw = False
-		separator.set_expand(True)
-		toolbar_box.toolbar.insert(separator, -1)
-
 		self._main_button = ToolButton()
 		self._main_button.set_tooltip(_('Main'))
 		self._main_button.set_icon_widget(
@@ -137,7 +122,6 @@ class ShockTherapyActivity(activity.Activity):
 		settings = self._webview.get_settings()
 		settings.set_property('user-agent', settings.get_property('user-agent') +
 			" sugar:com.googlecode.electroshocktherapy")
-		self._webview.connect('notify::uri', self._uri_cb)
 		self._title_req_ids = set()
 		self._webview.connect_after('notify::title', self._dom_title_cb)
 		self._webview.connect('navigation-policy-decision-requested',
@@ -207,7 +191,15 @@ class ShockTherapyActivity(activity.Activity):
 				else:
 					self._title_req_ids.add(req_id)
 
-					if path.startswith("file:///ShockTherapyConfig."):
+					if path.startswith("file:///ShockTherapy."):
+						command = path[len("file:///ShockTherapy."):]
+						status = 200
+						content = b''
+						if command.startswith("viewChanged:"):
+							uri = unquote(command[len("viewChanged:"):])
+							self._uri_cb(uri)
+
+					elif path.startswith("file:///ShockTherapyConfig."):
 						command = path[len("file:///ShockTherapyConfig."):]
 						status = 200
 						content = b''
@@ -319,23 +311,15 @@ class ShockTherapyActivity(activity.Activity):
 		self.add_alert(saved_alert)
 		saved_alert.show_all()
 
-	def _uri_cb(self, view, gParamSpec):
-		self._back.props.sensitive = self._webview.can_go_back()
-		self._forward.props.sensitive =  self._webview.can_go_forward()
+	def _uri_cb(self, uri):
 
 		self._main_button.set_sensitive(True)
 		self._options_button.set_sensitive(True)
 		self._about_button.set_sensitive(True)
 
-		disabled_button = self._url_button_map.get(view.get_property("uri"))
+		disabled_button = self._url_button_map.get(uri)
 		if disabled_button is not None:
 			disabled_button.set_sensitive(False)
-
-	def _go_back_cb(self, button):
-		self._webview.go_back()
-
-	def _go_forward_cb(self, button):
-		self._webview.go_forward()
 
 	def _main_cb(self, button):
 		self._webview.load_uri(self._urls["MAIN"])

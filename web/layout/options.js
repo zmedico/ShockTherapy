@@ -255,4 +255,6 @@ loadTheme("..", function (shockTherapyConfig,
 	curtain.style.visiblity = "hidden";
 	global.window.document.body.style.visibility = "visible";
 	global.window.document.body.removeChild(curtain);
+
+	ShockTherapy.viewChanged(global.window.location.href);
 });

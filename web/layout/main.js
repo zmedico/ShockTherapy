@@ -68,5 +68,7 @@ loadTheme("..", function (shockTherapyConfig,
 		contextMenu.onContextMenu(e);
 	});
 
+	ShockTherapy.viewChanged(global.window.location.href);
+
 	});
 });

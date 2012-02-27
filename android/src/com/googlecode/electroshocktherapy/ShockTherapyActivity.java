@@ -40,6 +40,7 @@ public class ShockTherapyActivity extends Activity {
 	private static final String MAIN_URL = BASE_URL + "main.html";
 	private static final String OPTIONS_URL = BASE_URL + "options.html";
 	private static final String ABOUT_URL = BASE_URL + "about.html";
+	private static final String GO_BACK = "javascript:ShockTherapy.goBack()";
 	private static final String FILE_CHOOSER_LOC = "FileChooser";
 	private static final String DEFAULT_EXPORT_FILE_NAME = "ShockTherapyOptions.json";
 	private static final int SOUND_RESOURCE = R.raw.electric_discharge_5_clicks;
@@ -54,6 +55,7 @@ public class ShockTherapyActivity extends Activity {
 	private ValueCallback<Uri> webviewFileInputCb;
 	private HashMap<String,String> webviewFileInputRequest;
 	private String webviewFileOutputDataUrl;
+	private String url;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -91,7 +93,7 @@ public class ShockTherapyActivity extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		// save the url so it can be restored after
 		// an orientation change triggers reload
-		outState.putString("url", webview.getUrl());
+		outState.putString("url", url);
 	}
 
 	protected void onPostResume () {
@@ -121,7 +123,6 @@ public class ShockTherapyActivity extends Activity {
 
 		// Before showing the menu, we need to decide whether the clear
 		// item is enabled depending on whether there is text to clear.
-		String url = webview.getUrl();
 		menu.findItem(R.id.options_menu).setVisible(
 			!url.equals(OPTIONS_URL));
 		menu.findItem(R.id.about_menu).setVisible(
@@ -146,17 +147,13 @@ public class ShockTherapyActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		String url = webview.getUrl();
 		if (url.equals(MAIN_URL))
 		{
 			super.onBackPressed();
 		}
 		else
 		{
-			if (webview.canGoBack())
-				webview.goBack();
-			else
-				loadUrl(MAIN_URL);
+			webview.loadUrl(GO_BACK);
 		}
 	}
 
@@ -184,6 +181,7 @@ public class ShockTherapyActivity extends Activity {
 	}
 
 	private void loadUrl(String url) {
+		this.url = url;
 		webview.loadUrl(url);
 	}
 
@@ -428,6 +426,11 @@ public class ShockTherapyActivity extends Activity {
 	private class JavaScriptInterface {
 
 		JavaScriptInterface() {
+		}
+
+		@SuppressWarnings("unused")
+		public void viewChanged(String url) {
+			ShockTherapyActivity.this.url = url;
 		}
 
 		@SuppressWarnings("unused")
