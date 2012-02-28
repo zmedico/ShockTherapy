@@ -25,39 +25,28 @@ body {
 <script type="text/javascript">require.path = "../js";</script>
 <script src="../js/ShockTherapy.js" type="text/javascript"></script>
 <script src="loadTheme.js" type="text/javascript"></script>
-<script src="createNavigationMenu.js" type="text/javascript"></script>
 <script type="text/javascript">
 <!--
 	loadTheme("..", function(shockTherapyConfig,
 		resourceFactory, resources) {
+
+		require(["ShockTherapyActionBar"], function() {
+
+		var actionBar = new ShockTherapyActionBar();
+		actionBar.setTitle("About");
+		actionBar.setUpButtonUri("main.html");
+		actionBar.setActions(["Main", "Options"]);
+		actionBar.show();
+
 		var global = this;
-		var getElementById = global.window.document.getElementById.bind(
-			global.window.document);
-
-		var actionBarUpButton = getElementById("actionBarUpButton");
-		actionBarUpButton.href = "main.html";
-		actionBarUpButton.style.cursor = "pointer";
-		actionBarUpButton.onclick = null;
-		getElementById("actionBarUpButtonIcon").style.visibility = "visible";
-		getElementById("actionBarTitle").innerText = "About";
-
-		getElementById("actionBarOverflowButton").addEventListener("click",
-			createNavigationMenu(["Main", "Options"],
-			getElementById("actionBarButtonPanel")));
-
-		var actionBar = getElementById("actionBar");
-		actionBar.style.zIndex = 0;
-		if (actionBar.clientWidth > global.window.innerWidth) {
-			actionBar.style.setProperty(
-				"width", global.window.innerWidth + "px", null);
-		}
-
-		var curtain = getElementById("curtain");
+		var curtain = global.window.document.getElementById("curtain");
 		curtain.style.visiblity = "hidden";
 		global.window.document.body.style.visibility = "visible";
 		global.window.document.body.removeChild(curtain);
 
 		ShockTherapy.viewChanged(global.window.location.href);
+
+		});
 	});
 -->
 </script>

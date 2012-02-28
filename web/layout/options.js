@@ -2,13 +2,6 @@
 loadTheme("..", function (shockTherapyConfig,
 	resourceFactory, resources) {
 
-	var createElement, getElementById, global;
-	global = this;
-	createElement = global.window.document.createElement.bind(
-		global.window.document);
-	getElementById = global.window.document.getElementById.bind(
-		global.window.document);
-
 	require([
 		"CheckboxWidget",
 		"ColorChooser",
@@ -16,10 +9,18 @@ loadTheme("..", function (shockTherapyConfig,
 		"openFileDialog",
 		"saveUrl",
 		"RadioGroupWidget",
+		"ShockTherapyActionBar",
 		"ShockTherapyDefaults",
 		"SliderWidget",
 		"ThemeFactory",
 	], function() {
+
+	var createElement, getElementById, global;
+	global = this;
+	createElement = global.window.document.createElement.bind(
+		global.window.document);
+	getElementById = global.window.document.getElementById.bind(
+		global.window.document);
 
 	function sliderDialog(button, title, key)
 	{
@@ -239,25 +240,12 @@ loadTheme("..", function (shockTherapyConfig,
 			)
 			dialog.show();
 		});
-	});
 
-	var actionBarUpButton = getElementById("actionBarUpButton");
-	actionBarUpButton.href = "main.html";
-	actionBarUpButton.style.cursor = "pointer";
-	actionBarUpButton.onclick = null;
-	getElementById("actionBarUpButtonIcon").style.visibility = "visible";
-	getElementById("actionBarTitle").innerText = "Options";
-	getElementById("actionBar").style.zIndex = 0;
-
-	getElementById("actionBarOverflowButton").addEventListener("click",
-		createNavigationMenu(["Main", "About"],
-		getElementById("actionBarButtonPanel")));
-
-	var actionBar = getElementById("actionBar");
-	if (actionBar.clientWidth > global.window.innerWidth) {
-		actionBar.style.setProperty(
-			"width", global.window.innerWidth + "px", null);
-	}
+	var actionBar = new ShockTherapyActionBar();
+	actionBar.setTitle("Options");
+	actionBar.setUpButtonUri("main.html");
+	actionBar.setActions(["Main", "About"]);
+	actionBar.show();
 
 	var curtain = getElementById("curtain");
 	curtain.style.visiblity = "hidden";
@@ -265,4 +253,6 @@ loadTheme("..", function (shockTherapyConfig,
 	global.window.document.body.removeChild(curtain);
 
 	ShockTherapy.viewChanged(global.window.location.href);
+
+	});
 });

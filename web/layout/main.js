@@ -4,25 +4,20 @@ loadTheme("..", function (shockTherapyConfig,
 
 	require([
 		"ContextMenu",
+		"ShockTherapyActionBar",
 		"ShockTherapyWidget"
 	], function() {
+
 	var getElementById, global;
 	global = this;
 	getElementById = global.window.document.getElementById.bind(
 		global.window.document);
-	getElementById("actionBarOverflowButton").addEventListener("click",
-		createNavigationMenu(["Options", "About"],
-		getElementById("actionBarButtonPanel")));
 
-	var actionBarUpButton = getElementById("actionBarUpButton");
-	actionBarUpButton.href = "#";
-	actionBarUpButton.style.cursor = "default";
-	actionBarUpButton.onclick = function () {
-			return false;
-		}
-	getElementById("actionBarUpButtonIcon").style.visibility = "hidden";
-	getElementById("actionBarTitle").innerText = "Shock Therapy";
-	getElementById("actionBar").style.zIndex = -1;
+	var actionBar = new ShockTherapyActionBar();
+	actionBar.setTitle("Shock Therapy");
+	actionBar.setUpButtonUri(null);
+	actionBar.setActions(["Options", "About"]);
+	actionBar.hide();
 
 	var c = getElementById("mainCanvas");
 	c.width = global.window.innerWidth;
