@@ -14,12 +14,13 @@ require([
 this.ShockTherapyOptionsView = (function(global) {
 
 	var constructor = function(uri, actionBar,
-		config, resourceFactory, resources) {
+		config, resourceFactory, resources, reloadTheme) {
 		this._uri = uri;
 		this._actionBar = actionBar;
 		this._config = config;
 		this._resourceFactory = resourceFactory;
 		this._resources = resources;
+		this._reloadTheme = reloadTheme;
 		this._container = null;
 		this._callback = null;
 		this._content = null;
@@ -130,6 +131,7 @@ this.ShockTherapyOptionsView = (function(global) {
 		}
 
 		var themeButton = getElementById("themeButton");
+		var reloadTheme = this._reloadTheme;
 
 		themeButton.addEventListener("click",
 			function(e) {
@@ -154,7 +156,7 @@ this.ShockTherapyOptionsView = (function(global) {
 						{
 							shockTherapyConfig.setString(
 								"Theme", keys[radioGroup.selection]);
-							global.window.location.reload();
+							reloadTheme();
 						}
 					}
 				)
@@ -264,7 +266,7 @@ this.ShockTherapyOptionsView = (function(global) {
 					global.androidGetTextFileCb = function(content) {
 						delete global.androidGetTextFileCb;
 						shockTherapyConfig.importConfig(JSON.parse(content));
-						global.window.location.reload();
+						reloadTheme();
 					}
 					Android.getTextFile(
 						"application/json", encoding, "Import Options");
@@ -284,7 +286,7 @@ this.ShockTherapyOptionsView = (function(global) {
 							reader.onload = function(e) {
 									shockTherapyConfig.importConfig(
 										JSON.parse(e.target.result));
-									global.window.location.reload();
+									reloadTheme();
 								};
 							reader.onerror = function(e) {
 									throw e;
@@ -307,7 +309,7 @@ this.ShockTherapyOptionsView = (function(global) {
 						if (!dialog.cancelled)
 						{
 							shockTherapyConfig.clear();
-							global.window.location.reload();
+							reloadTheme();
 						}
 					}
 				)

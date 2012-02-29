@@ -38,6 +38,22 @@ loadTheme("..", function (shockTherapyConfig,
 			shockTherapyConfig.setBoolean("MenuButton", enableMenuButton);
 	}
 
+	var reloadTheme = function() {
+		if (!curtain.parentNode)
+			global.window.document.body.appendChild(curtain);
+		resources.removeCssFromDoc();
+		loadTheme("..", function (_shockTherapyConfig,
+			_resourceFactory, _resources) {
+			shockTherapyConfig = _shockTherapyConfig;
+			resourceFactory = _resourceFactory;
+			resources = _resources;
+			/* Discard optionsView since it holds
+			references to the old theme resources. */
+			optionsView = null;
+			updateView();
+		});
+	}
+
 	var getView = function(hash, callback) {
 		if (hash == "#about") {
 			if (actionBar === null)
@@ -60,7 +76,7 @@ loadTheme("..", function (shockTherapyConfig,
 				require(["ShockTherapyOptionsView"], function() {
 						optionsView = new ShockTherapyOptionsView(
 							"options.html", actionBar, shockTherapyConfig,
-							resourceFactory, resources);
+							resourceFactory, resources, reloadTheme);
 						callback.apply(global, [optionsView]);
 					}
 				);

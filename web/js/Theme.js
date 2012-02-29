@@ -17,6 +17,7 @@ this.Theme = (function(global) {
 		this._pending_reqs = 0;
 		this._req = null;
 		this._callback = null;
+		this._css_nodes = []
 	}
 
 	constructor._parseValue = /^([^:]+):(.*)$/;
@@ -24,6 +25,36 @@ this.Theme = (function(global) {
 
 	constructor.prototype.getProfileKey = function() {
 		return this._profileKey;
+	}
+
+	constructor.prototype.addCssToDoc = function() {
+		var doc, node, text;
+		var text = this.getCss();
+		if (text !== null) {
+			doc = global.window.document;
+			if (doc.createStyleSheet) {
+				// Microsoft Internet Explorer
+				node = doc.createStyleSheet()
+				node.cssText = text;
+				this._css_nodes.push(node.owningElement);
+			}
+			else {
+				node = doc.createElement("style");
+				node.type = "text/css";
+				node.appendChild(doc.createTextNode(text));
+				doc.head.appendChild(node);
+				this._css_nodes.push(node);
+			}
+		}
+	}
+
+	constructor.prototype.removeCssFromDoc = function() {
+		var doc, node;
+		doc = global.window.document;
+		while (this._css_nodes.length > 0) {
+			node = this._css_nodes.pop();
+			node.parentNode.removeChild(node)
+		}
 	}
 
 	constructor.prototype.getCss = function() {
