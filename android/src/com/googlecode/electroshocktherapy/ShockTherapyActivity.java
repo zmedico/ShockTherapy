@@ -188,6 +188,7 @@ public class ShockTherapyActivity extends Activity {
 	}
 
 	private void loadUrl(String uri, boolean reload) {
+		String previous = url;
 		url = uri;
 		anchor = Uri.parse(uri).getFragment();
 		if (anchor != null) {
@@ -197,6 +198,16 @@ public class ShockTherapyActivity extends Activity {
 			 * TODO: Fix history/back button handling to account for this.
 			 */
 			uri = uri.substring(0, uri.indexOf("#"));
+			if (!reload && previous != null &&
+				uri.length() <= previous.length() &&
+				previous.substring(0, uri.length()).equals(uri)) {
+				// Optimize menu clicks to avoid page reloads.
+				String jsUri = "javascript:window.location.hash='#"
+					+ anchor + "'";
+				anchor = null;
+				webview.loadUrl(jsUri);
+				return;
+			}
 		}
 		webview.loadUrl(uri);
 	}
