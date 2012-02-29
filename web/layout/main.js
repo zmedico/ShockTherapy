@@ -20,6 +20,7 @@ loadTheme("..", function (shockTherapyConfig,
 	var mainView = null;
 	var aboutView = null;
 	var optionsView = null;
+	var previousView = null;
 
 	var getView = function(hash, callback) {
 		if (hash == "#about") {
@@ -65,6 +66,9 @@ loadTheme("..", function (shockTherapyConfig,
 				global.window.document.body.appendChild(curtain);
 			while (contentDiv.firstChild)
 				contentDiv.removeChild(contentDiv.firstChild);
+			if (previousView != null)
+				previousView.undisplay();
+			previousView = view;
 			view.display(contentDiv, function() {
 					view.configureActionBar(actionBar);
 					global.window.document.body.removeChild(curtain);
