@@ -75,6 +75,7 @@ this.ShockTherapyMainView = (function(global) {
 				button.appendChild(button.ownerDocument.createTextNode("Options"));
 				button.addEventListener("click",
 					function(e) {
+						contextMenu.onblur();
 						global.window.location.assign("options.html");
 					});
 				contextMenu.container.appendChild(button);
@@ -88,7 +89,8 @@ this.ShockTherapyMainView = (function(global) {
 				button.appendChild(button.ownerDocument.createTextNode("About"));
 				button.addEventListener("click",
 					function(e) {
-						global.window.location.assign("about.html");
+						contextMenu.onblur();
+						global.window.location.assign("main.html#about");
 					});
 				contextMenu.container.appendChild(button);
 

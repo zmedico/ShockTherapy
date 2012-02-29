@@ -116,6 +116,7 @@ body {
 .content {
 	padding: 4em 1em 1em 1em;
 	height: 100%;
+	background-color: Screen.background-color;
 }
 
 .tight {

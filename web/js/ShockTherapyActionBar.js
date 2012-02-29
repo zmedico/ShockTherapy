@@ -31,7 +31,10 @@ this.ShockTherapyActionBar = (function(global) {
 	}
 
 	constructor.prototype.setTitle = function(title) {
-		this._title.innerText = title;
+		while (this._title.firstChild)
+			this._title.removeChild(this._title.firstChild);
+		this._title.appendChild(
+			this._title.ownerDocument.createTextNode(title));
 	}
 
 	constructor.prototype.setUpButtonUri = function(uri) {
@@ -60,7 +63,7 @@ this.ShockTherapyActionBar = (function(global) {
 		},
 
 		"About" : function() {
-			global.window.location.assign("about.html");
+			global.window.location.assign("main.html#about");
 		}
 
 	};
