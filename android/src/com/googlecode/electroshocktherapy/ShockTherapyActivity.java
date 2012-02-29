@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
@@ -472,6 +473,11 @@ public class ShockTherapyActivity extends Activity {
 		@SuppressWarnings("unused")
 		public void viewChanged(String url) {
 			ShockTherapyActivity.this.url = url;
+		}
+
+		@SuppressWarnings("unused")
+		public boolean hardwareMenuButtonRequired() {
+			return Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB;
 		}
 
 		@SuppressWarnings("unused")

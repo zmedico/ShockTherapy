@@ -22,6 +22,22 @@ loadTheme("..", function (shockTherapyConfig,
 	var optionsView = null;
 	var previousView = null;
 
+	var enableMenuButton = shockTherapyConfig.getBoolean("MenuButton", null);
+	if (enableMenuButton === null) {
+		/* If there is no MenuButton user preference, then create a
+		 * suitable default setting.
+		 */
+		if (ShockTherapy.android &&
+			!ShockTherapy.android.hardwareMenuButtonRequired())
+			enableMenuButton = true;
+		else if (ShockTherapy.mobile) {
+			// may be a touch-based browser without contextmenu
+			enableMenuButton = true;
+		}
+		if (enableMenuButton)
+			shockTherapyConfig.setBoolean("MenuButton", enableMenuButton);
+	}
+
 	var getView = function(hash, callback) {
 		if (hash == "#about") {
 			if (actionBar === null)
