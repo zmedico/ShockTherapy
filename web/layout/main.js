@@ -61,7 +61,7 @@ loadTheme("..", function (shockTherapyConfig,
 
 	var updateView = function() {
 		getView(global.window.location.hash, function(view) {
-			if (!curtain.parentNone)
+			if (!curtain.parentNode)
 				global.window.document.body.appendChild(curtain);
 			while (contentDiv.firstChild)
 				contentDiv.removeChild(contentDiv.firstChild);
