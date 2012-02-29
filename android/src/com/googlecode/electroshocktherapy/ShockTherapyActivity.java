@@ -38,12 +38,8 @@ public class ShockTherapyActivity extends Activity {
 	private static final String HOMEPAGE ="http://electroshocktherapy.googlecode.com/";
 	private static final String BASE_URL = "file:///android_asset/layout/";
 	private static final String MAIN_URL = BASE_URL + "main.html";
-	/*
-	TODO: For fragment links, add workaround for Android Issue 17327:
-	http://stackoverflow.com/questions/6542702/basic-internal-links-dont-work-in-honeycomb-app
-	*/
-	private static final String OPTIONS_URL = BASE_URL + "main.html#options";
-	private static final String ABOUT_URL = BASE_URL + "main.html#about";
+	private static final String OPTIONS_URL = MAIN_URL + "#options";
+	private static final String ABOUT_URL = MAIN_URL + "#about";
 	private static final String GO_BACK = "javascript:ShockTherapy.goBack()";
 	private static final String FILE_CHOOSER_LOC = "FileChooser";
 	private static final String DEFAULT_EXPORT_FILE_NAME = "ShockTherapyOptions.json";
@@ -60,6 +56,7 @@ public class ShockTherapyActivity extends Activity {
 	private HashMap<String,String> webviewFileInputRequest;
 	private String webviewFileOutputDataUrl;
 	private String url;
+	private String anchor;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -102,9 +99,11 @@ public class ShockTherapyActivity extends Activity {
 
 	protected void onPostResume () {
 		super.onPostResume();
-		// workaround to re-initialize the JavaScriptInterface
-		// since otherwise it sometimes fails to deliver events
-		webview.reload();
+		/* Re-initialize the JavaScriptInterface since otherwise it
+		 * sometimes fails to deliver events. Don't use webview.reload(),
+		 * since we also need to workaround Android Issue 17327 here.
+		 */
+		loadUrl(url, true);
 	}
 
 	/**
@@ -184,9 +183,22 @@ public class ShockTherapyActivity extends Activity {
 		}
 	}
 
-	private void loadUrl(String url) {
-		this.url = url;
-		webview.loadUrl(url);
+	private void loadUrl(String uri) {
+		loadUrl(uri, false);
+	}
+
+	private void loadUrl(String uri, boolean reload) {
+		url = uri;
+		anchor = Uri.parse(uri).getFragment();
+		if (anchor != null) {
+			/* Workaround for Android Issue 17327:
+			 * http://code.google.com/p/android/issues/detail?id=17327
+			 * http://stackoverflow.com/questions/6542702/basic-internal-links-dont-work-in-honeycomb-app
+			 * TODO: Fix history/back button handling to account for this.
+			 */
+			uri = uri.substring(0, uri.indexOf("#"));
+		}
+		webview.loadUrl(uri);
 	}
 
 	private MediaPlayer getMediaPlayer() {
@@ -339,6 +351,20 @@ public class ShockTherapyActivity extends Activity {
 	}
 
 	private class WebViewClientOverride extends WebViewClient {
+
+		@Override
+	    public void onPageFinished(WebView view, String url)
+	    {
+	        if (ShockTherapyActivity.this.anchor != null)
+	        {
+				// Workaround for Android Issue 17327.
+				String anchor = ShockTherapyActivity.this.anchor;
+				ShockTherapyActivity.this.anchor = null;
+	            view.loadUrl("javascript:window.location.hash='#"
+					+ anchor + "'");
+	        }
+	    }
+
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
 			//System.err.println("ShockTherapyActivity shouldOverrideUrlLoading:" + url);
