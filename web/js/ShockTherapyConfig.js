@@ -24,6 +24,7 @@ this.ShockTherapyConfig = (function(global) {
 		"Density",
 		"Duration",
 		"HueVariance",
+		"MenuButton",
 		"Sound",
 		"SoundVolume",
 		"Theme",
@@ -215,6 +216,7 @@ this.ShockTherapyConfig = (function(global) {
 			importFloat("Thickness", 0, 100);
 			importFloat("Density", 0, 100);
 			importFloat("Duration", 0, 100);
+			importBoolean("MenuButton");
 		}
 		finally {
 			this._disable_commit -= 1;

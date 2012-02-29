@@ -1,6 +1,9 @@
 
 require([
 	"ContextMenu",
+	"createActionBarMenu",
+	"elementContentOffset",
+	"ShockTherapyDefaults",
 	"ShockTherapyWidget"
 ], function() {
 
@@ -9,6 +12,8 @@ this.ShockTherapyMainView = (function(global) {
 	var constructor = function(config) {
 		this._config = config
 		this._canvas = null;
+		this._mainMenuButton =
+			global.document.getElementById("mainMenuButton");
 		this._resize_timeout_id = null;
 		this._bound_resize_listener = this._resize_listener.bind(this);
 		this._bound_resize_timeout = this._resize_timeout.bind(this);
@@ -29,6 +34,9 @@ this.ShockTherapyMainView = (function(global) {
 		container.appendChild(this._canvas);
 		global.window.addEventListener("resize",
 			this._bound_resize_listener);
+		if (this._config.getBoolean("MenuButton",
+			ShockTherapyDefaults.MenuButton))
+			this._mainMenuButton.style.visibility = "visible";
 		if (callback)
 			callback.apply(global);
 	}
@@ -36,6 +44,7 @@ this.ShockTherapyMainView = (function(global) {
 	constructor.prototype.undisplay = function() {
 		global.window.removeEventListener("resize",
 			this._bound_resize_listener);
+		this._mainMenuButton.style.visibility = "hidden";
 	}
 
 	constructor.prototype._resize_listener = function() {
@@ -59,6 +68,31 @@ this.ShockTherapyMainView = (function(global) {
 		c.width = global.window.innerWidth;
 		c.height = global.window.innerHeight;
 		var widget = new ShockTherapyWidget("..", this._config, c);
+
+		var actions = [
+			{
+				name: "Options",
+				callback: function() {
+					global.window.location.assign("main.html#options");
+				}
+			},
+			{
+				name: "About",
+				callback: function() {
+					global.window.location.assign("main.html#about");
+				}
+			}
+		];
+
+		var mainMenuListener = createActionBarMenu(actions,
+			this._positionMainMenu.bind(this));
+		this._mainMenuButton.addEventListener("click", function(e) {
+			mainMenuListener();
+			return false;
+		});
+
+		widget.addEventListener("click",
+			mainMenuListener.hideMenu.bind(mainMenuListener));
 
 		var contextMenu = null;
 
@@ -102,6 +136,16 @@ this.ShockTherapyMainView = (function(global) {
 			contextMenu.onContextMenu(e);
 		});
 
+	}
+
+	constructor.prototype._positionMainMenu = function(menu) {
+		var button = this._mainMenuButton;
+		var position = elementContentOffset(button);
+		position.y += button.clientHeight;
+		position.x += button.clientWidth;
+		position.x -= menu.container.clientWidth;
+		menu.container.style.setProperty("position", "fixed", null);
+		menu.moveTo(position.x, position.y);
 	}
 
 	return constructor;

@@ -11,6 +11,8 @@ this.createActionBarMenu = (function(global) {
 		var menuVisible = false;
 
 		var menuHide = function() {
+			if (!menuVisible)
+				return
 			menuVisible = false;
 			menu.onblur();
 			doc.body.removeChild(menu.container);
@@ -60,6 +62,8 @@ this.createActionBarMenu = (function(global) {
 				menu.show();
 			}
 		}
+
+		listener.hideMenu = menuHide;
 
 		return listener;
 	}

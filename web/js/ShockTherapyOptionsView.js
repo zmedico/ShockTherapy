@@ -163,6 +163,9 @@ this.ShockTherapyOptionsView = (function(global) {
 					}
 			});
 
+		checkboxButton(getElementById("enableMenuButton"),
+			getElementById("menuButtonCheckbox"), "MenuButton");
+
 		checkboxButton(getElementById("soundButton"),
 			getElementById("soundCheckbox"), "Sound");
 

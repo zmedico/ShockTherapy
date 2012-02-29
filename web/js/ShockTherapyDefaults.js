@@ -9,4 +9,5 @@ var ShockTherapyDefaults = {
 	"Thickness": 0.0,
 	"Density": 50.0,
 	"Duration": 50.0,
+	"MenuButton" : false,
 };

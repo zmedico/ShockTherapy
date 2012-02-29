@@ -105,6 +105,16 @@ body {
 	display: table;
 }
 
+.mainMenuButton {
+	position: fixed;
+	right: 0;
+	top: 0;
+	text-decoration: none;
+	color: inherit;
+	width: OverflowButton.width;
+	height: OverflowButton.width;
+}
+
 .option_title {
 	font-size: Text.Primary.font-size;
 }
