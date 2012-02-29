@@ -15,7 +15,7 @@ loadTheme("..", function (shockTherapyConfig,
 		global.window.document);
 
 	var curtain = getElementById("curtain");
-	var actionBar = new ShockTherapyActionBar();
+	var actionBar = null;
 	var contentDiv = getElementById("content");
 	var mainView = null;
 	var aboutView = null;
@@ -24,9 +24,12 @@ loadTheme("..", function (shockTherapyConfig,
 
 	var getView = function(hash, callback) {
 		if (hash == "#about") {
+			if (actionBar === null)
+				actionBar = new ShockTherapyActionBar();
 			if (aboutView === null) {
 				require(["ShockTherapyAboutView"], function() {
-						aboutView = new ShockTherapyAboutView("about.html");
+						aboutView =
+							new ShockTherapyAboutView("about.html", actionBar);
 						callback.apply(global, [aboutView]);
 					}
 				);
@@ -35,10 +38,12 @@ loadTheme("..", function (shockTherapyConfig,
 				callback.apply(global, [aboutView]);
 		}
 		else if (hash == "#options") {
+			if (actionBar === null)
+				actionBar = new ShockTherapyActionBar();
 			if (optionsView === null) {
 				require(["ShockTherapyOptionsView"], function() {
 						optionsView = new ShockTherapyOptionsView(
-							"options.html", shockTherapyConfig,
+							"options.html", actionBar, shockTherapyConfig,
 							resourceFactory, resources);
 						callback.apply(global, [optionsView]);
 					}
@@ -70,7 +75,6 @@ loadTheme("..", function (shockTherapyConfig,
 				previousView.undisplay();
 			previousView = view;
 			view.display(contentDiv, function() {
-					view.configureActionBar(actionBar);
 					global.window.document.body.removeChild(curtain);
 					ShockTherapy.viewChanged(global.window.location.href);
 				}

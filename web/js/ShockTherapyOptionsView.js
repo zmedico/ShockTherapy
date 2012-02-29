@@ -13,8 +13,10 @@ require([
 
 this.ShockTherapyOptionsView = (function(global) {
 
-	var constructor = function(uri, config, resourceFactory, resources) {
+	var constructor = function(uri, actionBar,
+		config, resourceFactory, resources) {
 		this._uri = uri;
+		this._actionBar = actionBar;
 		this._config = config;
 		this._resourceFactory = resourceFactory;
 		this._resources = resources;
@@ -24,14 +26,15 @@ this.ShockTherapyOptionsView = (function(global) {
 		this._req = null;
 	}
 
-	constructor.prototype.configureActionBar = function(actionBar) {
-		actionBar.setTitle("Options");
-		actionBar.setUpButtonUri("main.html");
-		actionBar.setActions(["Main", "About"]);
-		actionBar.show();
+	constructor.prototype._configureActionBar = function() {
+		this._actionBar.setTitle("Options");
+		this._actionBar.setUpButtonUri("main.html");
+		this._actionBar.setActions(["Main", "About"]);
+		this._actionBar.show();
 	}
 
 	constructor.prototype.display = function(container, callback) {
+		this._configureActionBar();
 		if (this._content === null) {
 			this._container = container;
 			this._callback = callback;
@@ -45,6 +48,7 @@ this.ShockTherapyOptionsView = (function(global) {
 	}
 
 	constructor.prototype.undisplay = function() {
+		this._actionBar.hide();
 	}
 
 	constructor.prototype._initContent = function() {
@@ -65,7 +69,7 @@ this.ShockTherapyOptionsView = (function(global) {
 			div.removeChild(div.firstChild);
 			this._container.appendChild(this._content);
 			this._container = null;
-			this._connectListeners()
+			this._connectListeners();
 			if (this._callback) {
 				this._callback.apply(global);
 				this._callback = null;

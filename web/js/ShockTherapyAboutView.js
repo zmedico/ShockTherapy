@@ -1,22 +1,24 @@
 
 this.ShockTherapyAboutView = (function(global) {
 
-	var constructor = function(uri) {
+	var constructor = function(uri, actionBar) {
 		this._uri = uri;
+		this._actionBar = actionBar;
 		this._container = null;
 		this._callback = null;
 		this._content = null;
 		this._req = null;
 	}
 
-	constructor.prototype.configureActionBar = function(actionBar) {
-		actionBar.setTitle("About");
-		actionBar.setUpButtonUri("main.html");
-		actionBar.setActions(["Main", "Options"]);
-		actionBar.show();
+	constructor.prototype._configureActionBar = function() {
+		this._actionBar.setTitle("About");
+		this._actionBar.setUpButtonUri("main.html");
+		this._actionBar.setActions(["Main", "Options"]);
+		this._actionBar.show();
 	}
 
 	constructor.prototype.display = function(container, callback) {
+		this._configureActionBar();
 		if (this._content === null) {
 			this._container = container;
 			this._callback = callback;
@@ -30,6 +32,7 @@ this.ShockTherapyAboutView = (function(global) {
 	}
 
 	constructor.prototype.undisplay = function() {
+		this._actionBar.hide();
 	}
 
 	constructor.prototype._initContent = function() {

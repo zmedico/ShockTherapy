@@ -19,13 +19,6 @@ this.ShockTherapyMainView = (function(global) {
 		this._bound_resize_timeout = this._resize_timeout.bind(this);
 	}
 
-	constructor.prototype.configureActionBar = function(actionBar) {
-		actionBar.setTitle("Shock Therapy");
-		actionBar.setUpButtonUri(null);
-		actionBar.setActions(["Options", "About"]);
-		actionBar.hide();
-	}
-
 	constructor.prototype.display = function(container, callback) {
 		if (this._canvas === null)
 			this._initCanvas();
