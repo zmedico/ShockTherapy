@@ -76,7 +76,7 @@ this.ShockTherapyMainView = (function(global) {
 				button.addEventListener("click",
 					function(e) {
 						contextMenu.onblur();
-						global.window.location.assign("options.html");
+						global.window.location.assign("main.html#options");
 					});
 				contextMenu.container.appendChild(button);
 

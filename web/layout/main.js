@@ -33,6 +33,19 @@ loadTheme("..", function (shockTherapyConfig,
 			else
 				callback.apply(global, [aboutView]);
 		}
+		else if (hash == "#options") {
+			if (optionsView === null) {
+				require(["ShockTherapyOptionsView"], function() {
+						optionsView = new ShockTherapyOptionsView(
+							"options.html", shockTherapyConfig,
+							resourceFactory, resources);
+						callback.apply(global, [optionsView]);
+					}
+				);
+			}
+			else
+				callback.apply(global, [optionsView]);
+		}
 		else {
 			if (mainView === null) {
 				require(["ShockTherapyMainView"], function() {

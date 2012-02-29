@@ -59,7 +59,7 @@ this.ShockTherapyActionBar = (function(global) {
 		},
 
 		"Options" : function() {
-			global.window.location.assign("options.html");
+			global.window.location.assign("main.html#options");
 		},
 
 		"About" : function() {

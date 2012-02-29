@@ -42,7 +42,7 @@ public class ShockTherapyActivity extends Activity {
 	TODO: For fragment links, add workaround for Android Issue 17327:
 	http://stackoverflow.com/questions/6542702/basic-internal-links-dont-work-in-honeycomb-app
 	*/
-	private static final String OPTIONS_URL = BASE_URL + "options.html";
+	private static final String OPTIONS_URL = BASE_URL + "main.html#options";
 	private static final String ABOUT_URL = BASE_URL + "main.html#about";
 	private static final String GO_BACK = "javascript:ShockTherapy.goBack()";
 	private static final String FILE_CHOOSER_LOC = "FileChooser";

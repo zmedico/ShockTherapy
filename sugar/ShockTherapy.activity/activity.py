@@ -28,7 +28,7 @@ from WebKitWebInspectorManager import WebKitWebInspectorManager
 class ShockTherapyActivity(activity.Activity):
 
 	_MAIN_URL = "layout/main.html"
-	_OPTIONS_URL = "layout/options.html"
+	_OPTIONS_URL = "layout/main.html#options"
 	_ABOUT_URL = "layout/main.html#about"
 
 	_URI_WHITELIST = (
