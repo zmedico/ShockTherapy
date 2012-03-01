@@ -3,10 +3,8 @@ loadTheme("..", function (shockTherapyConfig,
 	resourceFactory, resources) {
 
 	require([
-		"ContextMenu",
 		"require",
-		"ShockTherapy",
-		"ShockTherapyActionBar"
+		"ShockTherapy"
 	], function() {
 
 	var getElementById, global;
@@ -58,10 +56,13 @@ loadTheme("..", function (shockTherapyConfig,
 
 	var getView = function(hash, callback) {
 		if (hash == "#about") {
-			if (actionBar === null)
-				actionBar = new ShockTherapyActionBar();
 			if (aboutView === null) {
-				require(["ShockTherapyAboutView"], function() {
+				require([
+					"ShockTherapyAboutView",
+					"ShockTherapyActionBar"
+				], function() {
+						if (actionBar === null)
+							actionBar = new ShockTherapyActionBar();
 						aboutView =
 							new ShockTherapyAboutView("about.html", actionBar);
 						callback.apply(global, [aboutView]);
@@ -72,10 +73,13 @@ loadTheme("..", function (shockTherapyConfig,
 				callback.apply(global, [aboutView]);
 		}
 		else if (hash == "#options") {
-			if (actionBar === null)
-				actionBar = new ShockTherapyActionBar();
 			if (optionsView === null) {
-				require(["ShockTherapyOptionsView"], function() {
+				require([
+					"ShockTherapyActionBar",
+					"ShockTherapyOptionsView"
+				], function() {
+						if (actionBar === null)
+							actionBar = new ShockTherapyActionBar();
 						optionsView = new ShockTherapyOptionsView(
 							"options.html", actionBar, shockTherapyConfig,
 							resourceFactory, resources, reloadTheme);
