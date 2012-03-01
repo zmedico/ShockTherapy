@@ -30,8 +30,10 @@ loadTheme("..", function (shockTherapyConfig,
 		if (ShockTherapy.android &&
 			!ShockTherapy.android.hardwareMenuButtonRequired())
 			enableMenuButton = true;
-		else if (ShockTherapy.mobile) {
-			// may be a touch-based browser without contextmenu
+		else if (!ShockTherapy.android && ShockTherapy.mobile) {
+			/* This may be a touch-based browser without contextmenu,
+			 and since it's not our Android app, the menu isn't
+			 accessible via a hardware menu button. */
 			enableMenuButton = true;
 		}
 		if (enableMenuButton)
