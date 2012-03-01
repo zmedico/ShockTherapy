@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    NOTE: On devices without a hardware menu button, the system navigation
-    bar's overflow button only shows the first menu item when using
-    Theme.Holo.NoActionBar.Fullscreen (observed in WVGA800 emulator running
-    Android 4.0.3), while Theme.NoTitleBar.Fullscreen correctly shows all
-    available menu items.
-    -->
-	<style name="MyTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+	<style name="MyTheme" parent="@android:style/Theme.Holo.NoActionBar.Fullscreen">
 	</style>
 </resources>
