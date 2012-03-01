@@ -27,14 +27,19 @@ this.loadTheme = (function(global) {
 				if (document.readyState == "complete")
 					callback.apply(global, [shockTherapyConfig,
 						themeFactory, resources]);
-				else
+				else {
+					var listener;
 					document.addEventListener("readystatechange",
-						function (e) {
-							if (document.readyState == "complete")
+						listener = (function (e) {
+							if (document.readyState == "complete") {
+								document.removeEventListener(
+									"readystatechange", listener);
 								callback.apply(global, [shockTherapyConfig,
 									themeFactory, resources]);
-						}
+							}
+						})
 					);
+				}
 			});
 		});
 
