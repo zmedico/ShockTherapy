@@ -126,6 +126,7 @@ class ShockTherapyActivity(activity.Activity):
 		self._webview.connect_after('notify::title', self._dom_title_cb)
 		self._webview.connect('navigation-policy-decision-requested',
 			self._navigate_cb)
+		self._webview.connect('notify::uri', self._webview_uri_cb)
 		self._scrolled_window = gtk.ScrolledWindow()
 		self._scrolled_window.props.hscrollbar_policy = gtk.POLICY_AUTOMATIC
 		self._scrolled_window.props.vscrollbar_policy = gtk.POLICY_AUTOMATIC
@@ -313,6 +314,9 @@ class ShockTherapyActivity(activity.Activity):
 		saved_alert.connect('response', response_cb)
 		self.add_alert(saved_alert)
 		saved_alert.show_all()
+
+	def _webview_uri_cb(self, view, gParamSpec):
+		self._uri_cb(view.get_property("uri"))
 
 	def _uri_cb(self, uri):
 
