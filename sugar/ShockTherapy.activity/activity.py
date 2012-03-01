@@ -324,14 +324,35 @@ class ShockTherapyActivity(activity.Activity):
 		if disabled_button is not None:
 			disabled_button.set_sensitive(False)
 
+	@staticmethod
+	def _strip_fragment(uri):
+		index = uri.find("#")
+		if index != -1:
+			uri = uri[:index]
+		return uri
+
+	def _load_uri(self, uri):
+		previous = self._webview.get_property("uri")
+		if self._strip_fragment(uri) == self._strip_fragment(previous):
+			# avoid page reload
+			index = uri.find("#")
+			if index == -1:
+				location_hash = ""
+			else:
+				location_hash = uri[index:]
+			self._webview.execute_script(
+				"window.location.hash='%s'" % location_hash)
+		else:
+			self._webview.load_uri(uri)
+
 	def _main_cb(self, button):
-		self._webview.load_uri(self._urls["MAIN"])
+		self._load_uri(self._urls["MAIN"])
 
 	def _options_cb(self, button):
-		self._webview.load_uri(self._urls["OPTIONS"])
+		self._load_uri(self._urls["OPTIONS"])
 
 	def _about_cb(self, button):
-		self._webview.load_uri(self._urls["ABOUT"])
+		self._load_uri(self._urls["ABOUT"])
 
 	def _reload_cb(self, button):
 		self._webview.reload()
