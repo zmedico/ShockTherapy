@@ -150,6 +150,9 @@ class ShockTherapyActivity(activity.Activity):
 		self._url_button_map[self._urls["OPTIONS"]] = self._options_button
 		self._url_button_map[self._urls["ABOUT"]] = self._about_button
 
+		# Initialize button state without delay, so it's in the desired
+		# initial state even before the first page finishes loading.
+		self._uri_cb(self._urls["MAIN"])
 		self._webview.load_uri(self._urls["MAIN"])
 
 	def _navigate_cb(self, view, frame, request, nav_action, policy_decision):
