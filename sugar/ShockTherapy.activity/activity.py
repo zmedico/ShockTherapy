@@ -50,6 +50,16 @@ class ShockTherapyActivity(activity.Activity):
 		# toolbar with the new toolbar redesign
 		toolbar_box = ToolbarBox()
 
+		self._back = ToolButton('go-previous')
+		self._back.set_tooltip(_('Back'))
+		self._back.connect('clicked', self._go_back_cb)
+		toolbar_box.toolbar.insert(self._back, -1)
+
+		separator = gtk.SeparatorToolItem()
+		separator.props.draw = False
+		separator.set_expand(True)
+		toolbar_box.toolbar.insert(separator, -1)
+
 		self._main_button = ToolButton()
 		self._main_button.set_tooltip(_('Main'))
 		self._main_button.set_icon_widget(
@@ -320,6 +330,7 @@ class ShockTherapyActivity(activity.Activity):
 
 	def _uri_cb(self, uri):
 
+		self._back.props.sensitive = self._webview.can_go_back()
 		self._main_button.set_sensitive(True)
 		self._options_button.set_sensitive(True)
 		self._about_button.set_sensitive(True)
@@ -349,6 +360,9 @@ class ShockTherapyActivity(activity.Activity):
 				"window.location.hash='%s'" % location_hash)
 		else:
 			self._webview.load_uri(uri)
+
+	def _go_back_cb(self, button):
+		self._webview.go_back()
 
 	def _main_cb(self, button):
 		self._load_uri(self._urls["MAIN"])
