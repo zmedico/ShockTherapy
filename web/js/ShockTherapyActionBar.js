@@ -20,10 +20,6 @@ this.ShockTherapyActionBar = (function(global) {
 
 	constructor.prototype.show = function() {
 		this._container.style.zIndex = 0;
-		if (this._container.clientWidth > global.window.innerWidth) {
-			this._container.style.setProperty(
-				"width", global.window.innerWidth + "px", null);
-		}
 	}
 
 	constructor.prototype.hide = function() {

@@ -20,7 +20,7 @@
 			"Dialog.Canvas.background-color" : "ref:Color.Gray14",
 			"Dialog.Canvas.width" : "str:16em",
 			"Dialog.Button.height" : "str:3.2em",
-			"OverflowButton.width" : "str:2em",
+			"OverflowButton.width" : "str:1.7em",
 			"OverflowMenu.Canvas.background-color":"ref:Color.Gray18",
 			"OverflowMenu.Canvas.border-color" : "ref:Color.Gray24",
 			"OverflowMenu.Canvas.width" : "str:10em",
