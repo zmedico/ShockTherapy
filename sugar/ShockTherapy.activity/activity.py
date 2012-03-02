@@ -324,6 +324,7 @@ class ShockTherapyActivity(activity.Activity):
 		self._options_button.set_sensitive(True)
 		self._about_button.set_sensitive(True)
 
+		uri = uri.rstrip("#")
 		disabled_button = self._url_button_map.get(uri)
 		if disabled_button is not None:
 			disabled_button.set_sensitive(False)
