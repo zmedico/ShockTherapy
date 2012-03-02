@@ -8,15 +8,6 @@ this.createActionBarMenu = (function(global) {
 
 		var doc = global.window.document;
 		var menu = null;
-		var menuVisible = false;
-
-		var menuHide = function() {
-			if (!menuVisible)
-				return
-			menuVisible = false;
-			menu.onblur();
-			doc.body.removeChild(menu.container);
-		}
 
 		var listener = function(e) {
 			if (menu === null) {
@@ -38,7 +29,7 @@ this.createActionBarMenu = (function(global) {
 					button.appendChild(d);
 					button.addEventListener("click",
 						(function(e) {
-							menuHide();
+							menu.onblur();
 							this.callback.apply(global);
 						}).bind(action));
 					menu.container.appendChild(button);
@@ -52,18 +43,18 @@ this.createActionBarMenu = (function(global) {
 
 			}
 
-			if (menuVisible) {
-				menuHide();
-			}
-			else {
-				menuVisible = true;
-				doc.body.appendChild(menu.container);
+			if (!menu._visible) {
+				if (!menu.container.parentNode)
+					menu.parent.ownerDocument.body.appendChild(menu.container);
 				positionMenu(menu);
 				menu.show();
 			}
 		}
 
-		listener.hideMenu = menuHide;
+		listener.hideMenu = (function() {
+			if (menu !== null)
+				menu.onblur();
+		});
 
 		return listener;
 	}
