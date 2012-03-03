@@ -1,4 +1,3 @@
-HttpServer.py
 WebKitWebInspectorManager.py
 activity.py
 activity/activity.info
@@ -10,6 +9,8 @@ web/css/fullscreen.css
 web/data/strings.json
 web/data/themes.json
 web/icons/High_voltage_warning_48.png
+web/icons/Overflow_button_32.png
+web/icons/Up_button_48.png
 web/js/CanvasWidget.js
 web/js/CheckboxDrawable.js
 web/js/CheckboxModel.js
@@ -24,11 +25,18 @@ web/js/EventAdapter.js
 web/js/Function.prototype.bind.js
 web/js/HslColor.js
 web/js/ModalDialog.js
+web/js/PseudoXMLHttpRequest.js
 web/js/RadioButtonDrawable.js
 web/js/RadioButtonWidget.js
 web/js/RadioGroupWidget.js
+web/js/ShockTherapy.js
+web/js/ShockTherapyAboutView.js
+web/js/ShockTherapyActionBar.js
 web/js/ShockTherapyConfig.js
 web/js/ShockTherapyDefaults.js
+web/js/ShockTherapyMainView.js
+web/js/ShockTherapyOptionsView.js
+web/js/ShockTherapySugarRequest.js
 web/js/ShockTherapyWidget.js
 web/js/SliderDrawable.js
 web/js/SliderModel.js
@@ -37,6 +45,7 @@ web/js/Theme.js
 web/js/ThemeFactory.js
 web/js/addPointerEventListener.js
 web/js/colorsys.js
+web/js/createActionBarMenu.js
 web/js/elementContentOffset.js
 web/js/extend.js
 web/js/openFileDialog.js
@@ -50,6 +59,5 @@ web/layout/loadTheme.js
 web/layout/main.html
 web/layout/main.js
 web/layout/options.html
-web/layout/options.js
 web/manifest.json
 web/sounds/electric_discharge_10s.ogg

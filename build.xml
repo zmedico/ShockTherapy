@@ -305,6 +305,12 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	<copy file="${build}/icons/High_voltage_warning_48.png"
 		tofile="${sugar_build}/web/icons/High_voltage_warning_48.png">
 	</copy>
+	<copy file="${build}/icons/Overflow_button_32.png"
+		tofile="${sugar_build}/web/icons/Overflow_button_32.png">
+	</copy>
+	<copy file="${build}/icons/Up_button_48.png"
+		tofile="${sugar_build}/web/icons/Up_button_48.png">
+	</copy>
 	<script language="javascript"> <![CDATA[
 
 		importClass(java.io.File);
