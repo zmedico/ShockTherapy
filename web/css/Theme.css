@@ -64,6 +64,7 @@ body {
 	background-color: Screen.background-color;
 	text-decoration: none;
 	outline: 0;
+	cursor: pointer;
 	color: inherit;
 	vertical-align: middle;
 	float: right;
