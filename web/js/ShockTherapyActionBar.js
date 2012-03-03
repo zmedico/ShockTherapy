@@ -24,6 +24,8 @@ this.ShockTherapyActionBar = (function(global) {
 
 	constructor.prototype.hide = function() {
 		this._container.style.zIndex = -1;
+		if (this._overflowButtonListener !== null)
+			this._overflowButtonListener.hideMenu();
 	}
 
 	constructor.prototype.setTitle = function(title) {
