@@ -62,8 +62,16 @@ this.ModalDialog = (function() {
 			w: view.innerWidth,
 			h: view.innerHeight
 		};
-		dialogElement.style.setProperty("top",
-			(vp.y + (vp.h - dialogHeight)/2) + "px", null);
+
+		if (dialogHeight < vp.h)
+			dialogElement.style.setProperty("top",
+				(vp.y + (vp.h - dialogHeight) / 2) + "px", null);
+		else
+			/* Since the dialog is taller than the viewport, align
+			the bottom edge so the buttons are visible. */
+			dialogElement.style.setProperty("top",
+				(vp.y + (vp.h - dialogHeight)) + "px", null);
+
 		dialogElement.style.setProperty("left",
 			(vp.x + (vp.w - dialogWidth)/2) + "px", null);
 

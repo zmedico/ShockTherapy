@@ -280,13 +280,13 @@ button {
 }
 
 .colorChooserSwatch {
-	height: 6em;
+	height: 4em;
 	width: 14em;
 	margin: 1em;
 }
 
 .colorSliderHorizontal {
-	height: 3.6em;
-	margin-bottom: 0.2em;
-	margin-top: 0.2em;
+	height: 3.2em;
+	margin-bottom: 0.1em;
+	margin-top: 0.1em;
 }
