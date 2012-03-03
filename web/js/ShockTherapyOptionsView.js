@@ -25,6 +25,7 @@ this.ShockTherapyOptionsView = (function(global) {
 		this._callback = null;
 		this._content = null;
 		this._req = null;
+		this._popups = {};
 	}
 
 	constructor.prototype._configureActionBar = function() {
@@ -50,6 +51,12 @@ this.ShockTherapyOptionsView = (function(global) {
 
 	constructor.prototype.undisplay = function() {
 		this._actionBar.hide();
+		var popup, popupKeys = Object.keys(this._popups);
+		for (var i = 0; i < popupKeys.length; i++) {
+			popup = this._popups[popupKeys[i]];
+			delete this._popups[popupKeys[i]];
+			popup.hide();
+		}
 	}
 
 	constructor.prototype._initContent = function() {
@@ -79,7 +86,7 @@ this.ShockTherapyOptionsView = (function(global) {
 	}
 
 	constructor.prototype._connectListeners = function() {
-		var createElement, doc, getElementById,
+		var createElement, doc, getElementById, popupCounter, popups,
 			resourceFactory, resources, shockTherapyConfig;
 		doc = this._content.ownerDocument;
 		createElement = doc.createElement.bind(doc);
@@ -88,6 +95,8 @@ this.ShockTherapyOptionsView = (function(global) {
 		shockTherapyConfig = this._config;
 		resourceFactory = this._resourceFactory;
 		resources = this._resources;
+		popups = this._popups;
+		popupCounter = 0;
 
 		function sliderDialog(button, title, key)
 		{
@@ -101,8 +110,11 @@ this.ShockTherapyOptionsView = (function(global) {
 			var dialog = new ModalDialog(content, {title: title});
 			button.addEventListener("click",
 				function(e) {
+					var popupId = popupCounter++;
+					popups[popupId] = dialog;
 					dialog.addEventListener("click",
 						function(e) {
+							delete popups[popupId];
 							if (!dialog.cancelled)
 							{
 								shockTherapyConfig.setFloat(
@@ -147,8 +159,11 @@ this.ShockTherapyOptionsView = (function(global) {
 					new RadioGroupWidget(container, resources, choices);
 
 				dialog = new ModalDialog(container, {title: "Theme"});
+				var popupId = popupCounter++;
+				popups[popupId] = dialog;
 				dialog.addEventListener("click",
 					function(e) {
+						delete popups[popupId];
 						if (!dialog.cancelled &&
 							radioGroup.selection != null &&
 							keys[radioGroup.selection] !=
@@ -192,8 +207,11 @@ this.ShockTherapyOptionsView = (function(global) {
 				content.setAttribute("class", "dialogWidth");
 				var colorChooser = new ColorChooser(content, resources);
 				var dialog = new ModalDialog(content, {title: "Spark Color"});
+				var popupId = popupCounter++;
+				popups[popupId] = dialog;
 				dialog.addEventListener("click",
 					function(e) {
+						delete popups[popupId];
 						if (!dialog.cancelled)
 						{
 							shockTherapyConfig.setString("Color",
@@ -304,8 +322,11 @@ this.ShockTherapyOptionsView = (function(global) {
 				var content = createElement("div");
 				var dialog = new ModalDialog(content,
 					{title: "Load Defaults"});
+				var popupId = popupCounter++;
+				popups[popupId] = dialog;
 				dialog.addEventListener("click",
 					function(e) {
+						delete popups[popupId];
 						if (!dialog.cancelled)
 						{
 							shockTherapyConfig.clear();
