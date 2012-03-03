@@ -14,6 +14,7 @@ this.ModalDialog = (function() {
 			options = {};
 		this.options = options;
 		this.cancelled = null;
+		this._visible_elements = [];
 	}
 
 	extend(EventAdapter, constructor);
@@ -66,12 +67,13 @@ this.ModalDialog = (function() {
 		dialogElement.style.setProperty("left",
 			(vp.x + (vp.w - dialogWidth)/2) + "px", null);
 
+		this._visible_elements.push(overlayElement);
+		this._visible_elements.push(dialogElement);
+		this._visible_elements.push(this.content);
 		this.cancelled = false;
 		var _this = this;
 		var cleanup = function(e) {
-			dialogElement.removeChild(_this.content);
-			body.removeChild(dialogElement);
-			body.removeChild(overlayElement);
+			_this.hide();
 			_this.fireEvent("click");
 		}
 		okButton.addEventListener("click", cleanup);
@@ -80,6 +82,16 @@ this.ModalDialog = (function() {
 				_this.cancelled = true;
 				cleanup();
 			});
+	}
+
+	constructor.prototype.hide = function()
+	{
+		var node;
+		while (this._visible_elements.length > 0) {
+			node = this._visible_elements.pop();
+			if (node.parentNode)
+				node.parentNode.removeChild(node);
+		}
 	}
 
 	return constructor;
