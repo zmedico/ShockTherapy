@@ -362,7 +362,11 @@ class ShockTherapyActivity(activity.Activity):
 			self._webview.load_uri(uri)
 
 	def _go_back_cb(self, button):
-		self._webview.go_back()
+		if self._webview.get_property("uri").startswith(self._urls["MAIN"]):
+			# avoid page reload
+			self._webview.execute_script("ShockTherapy.goBack()")
+		else:
+			self._webview.go_back()
 
 	def _main_cb(self, button):
 		self._load_uri(self._urls["MAIN"])
