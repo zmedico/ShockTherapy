@@ -42,11 +42,16 @@ loadTheme("..", function (shockTherapyConfig,
 		if (!curtain.parentNode)
 			global.window.document.body.appendChild(curtain);
 		resources.removeCssFromDoc();
-		loadTheme("..", function (_shockTherapyConfig,
-			_resourceFactory, _resources) {
-			shockTherapyConfig = _shockTherapyConfig;
-			resourceFactory = _resourceFactory;
-			resources = _resources;
+
+		var profile = shockTherapyConfig.getString("Theme");
+		if (profile === null ||
+			!resourceFactory.listThemes().hasOwnProperty(profile))
+			resources = resourceFactory.getDefault();
+		else
+			resources = resourceFactory.createObject(profile);
+
+		resources.load(function () {
+			resources.addCssToDoc();
 			/* Discard optionsView since it holds
 			references to the old theme resources. */
 			optionsView = null;
