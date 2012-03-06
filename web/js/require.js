@@ -4,6 +4,28 @@
 this.require = (function(global) {
 	var require = function(names, callback) {
 		var callbackID, head, i, info, keys, name, element, refs;
+
+		if (require.path === null) {
+			// use the src attribute of the require.js script tag
+			(function() {
+				var scripts = global.document.getElementsByTagName("script");
+				var srcPattern = /(^|^.*\/)require.js$/;
+				var match, path;
+				for (var i = scripts.length - 1; i >= 0 ; i--) {
+					match = srcPattern.exec(scripts[i].src);
+					if (match !== null) {
+						path = match[1];
+						if (path.length > 0)
+							// strip trailing slash
+							path = path.substr(0, path.length - 1);
+						require.path = path;
+						return
+					}
+				}
+				throw "failed to locate require.js script tag"
+			})();
+		}
+
 		head = global.window.document.head;
 		refs = {};
 		keys = [];
@@ -53,7 +75,7 @@ this.require = (function(global) {
 	};
 
 	// base path for scripts
-	require.path = "";
+	require.path = null;
 	require.callbackID = 0;
 	require.remainingCallbacks = 0;
 	require.pendingElements = {}
