@@ -12,6 +12,7 @@
 		"48": "icons/High_voltage_warning_48.png",
 		"128": "icons/High_voltage_warning_128.png"
 	},
+	"content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline'",
 	"minimum_chrome_version": "14",
 	"offline_enabled": true,
 	"options_page": "layout/main.html#options",
