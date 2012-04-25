@@ -72,13 +72,13 @@ this.ShockTherapyMainView = (function(global) {
 			{
 				name: "Options",
 				callback: function() {
-					global.window.location.assign("main.html#options");
+					global.window.location.hash = "#options";
 				}
 			},
 			{
 				name: "About",
 				callback: function() {
-					global.window.location.assign("main.html#about");
+					global.window.location.hash = "#about";
 				}
 			}
 		];
@@ -111,7 +111,7 @@ this.ShockTherapyMainView = (function(global) {
 				button.addEventListener("click",
 					function(e) {
 						contextMenu.onblur();
-						global.window.location.assign("main.html#options");
+						global.window.location.hash = "#options";
 					});
 				contextMenu.container.appendChild(button);
 
@@ -125,7 +125,7 @@ this.ShockTherapyMainView = (function(global) {
 				button.addEventListener("click",
 					function(e) {
 						contextMenu.onblur();
-						global.window.location.assign("main.html#about");
+						global.window.location.hash = "#about";
 					});
 				contextMenu.container.appendChild(button);
 
