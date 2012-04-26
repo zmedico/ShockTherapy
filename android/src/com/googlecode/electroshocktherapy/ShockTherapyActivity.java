@@ -472,6 +472,12 @@ public class ShockTherapyActivity extends Activity {
 
 		@SuppressWarnings("unused")
 		public void viewChanged(String url) {
+			int hashIndex = url.indexOf("#");
+			if (hashIndex == url.length() - 1) {
+				/* Strip trailing empty hash so that url is normalized
+				for comparisons with MAIN_URL. */
+				url = url.substring(0, url.length() - 1);
+			}
 			ShockTherapyActivity.this.url = url;
 		}
 
