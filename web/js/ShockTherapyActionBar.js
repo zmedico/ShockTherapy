@@ -35,11 +35,47 @@ this.ShockTherapyActionBar = (function(global) {
 			this._title.ownerDocument.createTextNode(title));
 	}
 
+	var _loadLink = function(link) {
+		// Use window.location.hash to avoid page reload.
+		if (link.href != global.window.location.href) {
+			var index, loc, newLoc;
+			newLoc = false;
+			loc = global.window.location.href;
+			index = loc.indexOf("#");
+			if (index > 0)
+				loc = loc.substring(0, index);
+			if (link.href.length >= loc.length &&
+				link.href.substring(0, loc.length) == loc) {
+				index = link.href.indexOf("#");
+				if (index > 0) {
+					if (index == loc.length)
+						global.window.location.hash =
+							link.href.substring(index);
+					else
+						newLoc = true;
+				}
+				else {
+					if (link.href.length == loc.length)
+						global.window.location.hash = "";
+					else
+						newLoc = true;
+				}
+			}
+			else
+				newLoc = true;
+
+			if (newLoc)
+				global.window.location.assign(link.href);
+		}
+		return false;
+	}
+
 	constructor.prototype.setUpButtonUri = function(uri) {
 		if (uri) {
 			this._upButton.href = uri;
 			this._upButton.style.cursor = "pointer";
-			this._upButton.onclick = null;
+			this._upButton.onclick =
+				_loadLink.bind(this, this._upButton);
 			this._upButtonIcon.style.visibility = "visible";
 		}
 		else {
