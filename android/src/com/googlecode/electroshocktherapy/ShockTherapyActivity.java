@@ -492,6 +492,11 @@ public class ShockTherapyActivity extends Activity {
 				ShockTherapyActivity.this.getMediaPlayer();
 			if (mediaPlayer != null)
 			{
+				/*
+				Use a 60 dB logarithmic scale:
+				http://www.dr-lex.be/info-stuff/volumecontrols.html
+				*/
+				volume = (float) (Math.exp(6.908 * volume) / 1000);
 				mediaPlayer.setVolume(volume, volume);
 				mediaPlayer.start();
 			}
