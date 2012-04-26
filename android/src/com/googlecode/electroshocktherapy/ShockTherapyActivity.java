@@ -44,7 +44,7 @@ public class ShockTherapyActivity extends Activity {
 	private static final String GO_BACK = "javascript:ShockTherapy.goBack()";
 	private static final String FILE_CHOOSER_LOC = "FileChooser";
 	private static final String DEFAULT_EXPORT_FILE_NAME = "ShockTherapyOptions.json";
-	private static final int SOUND_RESOURCE = R.raw.electric_discharge_5_clicks;
+	private static final int SOUND_RESOURCE = R.raw.electric_discharge_10s;
 	private static final int WEBVIEW_FILE_INPUT_RESULTCODE = RESULT_FIRST_USER;
 	private static final int WEBVIEW_FILE_INPUT_JS_RESULTCODE = RESULT_FIRST_USER + 1;
 	private static final int WEBVIEW_FILE_INPUT_JS_OI_RESULTCODE = RESULT_FIRST_USER + 2;
