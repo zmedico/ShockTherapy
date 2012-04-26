@@ -63,7 +63,13 @@ this.ShockTherapyMainView = (function(global) {
 	constructor.prototype._initCanvas = function() {
 		this._canvas = global.document.createElement("canvas");
 		var c = this._canvas;
-		c.setAttribute("class", "fullscreen black");
+		/*
+		Prevent the "tap highlight" from showing inappropriately on the
+		ShockTherapyWidget canvas. This problem has been observed
+		intermittently with the Android 4.0.4 WebView widget, usually
+		after an AJAX-based view switch.
+		*/
+		c.setAttribute("class", "fullscreen black noWebkitTapHighlight");
 		c.width = global.window.innerWidth;
 		c.height = global.window.innerHeight;
 		var widget = new ShockTherapyWidget("..", this._config, c);
