@@ -255,6 +255,10 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		</fileset>
 	</copy>
 
+	<zip destfile="${dist}/ShockTherapy-chrome.zip"
+		basedir="${chrome_build}"
+	/>
+
 	<script language="javascript"> <![CDATA[
 
 		importClass(java.io.File);
