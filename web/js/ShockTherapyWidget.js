@@ -4,6 +4,7 @@ require([
 	"CanvasWidget",
 	"ElectricArc",
 	"requestAnimFrame",
+	"ShockTherapy",
 	"ShockTherapyDefaults"
 ], function() {
 
@@ -19,8 +20,7 @@ this.ShockTherapyWidget = (function(global) {
 		this.frameCounter = {frames: null, startTime: null};
 		this.lastDrawTimestamp = null;
 		this.vibrating = false;
-		this.android = / android:com\.googlecode\.electroshocktherapy$/.exec(
-			this.canvas.ownerDocument.defaultView.navigator.userAgent) !== null;
+		this.android = ShockTherapy.android;
 		this.audio = null;
 		this.audioError = false;
 		// pre-init audio for next click

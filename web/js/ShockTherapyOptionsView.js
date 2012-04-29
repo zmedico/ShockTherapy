@@ -6,6 +6,7 @@ require([
 	"openFileDialog",
 	"saveUrl",
 	"RadioGroupWidget",
+	"ShockTherapy",
 	"ShockTherapyActionBar",
 	"ShockTherapyDefaults",
 	"SliderWidget",
@@ -245,8 +246,7 @@ this.ShockTherapyOptionsView = (function(global) {
 			function(e) {
 				var options = shockTherapyConfig.exportConfig();
 
-				if (/ sugar:com\.googlecode\.electroshocktherapy$/.exec(
-					global.window.navigator.userAgent) !== null)
+				if (ShockTherapy.sugar)
 				{
 					var req = new ShockTherapySugarRequest();
 					req.open("GET", "/ShockTherapyConfig.export:" +
@@ -269,8 +269,7 @@ this.ShockTherapyOptionsView = (function(global) {
 			getElementById("importOptionsButton");
 		importOptionsButton.addEventListener("click",
 			function(e) {
-				if (/ android:com\.googlecode\.electroshocktherapy$/.exec(
-					global.window.navigator.userAgent) !== null)
+				if (ShockTherapy.android)
 				{
 					/*
 					* NOTE: The FileReader object is not available in
@@ -286,11 +285,10 @@ this.ShockTherapyOptionsView = (function(global) {
 						shockTherapyConfig.importConfig(JSON.parse(content));
 						reloadTheme();
 					}
-					Android.getTextFile(
+					ShockTherapy.android.getTextFile(
 						"application/json", encoding, "Import Options");
 				}
-				else if (/ sugar:com\.googlecode\.electroshocktherapy$/.exec(
-					global.window.navigator.userAgent) !== null)
+				else if (ShockTherapy.sugar)
 				{
 					var req = new ShockTherapySugarRequest();
 					req.open("GET", "/ShockTherapyConfig.import");

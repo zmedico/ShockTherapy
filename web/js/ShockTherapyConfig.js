@@ -1,6 +1,7 @@
 
 require([
-	"require"
+	"require",
+	"ShockTherapy"
 ], function() {
 
 this.ShockTherapyConfig = (function(global) {
@@ -8,10 +9,8 @@ this.ShockTherapyConfig = (function(global) {
 	var constructor = function(prefix)
 	{
 		this.prefix = prefix;
-		this.android = / android:com\.googlecode\.electroshocktherapy$/.exec(
-			global.window.navigator.userAgent) !== null;
-		this.sugar = / sugar:com\.googlecode\.electroshocktherapy$/.exec(
-			global.window.navigator.userAgent) !== null;
+		this.android = ShockTherapy.android;
+		this.sugar = ShockTherapy.sugar;
 		this._callback = null;
 		this._data = null;
 		this._req = null;
