@@ -9,6 +9,7 @@ require([
 	"ShockTherapy",
 	"ShockTherapyActionBar",
 	"ShockTherapyDefaults",
+	"simulateClick",
 	"SliderWidget",
 ], function() {
 
@@ -252,6 +253,27 @@ this.ShockTherapyOptionsView = (function(global) {
 					req.open("GET", "/ShockTherapyConfig.export:" +
 						JSON.stringify(options, null, "\t"));
 					req.send(null);
+					return;
+				}
+
+				var URL = window.webkitURL || window.URL;
+				var BlobBuilder = window.BlobBuilder ||
+					window.WebKitBlobBuilder ||
+					window.MozBlobBuilder;
+
+				if (!ShockTherapy.android && BlobBuilder && URL) {
+					/* The saveUrl() / data URI approach stopped working in
+					Chrome 19, so use BlobBuilder and createObjectURL instead.
+					*/
+					var bb = new BlobBuilder();
+					bb.append(JSON.stringify(options, null, "\t"));
+					var a = createElement("a");
+					a.download = "ShockTherapyOptions.json";
+					a.href = URL.createObjectURL(bb.getBlob("text/plain"));
+					simulateClick(a);
+					setTimeout(
+						function() { URL.revokeObjectURL(a.href); },
+						1500);
 					return;
 				}
 
