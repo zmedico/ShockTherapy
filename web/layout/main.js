@@ -4,7 +4,8 @@ loadTheme("..", function (shockTherapyConfig,
 
 	require([
 		"require",
-		"ShockTherapy"
+		"ShockTherapy",
+		"ShockTherapyDefaults"
 	], function() {
 
 	var getElementById, global;
@@ -20,23 +21,17 @@ loadTheme("..", function (shockTherapyConfig,
 	var optionsView = null;
 	var previousView = null;
 
-	var enableMenuButton = shockTherapyConfig.getBoolean("MenuButton", null);
-	if (enableMenuButton === null) {
-		/* If there is no MenuButton user preference, then create a
-		 * suitable default setting.
-		 */
-		if (ShockTherapy.android &&
-			!ShockTherapy.android.hardwareMenuButtonRequired())
-			enableMenuButton = true;
-		else if (!ShockTherapy.android && ShockTherapy.mobile) {
-			/* This may be a touch-based browser without contextmenu,
-			 and since it's not our Android app, the menu isn't
-			 accessible via a hardware menu button. */
-			enableMenuButton = true;
-		}
-		if (enableMenuButton)
-			shockTherapyConfig.setBoolean("MenuButton", enableMenuButton);
-	}
+	// Initialize default MenuButton setting.
+	var menuButtonDefault = false;
+	if (ShockTherapy.android &&
+		!ShockTherapy.android.hardwareMenuButtonRequired())
+		menuButtonDefault = true;
+	else if (!ShockTherapy.android && ShockTherapy.mobile)
+		/* This may be a touch-based browser without contextmenu,
+		and since it's not our Android app, the menu isn't
+		accessible via a hardware menu button. */
+		menuButtonDefault = true;
+	ShockTherapyDefaults.MenuButton = menuButtonDefault;
 
 	var reloadTheme = function() {
 		if (!curtain.parentNode)
