@@ -111,28 +111,32 @@ this.ShockTherapyMainView = (function(global) {
 					global.window.document.createElement("div"), widget.canvas);
 				this._contextMenu = contextMenu;
 
-				button = global.window.document.createElement("button");
+				button = global.window.document.createElement("a");
+				button.href = "#";
 				button.setAttribute("class", "contextMenuButton");
 				button.appendChild(button.ownerDocument.createTextNode("Options"));
-				button.addEventListener("click",
+				button.onclick =
 					function(e) {
 						contextMenu.onblur();
 						global.window.location.hash = "#options";
-					});
+						return false;
+					};
 				contextMenu.container.appendChild(button);
 
 				hr = global.window.document.createElement("hr");
 				hr.setAttribute("class", "listViewBorder");
 				contextMenu.container.appendChild(hr);
 
-				button = global.window.document.createElement("button");
+				button = global.window.document.createElement("a");
+				button.href = "#";
 				button.setAttribute("class", "contextMenuButton");
 				button.appendChild(button.ownerDocument.createTextNode("About"));
-				button.addEventListener("click",
+				button.onclick =
 					function(e) {
 						contextMenu.onblur();
 						global.window.location.hash = "#about";
-					});
+						return false;
+					};
 				contextMenu.container.appendChild(button);
 
 				global.window.document.body.appendChild(contextMenu.container);

@@ -21,15 +21,31 @@ this.ModalDialog = (function() {
 
 	constructor.prototype.show = function()
 	{
+		var cancelButton, div, doc, okButton, span;
+		doc = this.content.ownerDocument
 		var overlayElement = document.createElement("div");
 		overlayElement.setAttribute("class", "dialogCurtain");
 
-		var okButton = document.createElement("button");
-		okButton.textContent = "OK";
-		var cancelButton = document.createElement("button");
-		cancelButton.textContent = "Cancel";
-		okButton.setAttribute("class", "dialogButton dialogButtonRight");
-		cancelButton.setAttribute("class", "dialogButton dialogButtonLeft");
+		okButton = doc.createElement("a");
+		okButton.href = "#";
+		okButton.setAttribute("class", "dialogButton dialogButtonRight vertCenter");
+		div = doc.createElement("div");
+		div.setAttribute("class", "vertCenter");
+		span = doc.createElement("span");
+		span.appendChild(doc.createTextNode("OK"));
+		div.appendChild(span);
+		okButton.appendChild(div);
+
+		cancelButton = doc.createElement("a");
+		cancelButton.href = "#";
+		div = doc.createElement("div");
+		div.setAttribute("class", "vertCenter");
+		span = doc.createElement("span");
+		span.appendChild(doc.createTextNode("Cancel"));
+		div.appendChild(span);
+		cancelButton.appendChild(div);
+		
+		cancelButton.setAttribute("class", "dialogButton dialogButtonLeft vertCenter");
 
 		var dialogElement = document.createElement("div");
 		dialogElement.setAttribute("class", "dialogWindow");
@@ -40,8 +56,10 @@ this.ModalDialog = (function() {
 			dialogElement.appendChild(header);
 		}
 		dialogElement.appendChild(this.content);
-		dialogElement.appendChild(cancelButton);
-		dialogElement.appendChild(okButton);
+		div = doc.createElement("div");
+		div.appendChild(cancelButton);
+		div.appendChild(okButton);
+		dialogElement.appendChild(div);
 
 		// The clientWidth and clientHeight of dialogElement are
 		// calculated as soon as it's appended to the body.
@@ -83,13 +101,15 @@ this.ModalDialog = (function() {
 		var cleanup = function(e) {
 			_this.hide();
 			_this.fireEvent("click");
+			return false;
 		}
-		okButton.addEventListener("click", cleanup);
-		cancelButton.addEventListener("click",
+		okButton.onclick = cleanup;
+		cancelButton.onclick =
 			function(e) {
 				_this.cancelled = true;
 				cleanup();
-			});
+				return false;
+			};
 	}
 
 	constructor.prototype.hide = function()

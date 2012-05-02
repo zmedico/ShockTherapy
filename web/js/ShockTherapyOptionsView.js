@@ -110,7 +110,7 @@ this.ShockTherapyOptionsView = (function(global) {
 				"slider sliderHorizontal dialogWidth");
 			content.appendChild(slider.canvas);
 			var dialog = new ModalDialog(content, {title: title});
-			button.addEventListener("click",
+			button.onclick =
 				function(e) {
 					var popupId = popupCounter++;
 					popups[popupId] = dialog;
@@ -127,7 +127,8 @@ this.ShockTherapyOptionsView = (function(global) {
 					dialog.show();
 					slider.setValue(shockTherapyConfig.getFloat(key,
 						ShockTherapyDefaults[key]));
-				});
+					return false;
+				};
 		}
 
 		function checkboxButton(button, checkboxCanvas, key)
@@ -136,18 +137,19 @@ this.ShockTherapyOptionsView = (function(global) {
 			checkbox.setEnabled(false); // parent button handles clicks
 			checkbox.checked =
 				shockTherapyConfig.getBoolean(key, ShockTherapyDefaults[key]);
-			button.addEventListener("click",
+			button.onclick =
 				function(e) {
 					checkbox.checked = !checkbox.checked;
 					shockTherapyConfig.setBoolean(key,
 						checkbox.checked);
-				});
+					return false;
+				};
 		}
 
 		var themeButton = getElementById("themeButton");
 		var reloadTheme = this._reloadTheme;
 
-		themeButton.addEventListener("click",
+		themeButton.onclick =
 			function(e) {
 				var radioGroup, choices, container, dialog, i, keys, themes;
 				themes = resourceFactory.listThemes();
@@ -184,7 +186,9 @@ this.ShockTherapyOptionsView = (function(global) {
 						radioGroup.selection = i;
 						break;
 					}
-			});
+
+				return false;
+			};
 
 		checkboxButton(getElementById("enableMenuButton"),
 			getElementById("menuButtonCheckbox"), "MenuButton");
@@ -203,7 +207,7 @@ this.ShockTherapyOptionsView = (function(global) {
 
 		var sparkColor = getElementById("sparkColor");
 
-		sparkColor.addEventListener("click",
+		sparkColor.onclick =
 			function(e) {
 				var content = createElement("div");
 				content.setAttribute("class", "dialogWidth");
@@ -224,7 +228,8 @@ this.ShockTherapyOptionsView = (function(global) {
 				dialog.show();
 				colorChooser.setColor(shockTherapyConfig.getString("Color",
 					ShockTherapyDefaults["Color"]));
-			});
+				return false;
+			};
 
 		sliderDialog(getElementById("sparkHueVariance"),
 			"Hue Variance", "HueVariance");
@@ -243,7 +248,7 @@ this.ShockTherapyOptionsView = (function(global) {
 
 		var exportOptions =
 			getElementById("exportOptions");
-		exportOptions.addEventListener("click",
+		exportOptions.onclick =
 			function(e) {
 				var options = shockTherapyConfig.exportConfig();
 
@@ -253,7 +258,7 @@ this.ShockTherapyOptionsView = (function(global) {
 					req.open("GET", "/ShockTherapyConfig.export:" +
 						JSON.stringify(options, null, "\t"));
 					req.send(null);
-					return;
+					return false;
 				}
 
 				var URL = window.webkitURL || window.URL;
@@ -274,7 +279,7 @@ this.ShockTherapyOptionsView = (function(global) {
 					setTimeout(
 						function() { URL.revokeObjectURL(a.href); },
 						1500);
-					return;
+					return false;
 				}
 
 				/*
@@ -285,11 +290,13 @@ this.ShockTherapyOptionsView = (function(global) {
 				saveUrl("data:,"+ encodeURI(
 					JSON.stringify(options, null, "\t")),
 					"ShockTherapyOptions.json");
-			});
+
+				return false;
+			};
 
 		var importOptionsButton =
 			getElementById("importOptionsButton");
-		importOptionsButton.addEventListener("click",
+		importOptionsButton.onclick =
 			function(e) {
 				if (ShockTherapy.android)
 				{
@@ -315,7 +322,6 @@ this.ShockTherapyOptionsView = (function(global) {
 					var req = new ShockTherapySugarRequest();
 					req.open("GET", "/ShockTherapyConfig.import");
 					req.send(null);
-					return;
 				}
 				else
 				{
@@ -333,11 +339,12 @@ this.ShockTherapyOptionsView = (function(global) {
 							reader.readAsText(e.target.files[0], encoding);
 						});
 				}
-			});
+				return false;
+			};
 
 		var resetOptionsButton =
 			getElementById("resetOptionsButton");
-		resetOptionsButton.addEventListener("click",
+		resetOptionsButton.onclick =
 			function(e) {
 				var content = createElement("div");
 				var dialog = new ModalDialog(content,
@@ -355,7 +362,8 @@ this.ShockTherapyOptionsView = (function(global) {
 					}
 				)
 				dialog.show();
-			});
+				return false;
+			};
 
 	}
 

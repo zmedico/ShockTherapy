@@ -23,7 +23,8 @@ this.RadioGroupWidget = (function() {
 		this._buttons = [];
 
 		for (i = 0; i < this.choices.length; i++) {
-			b = createElement("button");
+			b = createElement("a");
+			b.href = "#";
 			b.setAttribute("class", "dialogRadioButtonList dialogWidth");
 
 			d = createElement("div");
@@ -43,7 +44,7 @@ this.RadioGroupWidget = (function() {
 			d.appendChild(c.canvas);
 			b.appendChild(d);
 
-			b.addEventListener("click", this._select.bind(this, i));
+			b.onclick = this._select.bind(this, i);
 
 			this.container.appendChild(b);
 
@@ -70,6 +71,7 @@ this.RadioGroupWidget = (function() {
 			for (i = 0; i < this._buttons.length; i++)
 				this._buttons[i].checked = i == this._selection;
 		}
+		return false;
 	}
 
 	return constructor;
