@@ -226,6 +226,8 @@ button {
 .dialogHeader {
 	margin: 0em;
 	width: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	color: Color.HoloBlue;
 }
 
