@@ -18,9 +18,17 @@
 			var name = names[i];
 			var object = global[name]
 			objects[name] = {};
-			for (var k in object)
-				if (typeof object[k] === "string")
-					objects[name][k] = object[k];
+			for (var k in object) {
+				try {
+					if (typeof object[k] === "string")
+						objects[name][k] = object[k];
+				}
+				catch (e) {
+					window.setTimeout(function() {
+							throw e;
+						}, 0);
+				}
+			}
 		}
 		document.write("<p><pre>");
 		document.write(JSON.stringify(objects, null, "\t"));
