@@ -215,6 +215,7 @@ button {
 	background-color: Dialog.Canvas.background-color;
 	position: absolute;
 	z-index: 2;
+	width: Dialog.Canvas.width;
 }
 
 .dialogHeader {
