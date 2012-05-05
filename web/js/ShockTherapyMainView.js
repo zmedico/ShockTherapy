@@ -106,15 +106,24 @@ this.ShockTherapyMainView = (function(global) {
 			if (widget.running)
 				return;
 			if (contextMenu === null) {
-				var button, hr;
+				var button, div, doc, hr, span;
+				doc = global.window.document;
 				contextMenu = new ContextMenu(
 					global.window.document.createElement("div"), widget.canvas);
 				this._contextMenu = contextMenu;
 
+				contextMenu.container.setAttribute("class",
+					"contextMenu actionBarMenu");
+
 				button = global.window.document.createElement("a");
 				button.href = "#";
-				button.setAttribute("class", "contextMenuButton");
-				button.appendChild(button.ownerDocument.createTextNode("Options"));
+				button.setAttribute("class", "actionBarMenuButton ");
+				div = doc.createElement("div");
+				div.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
+				span = doc.createElement("span");
+				span.appendChild(doc.createTextNode("Options"));
+				div.appendChild(span);
+				button.appendChild(div);
 				button.onclick =
 					function(e) {
 						contextMenu.onblur();
@@ -124,13 +133,18 @@ this.ShockTherapyMainView = (function(global) {
 				contextMenu.container.appendChild(button);
 
 				hr = global.window.document.createElement("hr");
-				hr.setAttribute("class", "listViewBorder");
+				hr.setAttribute("class", "actionBarMenuSeparator");
 				contextMenu.container.appendChild(hr);
 
 				button = global.window.document.createElement("a");
 				button.href = "#";
-				button.setAttribute("class", "contextMenuButton");
-				button.appendChild(button.ownerDocument.createTextNode("About"));
+				button.setAttribute("class", "actionBarMenuButton");
+				div = doc.createElement("div");
+				div.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
+				span = doc.createElement("span");
+				span.appendChild(doc.createTextNode("About"));
+				div.appendChild(span);
+				button.appendChild(div);
 				button.onclick =
 					function(e) {
 						contextMenu.onblur();

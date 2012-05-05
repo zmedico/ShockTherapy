@@ -91,12 +91,15 @@ body {
 	text-align: left;
 	font-size: Text.Primary.font-size;
 	color: Text.Primary.color;
-	padding: 1em;
 	margin: 0;
 	width: OverflowMenu.Canvas.width;
 	display: table;
 	text-decoration: none;
 	outline: 0;
+}
+
+.actionBarMenuButtonPadding {
+	padding: 1em;
 }
 
 .mainMenuButton {
@@ -171,15 +174,6 @@ button {
 	position: absolute;
 	z-index: 1;
 	background-color: Dialog.Canvas.background-color;
-}
-
-.contextMenuButton {
-	font-size: 1.25em;
-	border-style: none;
-	margin: 0;
-	color: inherit;
-	text-decoration: none;
-	outline: 0;
 }
 
 .dialogWidth {

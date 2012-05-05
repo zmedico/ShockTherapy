@@ -58,10 +58,10 @@ this.ContextMenu = (function() {
 			this.container.clientHeight + "px", null);
 		var offset = elementContentOffset(this.parent);
 		var position = {x: e.pageX - offset.x, y: e.pageY - offset.y};
-		if (position.x + this.container.clientWidth > this.parent.clientWidth)
-			position.x = this.parent.clientWidth - this.container.clientWidth;
-		if (position.y + this.container.clientHeight > this.parent.clientHeight)
-			position.y = this.parent.clientHeight - this.container.clientHeight;
+		if (position.x + this.container.offsetWidth > this.parent.clientWidth)
+			position.x = this.parent.clientWidth - this.container.offsetWidth;
+		if (position.y + this.container.offsetHeight > this.parent.clientHeight)
+			position.y = this.parent.clientHeight - this.container.offsetHeight;
 		position.x += offset.x;
 		position.y += offset.y;
 		this.moveTo(position.x, position.y);

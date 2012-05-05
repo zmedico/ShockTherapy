@@ -23,7 +23,7 @@ this.createActionBarMenu = (function(global) {
 					button.href = "#";
 					button.setAttribute("class", "actionBarMenuButton");
 					d = doc.createElement("div");
-					d.setAttribute("class", "vertCenter");
+					d.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
 					s = doc.createElement("span");
 					s.appendChild(doc.createTextNode(action.name));
 					d.appendChild(s);
