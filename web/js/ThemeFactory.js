@@ -70,7 +70,7 @@ this.ThemeFactory = (function(global) {
 		if (!this.loaded)
 			this.load();
 		var instance = null;
-		if (navigator.appVersion.toLowerCase().indexOf("mobile") > -1)
+		if ((navigator.userAgent + navigator.appVersion).toLowerCase().indexOf("mobile") > -1)
 			instance = this.withScheme("light-on-dark");
 		else
 			instance = this.withScheme("dark-on-light");

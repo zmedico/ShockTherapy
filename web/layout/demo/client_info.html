@@ -34,7 +34,7 @@
 		document.write(JSON.stringify(objects, null, "\t"));
 		document.write("</pre></p>");
 		document.write("<p>");
-		if (navigator.appVersion.toLowerCase().indexOf("mobile") > -1)
+		if ((navigator.userAgent + navigator.appVersion).toLowerCase().indexOf("mobile") > -1)
 			document.write("Mobile: yes");
 		else
 			document.write("Mobile: no");

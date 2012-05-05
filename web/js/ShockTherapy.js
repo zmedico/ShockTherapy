@@ -13,7 +13,7 @@ this.ShockTherapy = (function(global) {
 			global.window.history.back();
 		},
 
-		mobile: global.window.navigator.appVersion.toLowerCase().indexOf("mobile") > -1,
+		mobile: (navigator.userAgent + navigator.appVersion).toLowerCase().indexOf("mobile") > -1,
 
 		viewChanged : function(uri) {
 			if (ShockTherapy.android) {
