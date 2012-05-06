@@ -124,11 +124,11 @@ this.ShockTherapyActionBar = (function(global) {
 	constructor.prototype._positionActionMenu = function(menu) {
 		var buttonPanel = this._buttonPanel;
 		var position = elementContentOffset(buttonPanel);
-		position.y += buttonPanel.clientHeight;
+		position.y += buttonPanel.offsetHeight;
 		// action bar border-width is 2px
 		position.y += 2;
-		position.x += buttonPanel.clientWidth;
-		position.x -= menu.container.clientWidth;
+		position.x += buttonPanel.offsetWidth;
+		position.x -= menu.container.offsetWidth;
 		menu.container.style.setProperty("position", "fixed", null);
 		menu.moveTo(position.x, position.y);
 	}

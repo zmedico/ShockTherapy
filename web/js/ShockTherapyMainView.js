@@ -166,9 +166,9 @@ this.ShockTherapyMainView = (function(global) {
 	constructor.prototype._positionMainMenu = function(menu) {
 		var button = this._mainMenuButton;
 		var position = elementContentOffset(button);
-		position.y += button.clientHeight;
-		position.x += button.clientWidth;
-		position.x -= menu.container.clientWidth;
+		position.y += button.offsetHeight;
+		position.x += button.offsetWidth;
+		position.x -= menu.container.offsetWidth;
 		menu.container.style.setProperty("position", "fixed", null);
 		menu.moveTo(position.x, position.y);
 	}
