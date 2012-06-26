@@ -262,19 +262,29 @@ this.ShockTherapyOptionsView = (function(global) {
 				}
 
 				var URL = window.webkitURL || window.URL;
+				var Blob = window.Blob;
 				var BlobBuilder = window.BlobBuilder ||
 					window.WebKitBlobBuilder ||
-					window.MozBlobBuilder;
+					window.MozBlobBuilder ||
+					window.MSBlobBuilder;
 
-				if (!ShockTherapy.android && BlobBuilder && URL) {
+				if (!ShockTherapy.android && (Blob || BlobBuilder) && URL) {
 					/* The saveUrl() / data URI approach stopped working in
 					Chrome 19, so use BlobBuilder and createObjectURL instead.
 					*/
-					var bb = new BlobBuilder();
-					bb.append(JSON.stringify(options, null, "\t"));
+					var options_str = JSON.stringify(options, null, "\t");
+					var blob = null;
+					if (Blob)
+						blob = new Blob([options_str], {type: "text/plain"});
+					else {
+						var bb = new BlobBuilder();
+						bb.append(options_str);
+						blob = bb.getBlob("text/plain");
+					}
+
 					var a = createElement("a");
 					a.download = "ShockTherapyOptions.json";
-					a.href = URL.createObjectURL(bb.getBlob("text/plain"));
+					a.href = URL.createObjectURL(blob);
 					simulateClick(a);
 					setTimeout(
 						function() { URL.revokeObjectURL(a.href); },
