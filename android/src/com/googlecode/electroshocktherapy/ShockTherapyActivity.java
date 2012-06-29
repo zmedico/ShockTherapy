@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.openintents.intents.FileManagerIntents;
@@ -75,6 +76,33 @@ public class ShockTherapyActivity extends Activity {
 			ANROID_USER_AGENT);
 		webview.getSettings().setJavaScriptEnabled(true);
 		webview.addJavascriptInterface(new JavaScriptInterface(), "Android");
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			/*
+			 * Enable XMLHttpRequest to work with javascript from
+			 * file:///android_asset/ URLs.
+			 */
+			Class parameterTypes[] = new Class[1];
+			parameterTypes[0] = Boolean.TYPE;
+			Method m = null;
+			try {
+				m = webview.getSettings().getClass().getDeclaredMethod(
+					"setAllowFileAccessFromFileURLs", parameterTypes);
+			}
+			catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			}
+			if (m != null) {
+				Object args[] = new Object[1];
+				args[0] = Boolean.TRUE;
+				try {
+					m.invoke(webview.getSettings(), args);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
 		String oldUrl = null;
 		if (savedInstanceState != null)
