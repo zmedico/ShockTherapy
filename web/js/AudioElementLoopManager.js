@@ -13,10 +13,6 @@ this.AudioElementLoopManager = (function(global) {
 		this._initAudio();
 	}
 
-	/* In Safari 5.1.2, audio elements seem to become unusable after the first
-	 * use. So, we create a new audio element every time that we need to
-	 * re-start the audio.
-	 */
 	constructor.prototype._initAudio = function() {
 		if (this.audio !== null)
 			this.ownerDocument.body.removeChild(this.audio);
@@ -63,8 +59,6 @@ this.AudioElementLoopManager = (function(global) {
 		if (!this.audioError)
 		{
 			try {
-				if (this.audio === null)
-					this._initAudio();
 				this.audio.volume = this.volume;
 				this.audio.play();
 			}
@@ -83,8 +77,6 @@ this.AudioElementLoopManager = (function(global) {
 		{
 			try {
 				this.audio.pause();
-				// pre-init audio for next play
-				this._initAudio();
 			}
 			catch (e) {
 				this.ownerDocument.defaultView.setTimeout(function() {
