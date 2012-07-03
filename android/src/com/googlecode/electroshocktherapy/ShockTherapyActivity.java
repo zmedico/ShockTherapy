@@ -18,7 +18,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.media.MediaPlayer;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,7 +54,9 @@ public class ShockTherapyActivity extends Activity {
 	private static final int WEBVIEW_FILE_OUTPUT_OI_RESULTCODE = RESULT_FIRST_USER + 4;
 
 	private WebView webview;
-	private MediaPlayer mediaPlayer;
+	private SoundPool soundPool;
+	private HashMap<String,HashMap<String,Object>> soundNameMap;
+	private HashMap<Integer,HashMap<String,Object>> soundIdMap;
 	private ValueCallback<Uri> webviewFileInputCb;
 	private HashMap<String,String> webviewFileInputRequest;
 	private String webviewFileOutputDataUrl;
@@ -192,9 +195,9 @@ public class ShockTherapyActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (mediaPlayer != null) {
-			mediaPlayer.release();
-			mediaPlayer = null;
+		if (soundPool != null) {
+			soundPool.release();
+			soundPool = null;
 		}
 	}
 
@@ -205,10 +208,9 @@ public class ShockTherapyActivity extends Activity {
 		* This can happen if the user turns of the screen while
 		* sound is playing.
 		*/
-		if (mediaPlayer != null)
+		if (soundPool != null)
 		{
-			mediaPlayer.pause();
-			mediaPlayer.seekTo(0);
+			soundPool.autoPause();
 		}
 	}
 
@@ -241,13 +243,41 @@ public class ShockTherapyActivity extends Activity {
 		webview.loadUrl(uri);
 	}
 
-	private MediaPlayer getMediaPlayer() {
-		if (mediaPlayer == null)
-		{
-			mediaPlayer = MediaPlayer.create(this, SOUND_RESOURCE);
-			mediaPlayer.setLooping(true);
+	private class SPListener implements SoundPool.OnLoadCompleteListener {
+		@Override
+		public void onLoadComplete(SoundPool soundPool,
+			int sampleId, int status) {
+			HashMap<String,Object> sound = soundIdMap.get(sampleId);
+			if (sound == null) {
+				System.err.println(
+					"soundPool loaded unknown sample: " + sampleId);
+			}
+			else if (status == 0) {;
+				Float volume = (Float)sound.get("volume");
+				Integer streamID = soundPool.play(sampleId,
+						volume, volume, 1, -1, 1f);
+				if (streamID == 0)
+					System.err.println("soundPool.play failed");
+				else {
+					sound.put("streamID", streamID);
+				}
+			}
+			else {
+				System.err.println("soundPool.load failed: " +
+					sound.get("name"));
+			}
 		}
-		return mediaPlayer;
+	}
+
+	private SoundPool getSoundPool() {
+		if (soundPool == null)
+		{
+			soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+			soundPool.setOnLoadCompleteListener(new SPListener());
+			soundNameMap = new HashMap<String,HashMap<String,Object>>();
+			soundIdMap = new HashMap<Integer,HashMap<String,Object>>();
+		}
+		return soundPool;
 	}
 
 	public String getItem(String key) {
@@ -516,26 +546,48 @@ public class ShockTherapyActivity extends Activity {
 
 		@SuppressWarnings("unused")
 		public void startSoundLoop(String name, float volume) {
-			MediaPlayer mediaPlayer =
-				ShockTherapyActivity.this.getMediaPlayer();
-			if (mediaPlayer != null)
+
+			/*
+			Use a 60 dB logarithmic scale:
+			http://www.dr-lex.be/info-stuff/volumecontrols.html
+			*/
+			volume = (float) (Math.exp(6.908 * volume) / 1000);
+
+			SoundPool soundPool =
+				ShockTherapyActivity.this.getSoundPool();
+			if (soundPool != null)
 			{
-				/*
-				Use a 60 dB logarithmic scale:
-				http://www.dr-lex.be/info-stuff/volumecontrols.html
-				*/
-				volume = (float) (Math.exp(6.908 * volume) / 1000);
-				mediaPlayer.setVolume(volume, volume);
-				mediaPlayer.start();
+
+				HashMap<String,Object> sound = soundNameMap.get(name);
+				if (sound == null) {
+					sound = new HashMap<String,Object>();
+					soundNameMap.put(name, sound);
+					sound.put("name", name);
+					Integer soundID = soundPool.load(
+						ShockTherapyActivity.this, SOUND_RESOURCE, 1);
+					sound.put("soundID", soundID);
+					soundIdMap.put(soundID, sound);
+				}
+				sound.put("volume", Float.valueOf(volume));
+
+				Integer streamID = (Integer)sound.get("streamID");
+				if (streamID != null) {
+					soundPool.setVolume(streamID, volume, volume);
+					soundPool.resume(streamID);
+				}
 			}
 		}
 
 		@SuppressWarnings("unused")
 		public void stopSoundLoop(String name) {
-			if (mediaPlayer != null)
+			if (soundPool != null)
 			{
-				mediaPlayer.pause();
-				mediaPlayer.seekTo(0);
+				HashMap<String,Object> sound = soundNameMap.get(name);
+				if (sound != null) {
+					Integer streamID = (Integer)sound.get("streamID");
+					if (streamID != null)
+						soundPool.pause(streamID);
+				}
 			}
 		}
 
