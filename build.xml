@@ -304,9 +304,10 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	</copy>
 	<copy todir="${sugar_build}/web">
 		<fileset dir="web">
-			<!-- WebKitGTK+ only needs the ogg files -->
 			<exclude name="icons/**"/>
 			<exclude name="layout/demo/**"/>
+			<!-- WebKitGTK+ needs the ogg for the HTMLAudioElement, or
+			wav for the new "Web Audio API" (if supported). -->
 			<exclude name="sounds/*.mp3"/>
 		</fileset>
 	</copy>

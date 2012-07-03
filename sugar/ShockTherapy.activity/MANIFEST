@@ -11,6 +11,7 @@ web/data/themes.json
 web/icons/High_voltage_warning_48.png
 web/icons/Overflow_button_32.png
 web/icons/Up_button_48.png
+web/js/AudioElementLoopManager.js
 web/js/CanvasWidget.js
 web/js/CheckboxDrawable.js
 web/js/CheckboxModel.js
@@ -43,6 +44,7 @@ web/js/SliderModel.js
 web/js/SliderWidget.js
 web/js/Theme.js
 web/js/ThemeFactory.js
+web/js/WebAudioLoopManager.js
 web/js/addPointerEventListener.js
 web/js/colorsys.js
 web/js/createActionBarMenu.js
@@ -60,4 +62,5 @@ web/layout/main.html
 web/layout/main.js
 web/layout/options.html
 web/manifest.json
+web/sounds/electric_discharge.wav
 web/sounds/electric_discharge_10s.ogg
