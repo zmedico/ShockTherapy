@@ -22,7 +22,6 @@ this.ShockTherapyWidget = (function(global) {
 		this.vibrating = false;
 		this.android = ShockTherapy.android;
 		this.audio = null;
-		this.audioError = false;
 		// pre-init audio for next click
 		this._initAudio();
 		this.audioPlaying = false;
@@ -38,59 +37,25 @@ this.ShockTherapyWidget = (function(global) {
 
 	extend(CanvasWidget, constructor);
 
-	/* In Safari 5.1.2, audio elements seem to become unusable after the first
-	 * use. So, we create a new audio element every time that we need to
-	 * re-start the audio.
-	 */
 	constructor.prototype._initAudio = function() {
-		if (this.android)
-		{
-
-		}
-		else
-		{
-			if (this.audio !== null)
-				this.canvas.ownerDocument.body.removeChild(this.audio);
-			this.audio = this.canvas.ownerDocument.createElement("audio");
-			try {
-				this.audioName = "electric_discharge";
-				var source = this.canvas.ownerDocument.createElement("source");
-				source.src = this.baseuri + "/sounds/electric_discharge_10s.ogg";
-				source.type = "audio/ogg";
-				this.audio.appendChild(source);
-
-				source = this.canvas.ownerDocument.createElement("source");
-				source.src = this.baseuri + "/sounds/electric_discharge_10s.mp3";
-				source.type = "audio/mpeg";
-				this.audio.appendChild(source);
-
-				// Add it to the body as an invisible element, so that
-				// document.getElementsByTagName("audio") works in
-				// a JavaScript console.
-				this.audio.width = 0;
-				this.audio.height = 0;
-				this.audio.style.setProperty("display", "none", null);
-				this.canvas.ownerDocument.body.appendChild(this.audio);
-				this.audio.load();
-
-				// NOTE: looping terminates in chrome 16 after the second loop
-				// when using the loop attribute, so use an "ended" event
-				// listen to get the desired behavior.
-				//this.audio.loop = true;
-				var _this = this;
-				this.audio.addEventListener("ended", function() {
-						if (_this.running)
+		if (!this.android) {
+			require(["AudioElementLoopManager"], (function() {
+				this.audio = new AudioElementLoopManager(
+					this.canvas.ownerDocument,
+					[
 						{
-							_this.startAudioLoop(_this.audioName);
+							type: "audio/ogg",
+							src: this.baseuri +
+								"/sounds/electric_discharge_10s.ogg"
+						},
+						{
+							type: "audio/mpeg",
+							src: this.baseuri +
+								"/sounds/electric_discharge_10s.mp3"
 						}
-					}, false);
-			}
-			catch (e) {
-				this.canvas.ownerDocument.defaultView.setTimeout(function() {
-						throw e;
-					}, 0);
-				this.audioError = True;
-			}
+					]
+				);
+			}).bind(this));
 		}
 	}
 
@@ -103,20 +68,9 @@ this.ShockTherapyWidget = (function(global) {
 			if (global.Android)
 				global.Android.startSoundLoop(this.audioName, volume);
 		}
-		else if (!this.audioError)
-		{
-			try {
-				if (this.audio === null)
-					this._initAudio();
-				this.audio.volume = volume;
-				this.audio.play();
-			}
-			catch (e) {
-				this.canvas.ownerDocument.defaultView.setTimeout(function() {
-						throw e;
-					}, 0);
-				this.audioError = true;
-			}
+		else if (this.audio !== null) {
+			this.audio.volume = volume;
+			this.audio.play();
 		}
 	}
 
@@ -127,19 +81,8 @@ this.ShockTherapyWidget = (function(global) {
 			if (global.Android)
 				global.Android.stopSoundLoop(this.audioName);
 		}
-		else if (!this.audioError)
-		{
-			try {
-				this.audio.pause();
-				// pre-init audio for next click
-				this._initAudio();
-			}
-			catch (e) {
-				this.canvas.ownerDocument.defaultView.setTimeout(function() {
-						throw e;
-					}, 0);
-				this.audioError = true;
-			}
+		else if (this.audio !== null) {
+			this.audio.pause()
 		}
 	}
 
