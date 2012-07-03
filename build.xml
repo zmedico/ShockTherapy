@@ -238,10 +238,11 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	<mkdir dir="${chrome_build}"/>
 	<copy todir="${chrome_build}">
 		<fileset dir="web">
-			<!-- chrome only needs the ogg files -->
 			<exclude name="icons/**"/>
 			<exclude name="layout/demo/**"/>
+			<!-- chrome only needs the wav file -->
 			<exclude name="sounds/*.mp3"/>
+			<exclude name="sounds/*.ogg"/>
 		</fileset>
 	</copy>
 
