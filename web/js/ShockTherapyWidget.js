@@ -38,7 +38,23 @@ this.ShockTherapyWidget = (function(global) {
 	extend(CanvasWidget, constructor);
 
 	constructor.prototype._initAudio = function() {
-		if (!this.android) {
+		if (this.android) {
+		}
+		else if (global.webkitAudioContext) {
+			require(["WebAudioLoopManager"], (function() {
+				this.audio = new WebAudioLoopManager(
+					new webkitAudioContext(),
+					[
+						{
+							type: "audio/wav",
+							src: this.baseuri +
+								"/sounds/electric_discharge.wav"
+						},
+					]
+				);
+			}).bind(this));
+		}
+		else {
 			require(["AudioElementLoopManager"], (function() {
 				this.audio = new AudioElementLoopManager(
 					this.canvas.ownerDocument,
