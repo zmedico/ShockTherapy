@@ -208,10 +208,20 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	<copy file="${build}/icons/High_voltage_warning_96.png"
 		tofile="${android_project_build}/res/drawable-xhdpi/ic_launcher.png"
 		overwrite="true"></copy>
+
+	<!-- Generate a longer loop of electric_discharge.wav, since SoundPool
+	can produce poor results with an extremely short loop. -->
 	<mkdir dir="${android_project_build}/res/raw"/>
-	<copy file="web/sounds/electric_discharge_10s.ogg"
-		tofile="${android_project_build}/res/raw/electric_discharge_10s.ogg">
-	</copy>
+	<mkdir dir="${build}/util/audio"/>
+	<javac srcdir="util/audio" destdir="${build}/util/audio" includeantruntime="false"/>
+	<java classname="RepeatAudioLoop" failonerror="true">
+		<arg value="10"/>
+		<arg file="web/sounds/electric_discharge.wav"/>
+		<arg file="${android_project_build}/res/raw/electric_discharge.wav"/>
+		<classpath>
+		<pathelement path="${build}/util/audio"/>
+		</classpath>
+	</java>
 
 	<concat destfile="${android_project_build}/ant.properties" append="yes">
 		<string value="key.store=${android.key.store}&#10;"></string>
