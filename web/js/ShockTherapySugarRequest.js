@@ -55,12 +55,23 @@ this.ShockTherapySugarRequest = (function(global) {
 		delete global[this._callbackName];
 		if (global.origtitle !== global.document.title)
 			global.document.title = global.origtitle
-		this.responseText = unescape(responseText);
+		this.responseText = atob(responseText);
+
+		if (this.responseType == "arraybuffer") {
+			this.response = new ArrayBuffer(this.responseText.length);
+			var responseText = this.responseText,
+				ia = new Uint8Array(this.response);
+			for (var i = 0; i < responseText.length; i++)
+				ia[i] = responseText.charCodeAt(i);
+		}
+
 		this.status = status;
 		this.readyState = this.DONE;
 		if (this.onreadystatechange !== null) {
 			this.onreadystatechange.apply(global);
 		}
+		if (this.onload !== null)
+			this.onload.apply(global);
 	}
 
 	return constructor;

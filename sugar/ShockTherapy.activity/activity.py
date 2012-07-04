@@ -1,12 +1,13 @@
 
+import base64
 import logging
 import os
 import tempfile
 
 try:
-	from urllib.parse import quote, unquote
+	from urllib.parse import unquote
 except ImportError:
-	from urllib import quote, unquote
+	from urllib import unquote
 
 from gettext import gettext as _
 
@@ -270,12 +271,11 @@ class ShockTherapyActivity(activity.Activity):
 								if f is not None:
 									f.close()
 
-					content = content.decode(encoding="utf_8", errors="replace")
 					#logging.debug(
 					#	"ShockTherapySugarRequest: %s status: %s content: %s" %
 					#	(path, status, content))
 					self._webview.execute_script("%s(%s, \"%s\")" %
-						(callback, status, quote(content)))
+						(callback, status, base64.b64encode(content)))
 
 	def _save_dsobject(self, filename, content,
 		mime_type=None, description=None):
