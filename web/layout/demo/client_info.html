@@ -8,40 +8,6 @@
 <title>Client Info</title>
 </head>
 <body>
-<p>Client Info:</p>
-<script type="text/javascript">
-<!--
-	(function(global) {
-		var names = ["navigator"];
-		var objects = {};
-		for (var i = 0; i < names.length; i++) {
-			var name = names[i];
-			var object = global[name]
-			objects[name] = {};
-			for (var k in object) {
-				try {
-					if (typeof object[k] === "string")
-						objects[name][k] = object[k];
-				}
-				catch (e) {
-					window.setTimeout(function() {
-							throw e;
-						}, 0);
-				}
-			}
-		}
-		document.write("<p><pre>");
-		document.write(JSON.stringify(objects, null, "\t"));
-		document.write("</pre></p>");
-		document.write("<p>");
-		if ((navigator.userAgent + navigator.appVersion).toLowerCase().indexOf("mobile") > -1)
-			document.write("Mobile: yes");
-		else
-			document.write("Mobile: no");
-		document.write("</p>");
-			
-	}(this));
--->
-</script>
+<script src="client_info.js" type="text/javascript"></script>
 </body>
 </html>
