@@ -1,6 +1,5 @@
 
 require([
-	"addPointerEventListener",
 	"elementContentOffset",
 	"EventAdapter",
 	"extend",
@@ -14,7 +13,6 @@ this.CanvasWidget = (function() {
 		constructor.base.constructor.call(this, drawable, element);
 		this.enabled = true;
 		this.eventListenerAdapter = new EventAdapter(this, this);
-		addPointerEventListener(this.canvas, this);
 	}
 
 	extend(DrawableCanvas, constructor);

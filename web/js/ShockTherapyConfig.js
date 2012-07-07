@@ -1,36 +1,25 @@
 
 require([
+	"extend",
 	"require",
-	"ShockTherapy"
+	"ShockTherapy",
+	"ShockTherapyReadonlyConfig"
 ], function() {
 
 this.ShockTherapyConfig = (function(global) {
 
 	var constructor = function(prefix)
 	{
+		constructor.base.constructor.call(this, null);
 		this.prefix = prefix;
 		this.android = ShockTherapy.android;
 		this.sugar = ShockTherapy.sugar;
 		this._callback = null;
-		this._data = null;
 		this._req = null;
 		this._disable_commit = 0;
 	}
 
-	constructor.prototype._known_keys = [
-		"BrightnessVariance",
-		"Color",
-		"Density",
-		"Duration",
-		"HueVariance",
-		"MenuButton",
-		"Sound",
-		"SoundVolume",
-		"Theme",
-		"Thickness",
-		"Vibrator",
-		"VibratorIntensity"
-	];
+	extend(ShockTherapyReadonlyConfig, constructor);
 
 	constructor.prototype.load = function(callback) {
 		this._callback = callback;
@@ -151,17 +140,6 @@ this.ShockTherapyConfig = (function(global) {
 		this._commit();
 	}
 
-	constructor.prototype.exportConfig = function() {
-		var config, value;
-		config = {};
-		for (var i = 0; i < this._known_keys.length; i++) {
-			value = this.getString(this._known_keys[i], null);
-			if (value !== null)
-				config[this._known_keys[i]] = value;
-		}
-		return config;
-	}
-
 	constructor.prototype.importConfig = function(config)
 	{
 
@@ -223,17 +201,6 @@ this.ShockTherapyConfig = (function(global) {
 		this._commit();
 	}
 
-	constructor.prototype.getBoolean = function(key, defValue)
-	{
-		var value = this.getString(key, null);
-
-		if (value === null)
-			value = defValue;
-		else
-			value = value == "true";
-		return value;
-	}
-
 	constructor.prototype.setBoolean = function(key, value)
 	{
 		if (value)
@@ -242,17 +209,6 @@ this.ShockTherapyConfig = (function(global) {
 			value  = "false";
 
 		this.setString(key, value);
-	}
-
-	constructor.prototype.getFloat = function(key, defValue)
-	{
-		var value = this.getString(key, null);
-
-		if (value === null)
-			value = defValue;
-		else
-			value = parseFloat(value);
-		return value;
 	}
 
 	constructor.prototype.setFloat = function(key, value)

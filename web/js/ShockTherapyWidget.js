@@ -1,5 +1,6 @@
 
 require([
+	"addPointerEventListener",
 	"extend",
 	"CanvasWidget",
 	"ElectricArc",
@@ -13,6 +14,8 @@ this.ShockTherapyWidget = (function(global) {
 	var constructor = function(baseuri, config, element)
 	{
 		constructor.base.constructor.call(this, this, element);
+		if (config.getBoolean("Interactive", true))
+			addPointerEventListener(this.canvas, this);
 		this.baseuri = baseuri;
 		this.config = config;
 		this.drawableCount = 1;
@@ -102,13 +105,11 @@ this.ShockTherapyWidget = (function(global) {
 		}
 	}
 
-	constructor.prototype.moveTarget = function(e)
+	constructor.prototype.moveTarget = function(x, y)
 	{
-		var box, pointer;
-		pointer = this.getPointerOffset(e);
-		box = this.getContentBox();
-		this.target.x = pointer.x;
-		this.target.y = pointer.y;
+		var box = this.getContentBox();
+		this.target.x = x;
+		this.target.y = y;
 		if (this.target.x < 1)
 			this.target.x = 1;
 		else if (this.target.x > box.w - 2)
@@ -121,22 +122,30 @@ this.ShockTherapyWidget = (function(global) {
 
 	constructor.prototype.onMouseMove = function(e)
 	{
-		this.moveTarget(e);
+		var offset = this.getPointerOffset(e);
+		this.moveTarget(offset.x, offset.y);
 	}
 
 	constructor.prototype.onMouseDown = function(e)
 	{
 
-		if (!(e.which && e.which != 1) && !this.running)
-		{
+		if (!(e.which && e.which != 1) && !this.running) {
 			this.fireEvent("click");
+			var offset = this.getPointerOffset(e);
+			this.moveTarget(offset.x, offset.y);
+			this.start();
+		}
+		return false;
+	}
+
+	constructor.prototype.start = function() {
 			this.running = true;
 			this.frameCounter.startTime = new Date().getTime();
 			this.frameCounter.frames = 0;
 			var box = this.getContentBox();
 			this.canvas.width = box.w;
 			this.canvas.height = box.h;
-			this.moveTarget(e);
+			
 			if (this.config.getBoolean("Sound", ShockTherapyDefaults.Sound))
 			{
 				this.audioPlaying = true;
@@ -205,15 +214,16 @@ this.ShockTherapyWidget = (function(global) {
 					}
 				}
 			requestAnimFrame( animate );
-		}
-
-		return false;
 	}
 
 	constructor.prototype.onMouseUp = function(e)
 	{
 		if (!(e.which && e.which != 1) && this.running)
-		{
+			this.stop()
+		return false;
+	}
+
+	constructor.prototype.stop = function() {
 			this.running = false;
 			this.frameCounter.startTime = null;
 			this.frameCounter.frames = null;
@@ -228,9 +238,6 @@ this.ShockTherapyWidget = (function(global) {
 				global.Android.stopVibrator();
 			}
 			this.repaint();
-		}
-
-		return false;
 	}
 
 	constructor.prototype.eraseCanvas = function(context)

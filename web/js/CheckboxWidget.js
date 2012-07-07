@@ -1,5 +1,6 @@
 
 require([
+	"addPointerEventListener",
 	"CanvasWidget",
 	"CheckboxModel",
 	"extend",
@@ -14,6 +15,7 @@ this.CheckboxWidget = (function() {
 		var drawable = resources.createObject(this._drawableClass);
 		drawable.model = this.model;
 		constructor.base.constructor.call(this, drawable, element);
+		addPointerEventListener(this.canvas, this);
 		var classAttr = this.canvas.getAttribute("class");
 		if (classAttr !== null)
 			classAttr = this._cssClass + " " + classAttr;

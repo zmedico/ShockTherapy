@@ -16,6 +16,7 @@ this.SliderWidget = (function() {
 		var drawable = resources.createObject(this._drawable_key);
 		drawable.model = this.model;
 		constructor.base.constructor.call(this, drawable, element);
+		addPointerEventListener(this.canvas, this);
 		this._uncapture = null;
 	}
 
