@@ -73,6 +73,7 @@ this.ShockTherapyMainView = (function(global) {
 		c.width = global.window.innerWidth;
 		c.height = global.window.innerHeight;
 		var widget = new ShockTherapyWidget("..", this._config, c);
+		widget.interactive = true;
 
 		var actions = [
 			{

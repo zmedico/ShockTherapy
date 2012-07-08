@@ -3,8 +3,9 @@ loadTheme("../..", function(shockTherapyConfig,
 	resourceFactory, resources) {
 
 	require(["ShockTherapyWidget"], function() {
-		new ShockTherapyWidget("../..", shockTherapyConfig,
+		var widget = new ShockTherapyWidget("../..", shockTherapyConfig,
 			window.document.getElementById("mainCanvas"));
-		});
+		widget.interactive = true;
+	});
 
 });

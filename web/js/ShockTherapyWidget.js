@@ -14,10 +14,9 @@ this.ShockTherapyWidget = (function(global) {
 	var constructor = function(baseuri, config, element)
 	{
 		constructor.base.constructor.call(this, this, element);
-		if (config.getBoolean("Interactive", true))
-			addPointerEventListener(this.canvas, this);
 		this.baseuri = baseuri;
 		this.config = config;
+		this._removePointerListener = null;
 		this.drawableCount = 1;
 		this.target = {x: 0, y: 0};
 		this.frameCounter = {frames: null, startTime: null};
@@ -39,6 +38,26 @@ this.ShockTherapyWidget = (function(global) {
 	}
 
 	extend(CanvasWidget, constructor);
+
+	Object.defineProperty(constructor.prototype, "interactive", {
+		get : function () {
+			return this._removePointerListener !== null;
+		},
+		set : function (val) {
+			if (val) {
+				if (this._removePointerListener === null) {
+					this._removePointerListener =
+						addPointerEventListener(this.canvas, this);
+				}
+			}
+			else {
+				if (this._removePointerListener !== null) {
+					this._removePointerListener();
+					this._removePointerListener = null;
+				}
+			}
+		}
+	});
 
 	constructor.prototype._initAudio = function() {
 		if (this.android) {

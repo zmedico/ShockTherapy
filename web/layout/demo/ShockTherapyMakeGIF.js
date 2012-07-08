@@ -72,7 +72,6 @@
 			var shockTherapyConfig =
 				new ShockTherapyReadonlyConfig(
 					{
-						"Interactive": "false",
 						"Sound": "false"
 					}
 				);
