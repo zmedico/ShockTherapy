@@ -106,7 +106,7 @@ this.ShockTherapyMainView = (function(global) {
 			if (widget.running)
 				return;
 			if (contextMenu === null) {
-				var button, div, doc, hr, span;
+				var action, button, doc, hr, i, d, s;
 				doc = global.window.document;
 				contextMenu = new ContextMenu(
 					global.window.document.createElement("div"), widget.canvas);
@@ -115,43 +115,31 @@ this.ShockTherapyMainView = (function(global) {
 				contextMenu.container.setAttribute("class",
 					"contextMenu actionBarMenu");
 
-				button = global.window.document.createElement("a");
-				button.href = "#";
-				button.setAttribute("class", "actionBarMenuButton ");
-				div = doc.createElement("div");
-				div.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
-				span = doc.createElement("span");
-				span.appendChild(doc.createTextNode("Options"));
-				div.appendChild(span);
-				button.appendChild(div);
-				button.onclick =
-					function(e) {
-						contextMenu.onblur();
-						global.window.location.hash = "#options";
-						return false;
-					};
-				contextMenu.container.appendChild(button);
+				for (i = 0; i < actions.length; i++) {
+					action = actions[i];
+					button = doc.createElement("a");
+					button.href = "#";
+					button.setAttribute("class", "actionBarMenuButton");
+					d = doc.createElement("div");
+					d.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
+					s = doc.createElement("span");
+					s.appendChild(doc.createTextNode(action.name));
+					d.appendChild(s);
+					button.appendChild(d);
+					button.onclick =
+						(function(e) {
+							contextMenu.onblur();
+							this.callback.apply(global);
+							return false;
+						}).bind(action);
+					contextMenu.container.appendChild(button);
 
-				hr = global.window.document.createElement("hr");
-				hr.setAttribute("class", "actionBarMenuSeparator");
-				contextMenu.container.appendChild(hr);
-
-				button = global.window.document.createElement("a");
-				button.href = "#";
-				button.setAttribute("class", "actionBarMenuButton");
-				div = doc.createElement("div");
-				div.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
-				span = doc.createElement("span");
-				span.appendChild(doc.createTextNode("About"));
-				div.appendChild(span);
-				button.appendChild(div);
-				button.onclick =
-					function(e) {
-						contextMenu.onblur();
-						global.window.location.hash = "#about";
-						return false;
-					};
-				contextMenu.container.appendChild(button);
+					if (i < actions.length - 1) {
+						hr = doc.createElement("hr");
+						hr.setAttribute("class", "actionBarMenuSeparator");
+						contextMenu.container.appendChild(hr);
+					}
+				}
 
 				global.window.document.body.appendChild(contextMenu.container);
 				widget.addEventListener("click", function(e) {
