@@ -29,11 +29,17 @@ this.require = (function(global) {
 		head = global.window.document.head;
 		refs = {};
 		keys = [];
+		var match, modulePath, moduleName;
 		for (i = 0; i < names.length; i++) {
 			name = names[i];
-			if (!global.hasOwnProperty(name)) {
-				refs[name] = true;
-				keys.push(name);
+			match = require._srcPattern.exec(name);
+			if (match === null)
+				throw "invalid require input: " + name
+			modulePath = match[1];
+			moduleName = match[2];
+			if (!global.hasOwnProperty(moduleName)) {
+				refs[moduleName] = modulePath;
+				keys.push(moduleName);
 			}
 		}
 		if (keys.length == 0)
@@ -50,10 +56,16 @@ this.require = (function(global) {
 				}
 				element = document.createElement("script");
 				element.type = "text/javascript";
-				if (require.path.length > 0)
-					element.src = require.path + "/" + name + ".js";
+				modulePath = refs[name];
+				var src;
+				if (modulePath)
+					src = modulePath + name
 				else
-					element.src = name + ".js";
+					src = name
+				if (require.path.length > 0)
+					element.src = require.path + "/" + src + ".js";
+				else
+					element.src = src + ".js";
 				head.appendChild(element);
 				if (global.hasOwnProperty(name))
 				{
@@ -76,6 +88,7 @@ this.require = (function(global) {
 
 	// base path for scripts
 	require.path = null;
+	require._srcPattern = /^(.*\/)?([^\/]*)$/;
 	require.callbackID = 0;
 	require.remainingCallbacks = 0;
 	require.pendingElements = {}

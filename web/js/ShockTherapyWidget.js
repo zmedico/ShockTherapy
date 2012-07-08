@@ -247,7 +247,10 @@ this.ShockTherapyWidget = (function(global) {
 		context.globalCompositeOperation = "source-over"
 		context.beginPath();
 		context.fillStyle = canvasStyle.getPropertyValue("background-color");
-		context.fillRect(box.x, box.y, box.w, box.h);
+		/* If page zoom is in effect, then it may be necessary to
+		add 1 to the width and height here, in order to ensure that
+		the whole canvas is erased. */
+		context.fillRect(box.x, box.y, box.w + 1, box.h + 1);
 		context.fill();
 	}
 
