@@ -9,27 +9,48 @@ require([
 
 this.ShockTherapyMainView = (function(global) {
 
-	var constructor = function(config) {
-		this._config = config
-		this._canvas = null;
+	var constructor = function(widget) {
+		this._widget = widget;
 		this._mainMenuButton =
 			global.document.getElementById("mainMenuButton");
+		this._mainMenuButton.addEventListener("click",
+			this._mainMenuListener.bind(this));
 		this._resize_timeout_id = null;
 		this._bound_resize_listener = this._resize_listener.bind(this);
 		this._bound_resize_timeout = this._resize_timeout.bind(this);
-		this._mainMenuListener = null;
+		this._boundContextMenuListener = this._contextMenuListener.bind(this);
+		this._boundWidgetClickListener = this._widgetClickListener.bind(this);
+		this._mainMenu = null;
 		this._contextMenu = null;
 	}
 
+	var actions = [
+		{
+			name: "Options",
+			callback: function() {
+				global.window.location.hash = "#options";
+			}
+		},
+		{
+			name: "About",
+			callback: function() {
+				global.window.location.hash = "#about";
+			}
+		}
+	];
+
 	constructor.prototype.display = function(container, callback) {
-		if (this._canvas === null)
-			this._initCanvas();
-		this._canvas.width = global.window.innerWidth;
-		this._canvas.height = global.window.innerHeight;
-		container.appendChild(this._canvas);
+		this._widget.canvas.width = global.window.innerWidth;
+		this._widget.canvas.height = global.window.innerHeight;
+		this._widget.interactive = true;
+		this._widget.canvas.addEventListener("contextmenu",
+			this._boundContextMenuListener);
+		this._widget.addEventListener("click",
+			this._boundWidgetClickListener);
+		container.appendChild(this._widget.canvas);
 		global.window.addEventListener("resize",
 			this._bound_resize_listener);
-		if (this._config.getBoolean("MenuButton",
+		if (this._widget.config.getBoolean("MenuButton",
 			ShockTherapyDefaults.MenuButton))
 			this._mainMenuButton.style.visibility = "visible";
 		if (callback)
@@ -37,13 +58,17 @@ this.ShockTherapyMainView = (function(global) {
 	}
 
 	constructor.prototype.undisplay = function() {
+		this._widget.canvas.removeEventListener("contextmenu",
+			this._boundContextMenuListener);
+		this._widget.removeEventListener("click",
+			this._boundWidgetClickListener);
 		global.window.removeEventListener("resize",
 			this._bound_resize_listener);
 		this._mainMenuButton.style.visibility = "hidden";
-		if (this._mainMenuListener !== null)
-			this._mainMenuListener.hideMenu();
+		if (this._mainMenu !== null)
+			this._mainMenu.hideMenu();
 		if (this._contextMenu !== null)
-			this._contextMenu.onBlur();
+			this._contextMenu.onblur();
 	}
 
 	constructor.prototype._resize_listener = function() {
@@ -55,101 +80,71 @@ this.ShockTherapyMainView = (function(global) {
 	}
 
 	constructor.prototype._resize_timeout = function() {
-		this._canvas.width = global.window.innerWidth;
-		this._canvas.height = global.window.innerHeight;
+		this._widget.canvas.width = global.window.innerWidth;
+		this._widget.canvas.height = global.window.innerHeight;
 		this._resize_timeout_id = null;
 	}
 
-	constructor.prototype._initCanvas = function() {
-		this._canvas = global.document.createElement("canvas");
-		var c = this._canvas;
-		/*
-		Prevent the "tap highlight" from showing inappropriately on the
-		ShockTherapyWidget canvas. This problem has been observed
-		intermittently with the Android 4.0.4 WebView widget, usually
-		after an AJAX-based view switch.
-		*/
-		c.setAttribute("class", "fullscreen black noWebkitTapHighlight");
-		c.width = global.window.innerWidth;
-		c.height = global.window.innerHeight;
-		var widget = new ShockTherapyWidget("..", this._config, c);
-		widget.interactive = true;
+	constructor.prototype._mainMenuListener = function() {
+		if (this._mainMenu === null)
+			this._mainMenu = createActionBarMenu(actions,
+				this._positionMainMenu.bind(this));
+		this._mainMenu();
+		return false;
+	}
 
-		var actions = [
-			{
-				name: "Options",
-				callback: function() {
-					global.window.location.hash = "#options";
-				}
-			},
-			{
-				name: "About",
-				callback: function() {
-					global.window.location.hash = "#about";
-				}
-			}
-		];
+	constructor.prototype._widgetClickListener = function(e) {
+		if (this._mainMenu !== null)
+			this._mainMenu.hideMenu();
+		if (this._contextMenu !== null)
+			this._contextMenu.onblur();
+	}
 
-		var mainMenuListener = createActionBarMenu(actions,
-			this._positionMainMenu.bind(this));
-		this._mainMenuListener = mainMenuListener;
-		this._mainMenuButton.addEventListener("click", function(e) {
-			mainMenuListener();
-			return false;
-		});
+	constructor.prototype._contextMenuListener = function(e) {
+		if (!this._widget.running) {
+			if (this._contextMenu === null)
+				this._initContextMenu();
+			this._contextMenu.onContextMenu(e);
+		}
+	}
 
-		widget.addEventListener("click",
-			mainMenuListener.hideMenu.bind(mainMenuListener));
+	constructor.prototype._initContextMenu = function() {
+		var action, button, contextMenu, doc, hr, i, d, s,
+			doc = global.window.document;
+		contextMenu = new ContextMenu(
+			global.window.document.createElement("div"), this._widget.canvas);
+		this._contextMenu = contextMenu;
 
-		var contextMenu = null;
+		contextMenu.container.setAttribute("class",
+			"contextMenu actionBarMenu");
 
-		widget.canvas.addEventListener("contextmenu", function(e) {
-			if (widget.running)
-				return;
-			if (contextMenu === null) {
-				var action, button, doc, hr, i, d, s;
-				doc = global.window.document;
-				contextMenu = new ContextMenu(
-					global.window.document.createElement("div"), widget.canvas);
-				this._contextMenu = contextMenu;
-
-				contextMenu.container.setAttribute("class",
-					"contextMenu actionBarMenu");
-
-				for (i = 0; i < actions.length; i++) {
-					action = actions[i];
-					button = doc.createElement("a");
-					button.href = "#";
-					button.setAttribute("class", "actionBarMenuButton");
-					d = doc.createElement("div");
-					d.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
-					s = doc.createElement("span");
-					s.appendChild(doc.createTextNode(action.name));
-					d.appendChild(s);
-					button.appendChild(d);
-					button.onclick =
-						(function(e) {
-							contextMenu.onblur();
-							this.callback.apply(global);
-							return false;
-						}).bind(action);
-					contextMenu.container.appendChild(button);
-
-					if (i < actions.length - 1) {
-						hr = doc.createElement("hr");
-						hr.setAttribute("class", "actionBarMenuSeparator");
-						contextMenu.container.appendChild(hr);
-					}
-				}
-
-				global.window.document.body.appendChild(contextMenu.container);
-				widget.addEventListener("click", function(e) {
+		for (i = 0; i < actions.length; i++) {
+			action = actions[i];
+			button = doc.createElement("a");
+			button.href = "#";
+			button.setAttribute("class", "actionBarMenuButton");
+			d = doc.createElement("div");
+			d.setAttribute("class", "vertCenter actionBarMenuButtonPadding");
+			s = doc.createElement("span");
+			s.appendChild(doc.createTextNode(action.name));
+			d.appendChild(s);
+			button.appendChild(d);
+			button.onclick =
+				(function(e) {
 					contextMenu.onblur();
-				});
-			}
-			contextMenu.onContextMenu(e);
-		});
+					this.callback.apply(global);
+					return false;
+				}).bind(action);
+			contextMenu.container.appendChild(button);
 
+			if (i < actions.length - 1) {
+				hr = doc.createElement("hr");
+				hr.setAttribute("class", "actionBarMenuSeparator");
+				contextMenu.container.appendChild(hr);
+			}
+		}
+
+		global.window.document.body.appendChild(contextMenu.container);
 	}
 
 	constructor.prototype._positionMainMenu = function(menu) {
