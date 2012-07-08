@@ -177,6 +177,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		<fileset dir="web">
 			<exclude name="icons/**"/>
 			<exclude name="layout/demo/**"/>
+			<exclude name="lib/**"/>
 			<exclude name="manifest.json"/>
 			<!-- the android app uses a smaller sound file from res/raw -->
 			<exclude name="sounds/**"/>
@@ -250,6 +251,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		<fileset dir="web">
 			<exclude name="icons/**"/>
 			<exclude name="layout/demo/**"/>
+			<exclude name="lib/**"/>
 			<!-- chrome only needs the wav file -->
 			<exclude name="sounds/*.mp3"/>
 			<exclude name="sounds/*.ogg"/>
@@ -316,6 +318,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		<fileset dir="web">
 			<exclude name="icons/**"/>
 			<exclude name="layout/demo/**"/>
+			<exclude name="lib/**"/>
 			<!-- WebKitGTK+ needs the ogg for the HTMLAudioElement, or
 			wav for the new "Web Audio API" (if supported). -->
 			<exclude name="sounds/*.mp3"/>
