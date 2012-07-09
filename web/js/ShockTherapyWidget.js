@@ -158,6 +158,7 @@ this.ShockTherapyWidget = (function(global) {
 	}
 
 	constructor.prototype.start = function() {
+		if (!this.running) {
 			this.running = true;
 			this.frameCounter.startTime = new Date().getTime();
 			this.frameCounter.frames = 0;
@@ -233,6 +234,7 @@ this.ShockTherapyWidget = (function(global) {
 					}
 				}
 			requestAnimFrame( animate );
+		}
 	}
 
 	constructor.prototype.onMouseUp = function(e)
@@ -243,6 +245,7 @@ this.ShockTherapyWidget = (function(global) {
 	}
 
 	constructor.prototype.stop = function() {
+		if (this.running) {
 			this.running = false;
 			this.frameCounter.startTime = null;
 			this.frameCounter.frames = null;
@@ -257,6 +260,7 @@ this.ShockTherapyWidget = (function(global) {
 				global.Android.stopVibrator();
 			}
 			this.repaint();
+		}
 	}
 
 	constructor.prototype.eraseCanvas = function(context)
