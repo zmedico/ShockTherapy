@@ -12,6 +12,7 @@ import java.util.HashMap;
 import org.openintents.intents.FileManagerIntents;
 import com.googlecode.electroshocktherapy.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.util.SparseArray;
 //import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +38,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+@SuppressLint("SetJavaScriptEnabled")
 public class ShockTherapyActivity extends Activity {
 
 	private static final String ANROID_USER_AGENT = "android:com.googlecode.electroshocktherapy";
@@ -59,7 +62,7 @@ public class ShockTherapyActivity extends Activity {
 	private WebView webview;
 	private SoundPool soundPool;
 	private HashMap<String,HashMap<String,Object>> soundNameMap;
-	private HashMap<Integer,HashMap<String,Object>> soundIdMap;
+	private SparseArray<HashMap<String, Object>> soundIdMap;
 	private ValueCallback<Uri> webviewFileInputCb;
 	private HashMap<String,String> webviewFileInputRequest;
 	private String webviewFileOutputDataUrl;
@@ -91,6 +94,7 @@ public class ShockTherapyActivity extends Activity {
 			 * Enable XMLHttpRequest to work with javascript from
 			 * file:///android_asset/ URLs.
 			 */
+			@SuppressWarnings("rawtypes")
 			Class parameterTypes[] = new Class[1];
 			parameterTypes[0] = Boolean.TYPE;
 			Method m = null;
@@ -317,7 +321,7 @@ public class ShockTherapyActivity extends Activity {
 			soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
 			soundPool.setOnLoadCompleteListener(new SPListener());
 			soundNameMap = new HashMap<String,HashMap<String,Object>>();
-			soundIdMap = new HashMap<Integer,HashMap<String,Object>>();
+			soundIdMap = new SparseArray<HashMap<String,Object>>();
 		}
 		return soundPool;
 	}
