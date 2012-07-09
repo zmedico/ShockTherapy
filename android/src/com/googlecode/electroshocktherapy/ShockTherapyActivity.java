@@ -248,6 +248,7 @@ public class ShockTherapyActivity extends Activity {
 		toggleSystemUiVisibility(uri);
 		String previous = url;
 		url = uri;
+		if (!reload && previous != null) {
 		anchor = Uri.parse(uri).getFragment();
 		if (anchor != null) {
 			/* Workaround for Android Issue 17327:
@@ -256,8 +257,7 @@ public class ShockTherapyActivity extends Activity {
 			 * TODO: Fix history/back button handling to account for this.
 			 */
 			uri = uri.substring(0, uri.indexOf("#"));
-			if (!reload && previous != null &&
-				uri.length() <= previous.length() &&
+			if (uri.length() <= previous.length() &&
 				previous.substring(0, uri.length()).equals(uri)) {
 				// Optimize menu clicks to avoid page reloads.
 				String jsUri = "javascript:window.location.hash='#"
@@ -266,6 +266,14 @@ public class ShockTherapyActivity extends Activity {
 				webview.loadUrl(jsUri);
 				return;
 			}
+		}
+		else {
+			if (previous.startsWith(MAIN_URL) &&
+				uri.equals(MAIN_URL)) {
+				webview.loadUrl("javascript:window.location.hash=''");
+				return;
+			}
+		}
 		}
 		webview.loadUrl(uri);
 	}
