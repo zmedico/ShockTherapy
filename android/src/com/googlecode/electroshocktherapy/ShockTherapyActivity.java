@@ -6,13 +6,13 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.openintents.intents.FileManagerIntents;
 import com.googlecode.electroshocktherapy.R;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -38,6 +38,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+@TargetApi(16)
 @SuppressLint("SetJavaScriptEnabled")
 public class ShockTherapyActivity extends Activity {
 
@@ -94,27 +95,7 @@ public class ShockTherapyActivity extends Activity {
 			 * Enable XMLHttpRequest to work with javascript from
 			 * file:///android_asset/ URLs.
 			 */
-			@SuppressWarnings("rawtypes")
-			Class parameterTypes[] = new Class[1];
-			parameterTypes[0] = Boolean.TYPE;
-			Method m = null;
-			try {
-				m = webview.getSettings().getClass().getDeclaredMethod(
-					"setAllowFileAccessFromFileURLs", parameterTypes);
-			}
-			catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			}
-			if (m != null) {
-				Object args[] = new Object[1];
-				args[0] = Boolean.TRUE;
-				try {
-					m.invoke(webview.getSettings(), args);
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+			webview.getSettings().setAllowFileAccessFromFileURLs(true);
 		}
 
 		String oldUrl = null;
@@ -573,9 +554,9 @@ public class ShockTherapyActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			int flag;
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-				flag = webview.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+				flag = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
 			else
-				flag = webview.STATUS_BAR_HIDDEN;
+				flag = View.STATUS_BAR_HIDDEN;
 			/* Don't call setSystemUiVisibility() unless the flag state will
 			change, in order to avoid spurious nav bar animation. */
 			if (newUrl.equals(SCREENSAVER_URL))
@@ -603,9 +584,9 @@ public class ShockTherapyActivity extends Activity {
 					int flag;
 					if (Build.VERSION.SDK_INT >=
 						Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-						flag = webview.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+						flag = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
 					else
-						flag = webview.STATUS_BAR_HIDDEN;
+						flag = View.STATUS_BAR_HIDDEN;
 					if ((visibility & flag) == 0) {
 						/* When the user touches the screen, causing the
 						navigation bar to become visible, automatically
