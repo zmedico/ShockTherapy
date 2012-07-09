@@ -246,6 +246,12 @@ this.ShockTherapyWidget = (function(global) {
 
 	constructor.prototype.stop = function() {
 		if (this.running) {
+			// paint at least one frame before stopping
+			var delayErase = false;
+			if (this.frameCounter.frames == 0) {
+				delayErase = true;
+				this.repaint();
+			}
 			this.running = false;
 			this.frameCounter.startTime = null;
 			this.frameCounter.frames = null;
@@ -259,7 +265,10 @@ this.ShockTherapyWidget = (function(global) {
 			{
 				global.Android.stopVibrator();
 			}
-			this.repaint();
+			if (delayErase)
+				window.setTimeout(this.repaint.bind(this), 15);
+			else
+				this.repaint();
 		}
 	}
 
