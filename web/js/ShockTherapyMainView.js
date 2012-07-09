@@ -4,7 +4,6 @@ require([
 	"createActionBarMenu",
 	"elementContentOffset",
 	"ShockTherapyDefaults",
-	"ShockTherapyWidget"
 ], function() {
 
 this.ShockTherapyMainView = (function(global) {
@@ -29,6 +28,12 @@ this.ShockTherapyMainView = (function(global) {
 			name: "Options",
 			callback: function() {
 				global.window.location.hash = "#options";
+			}
+		},
+		{
+			name: "Screen Saver",
+			callback: function() {
+				global.window.location.hash = "#screensaver";
 			}
 		},
 		{

@@ -33,7 +33,7 @@ this.ShockTherapyOptionsView = (function(global) {
 	constructor.prototype._configureActionBar = function() {
 		this._actionBar.setTitle("Options");
 		this._actionBar.setUpButtonUri("main.html");
-		this._actionBar.setActions(["Main", "About"]);
+		this._actionBar.setActions(["Main", "Screen Saver", "About"]);
 		this._actionBar.show();
 	}
 

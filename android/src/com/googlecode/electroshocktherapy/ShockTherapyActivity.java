@@ -29,6 +29,7 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 //import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -41,9 +42,11 @@ public class ShockTherapyActivity extends Activity {
 	private static final String HOMEPAGE ="http://electroshocktherapy.googlecode.com/";
 	private static final String BASE_URL = "file:///android_asset/layout/";
 	private static final String MAIN_URL = BASE_URL + "main.html";
+	private static final String SCREENSAVER_URL = MAIN_URL + "#screensaver";
 	private static final String OPTIONS_URL = MAIN_URL + "#options";
 	private static final String ABOUT_URL = MAIN_URL + "#about";
 	private static final String GO_BACK = "javascript:ShockTherapy.goBack()";
+	private static final String LOST_FOCUS = "javascript:ShockTherapy.focused = false";
 	private static final String FILE_CHOOSER_LOC = "FileChooser";
 	private static final String DEFAULT_EXPORT_FILE_NAME = "ShockTherapyOptions.json";
 	private static final int SOUND_RESOURCE = R.raw.electric_discharge;
@@ -72,6 +75,9 @@ public class ShockTherapyActivity extends Activity {
 		webview = (WebView) findViewById(R.id.webview);
 		webview.setWebViewClient(new WebViewClientOverride());
 		webview.setWebChromeClient(new WebChromeClientOverride());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			webview.setOnSystemUiVisibilityChangeListener(
+				new SystemUiVisibilityChangeListener());
 
 		webview.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 		webview.getSettings().setUserAgentString(
@@ -115,6 +121,8 @@ public class ShockTherapyActivity extends Activity {
 
 		if (oldUrl == null || oldUrl.equals(MAIN_URL))
 			loadUrl(MAIN_URL);
+		else if (oldUrl.equals(SCREENSAVER_URL))
+			loadUrl(SCREENSAVER_URL);
 		else if (oldUrl.equals(OPTIONS_URL))
 			loadUrl(OPTIONS_URL);
 		else if (oldUrl.equals(ABOUT_URL))
@@ -138,6 +146,15 @@ public class ShockTherapyActivity extends Activity {
 		loadUrl(url, true);
 	}
 
+	protected void onPause () {
+		super.onPause();
+		/* At least on Android 2.3, there's no blur event
+		if the screen turns off while the screensaver
+		is running, so we have to notify the screensaver here. */
+		if (url.equals(SCREENSAVER_URL))
+			webview.loadUrl(LOST_FOCUS);
+	}
+
 	/**
 	* Called when your activity's options menu needs to be created.
 	*/
@@ -156,12 +173,24 @@ public class ShockTherapyActivity extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 
+		/* The menu button causes the screensaver to lose focus and stop,
+		so load the interactive main view in that case. */
+		if (url.equals(SCREENSAVER_URL)) {
+			loadUrl(MAIN_URL);
+			url = MAIN_URL;
+		}
+
 		// Before showing the menu, we need to decide whether the clear
 		// item is enabled depending on whether there is text to clear.
+		menu.findItem(R.id.main_menu).setVisible(
+			!url.equals(MAIN_URL));
+		menu.findItem(R.id.screensaver_menu).setVisible(
+			!url.equals(SCREENSAVER_URL));
 		menu.findItem(R.id.options_menu).setVisible(
 			!url.equals(OPTIONS_URL));
 		menu.findItem(R.id.about_menu).setVisible(
 			!url.equals(ABOUT_URL));
+
 		return true;
 	}
 
@@ -169,6 +198,12 @@ public class ShockTherapyActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
+		case R.id.main_menu:
+			loadUrl(MAIN_URL);
+			return true;
+		case R.id.screensaver_menu:
+			loadUrl(SCREENSAVER_URL);
+			return true;
 		case R.id.options_menu:
 			loadUrl(OPTIONS_URL);
 			return true;
@@ -208,9 +243,15 @@ public class ShockTherapyActivity extends Activity {
 		* This can happen if the user turns of the screen while
 		* sound is playing.
 		*/
-		if (soundPool != null)
-		{
-			soundPool.autoPause();
+		if (!hasFocus) {
+			if (soundPool != null)
+				soundPool.autoPause();
+
+			/* At least on Android 2.3, there's no blur event
+			if the user presses the home button while the screensaver
+			is running, so we have to notify the screensaver here. */
+			if (url.equals(SCREENSAVER_URL))
+				webview.loadUrl(LOST_FOCUS);
 		}
 	}
 
@@ -219,6 +260,7 @@ public class ShockTherapyActivity extends Activity {
 	}
 
 	private void loadUrl(String uri, boolean reload) {
+		toggleSystemUiVisibility(uri);
 		String previous = url;
 		url = uri;
 		anchor = Uri.parse(uri).getFragment();
@@ -523,6 +565,58 @@ public class ShockTherapyActivity extends Activity {
 		}
 	}
 
+	private void toggleSystemUiVisibility(String newUrl) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			int flag;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+				flag = webview.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+			else
+				flag = webview.STATUS_BAR_HIDDEN;
+			/* Don't call setSystemUiVisibility() unless the flag state will
+			change, in order to avoid spurious nav bar animation. */
+			if (newUrl.equals(SCREENSAVER_URL))
+				if ((webview.getSystemUiVisibility() & flag) == 0)
+					webview.setSystemUiVisibility(
+						webview.getSystemUiVisibility() | flag);
+			else
+				if ((webview.getSystemUiVisibility() & flag) != 0)
+					webview.setSystemUiVisibility(
+						webview.getSystemUiVisibility() ^ flag);
+		}
+	}
+
+	private class SystemUiVisibilityRunnable implements Runnable {
+		public void run() {
+			toggleSystemUiVisibility(url);
+		}
+	}
+
+	private class SystemUiVisibilityChangeListener implements
+		View.OnSystemUiVisibilityChangeListener {
+		public void onSystemUiVisibilityChange(int visibility) {
+			if (url.equals(SCREENSAVER_URL)) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					int flag;
+					if (Build.VERSION.SDK_INT >=
+						Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+						flag = webview.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+					else
+						flag = webview.STATUS_BAR_HIDDEN;
+					if ((visibility & flag) == 0) {
+						/* When the user touches the screen, causing the
+						navigation bar to become visible, automatically
+						navigate to the interactive main view. Pause the
+						sound too, since it has a tendency to keep running
+						here. */
+						if (soundPool != null)
+							soundPool.autoPause();
+						loadUrl(MAIN_URL);
+					}
+				}
+			}
+		}
+	}
+
 	private class JavaScriptInterface {
 
 		JavaScriptInterface() {
@@ -537,6 +631,8 @@ public class ShockTherapyActivity extends Activity {
 				url = url.substring(0, url.length() - 1);
 			}
 			ShockTherapyActivity.this.url = url;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+				webview.post(new SystemUiVisibilityRunnable());
 		}
 
 		@SuppressWarnings("unused")

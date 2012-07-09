@@ -18,6 +18,7 @@ loadTheme("..", function (shockTherapyConfig,
 	var shockTherapyWidget = null;
 	var contentDiv = getElementById("content");
 	var mainView = null;
+	var screenSaverView = null;
 	var aboutView = null;
 	var optionsView = null;
 	var previousView = null;
@@ -104,6 +105,23 @@ loadTheme("..", function (shockTherapyConfig,
 			}
 			else
 				callback.apply(global, [optionsView]);
+		}
+		else if (hash == "#screensaver") {
+			if (screenSaverView === null) {
+				require([
+					"ShockTherapyScreenSaverView",
+					"ShockTherapyWidget"
+				], function() {
+						if (shockTherapyWidget === null)
+							initShockTherapyWidget();
+						screenSaverView =
+							new ShockTherapyScreenSaverView(shockTherapyWidget);
+						callback.apply(global, [screenSaverView]);
+					}
+				);
+			}
+			else
+				callback.apply(global, [screenSaverView]);
 		}
 		else {
 			if (mainView === null) {

@@ -2,7 +2,9 @@
 <resources>
 
 	<string name="app_name">Shock Therapy</string>
+	<string name="main">Main</string>
 	<string name="options">Options</string>
+	<string name="screensaver">Screen Saver</string>
 	<string name="about">About</string>
 
 </resources>

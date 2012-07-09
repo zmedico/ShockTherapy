@@ -37,6 +37,8 @@ web/js/ShockTherapyConfig.js
 web/js/ShockTherapyDefaults.js
 web/js/ShockTherapyMainView.js
 web/js/ShockTherapyOptionsView.js
+web/js/ShockTherapyReadonlyConfig.js
+web/js/ShockTherapyScreenSaverView.js
 web/js/ShockTherapySugarRequest.js
 web/js/ShockTherapyWidget.js
 web/js/SliderDrawable.js

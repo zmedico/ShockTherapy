@@ -29,6 +29,7 @@ from WebKitWebInspectorManager import WebKitWebInspectorManager
 class ShockTherapyActivity(activity.Activity):
 
 	_MAIN_URL = "layout/main.html"
+	_SCREENSAVER_URL = "layout/main.html#screensaver"
 	_OPTIONS_URL = "layout/main.html#options"
 	_ABOUT_URL = "layout/main.html#about"
 
@@ -68,6 +69,11 @@ class ShockTherapyActivity(activity.Activity):
 			'activity', 'high-voltage-warning.svg')))
 		self._main_button.connect('clicked', self._main_cb)
 		toolbar_box.toolbar.insert(self._main_button, -1)
+
+		self._screensaver_button = ToolButton('player_play')
+		self._screensaver_button.set_tooltip(_('Screen Saver'))
+		self._screensaver_button.connect('clicked', self._screensaver_cb)
+		toolbar_box.toolbar.insert(self._screensaver_button, -1)
 
 		self._options_button = ToolButton('preferences-system')
 		self._options_button.set_tooltip(_('Options'))
@@ -154,11 +160,13 @@ class ShockTherapyActivity(activity.Activity):
 
 		self._urls = {}
 		self._urls["MAIN"] = self._base_uri + self._MAIN_URL
+		self._urls["SCREENSAVER"] = self._base_uri + self._SCREENSAVER_URL
 		self._urls["OPTIONS"] = self._base_uri + self._OPTIONS_URL
 		self._urls["ABOUT"] = self._base_uri + self._ABOUT_URL
 
 		self._url_button_map = {}
 		self._url_button_map[self._urls["MAIN"]] = self._main_button
+		self._url_button_map[self._urls["SCREENSAVER"]] = self._screensaver_button
 		self._url_button_map[self._urls["OPTIONS"]] = self._options_button
 		self._url_button_map[self._urls["ABOUT"]] = self._about_button
 
@@ -332,6 +340,7 @@ class ShockTherapyActivity(activity.Activity):
 
 		self._back.props.sensitive = self._webview.can_go_back()
 		self._main_button.set_sensitive(True)
+		self._screensaver_button.set_sensitive(True)
 		self._options_button.set_sensitive(True)
 		self._about_button.set_sensitive(True)
 
@@ -370,6 +379,9 @@ class ShockTherapyActivity(activity.Activity):
 
 	def _main_cb(self, button):
 		self._load_uri(self._urls["MAIN"])
+
+	def _screensaver_cb(self, button):
+		self._load_uri(self._urls["SCREENSAVER"])
 
 	def _options_cb(self, button):
 		self._load_uri(self._urls["OPTIONS"])

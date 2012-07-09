@@ -9,6 +9,8 @@ this.ShockTherapy = (function(global) {
 
 		android : null,
 
+		focused : true,
+
 		goBack : function() {
 			global.window.history.back();
 		},

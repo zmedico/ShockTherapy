@@ -92,6 +92,10 @@ this.ShockTherapyActionBar = (function(global) {
 			global.window.location.hash = "";
 		},
 
+		"Screen Saver" : function() {
+			global.window.location.hash = "#screensaver";
+		},
+
 		"Options" : function() {
 			global.window.location.hash = "#options";
 		},
