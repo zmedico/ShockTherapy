@@ -1,6 +1,6 @@
 [Activity]
 name = Shock Therapy
-activity_version = 5
+activity_version = 6
 bundle_id = com.googlecode.electroshocktherapy
 exec = sugar-activity activity.ShockTherapyActivity
 icon = high-voltage-warning
