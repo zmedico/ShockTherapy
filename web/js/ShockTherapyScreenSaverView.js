@@ -125,7 +125,7 @@ this.ShockTherapyScreenSaverView = (function(global) {
 			widget.moveTarget(x, y);
 			widget.start();
 			this._animateTimeoutId = window.setTimeout(this._boundAnimate,
-				Math.round(500 * Math.random()));
+				50 + Math.round(450 * Math.random()));
 		}
 	}
 
