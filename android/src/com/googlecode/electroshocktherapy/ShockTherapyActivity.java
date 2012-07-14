@@ -295,6 +295,11 @@ public class ShockTherapyActivity extends Activity {
 					System.err.println("soundPool.play failed");
 				else {
 					sound.put("streamID", streamID);
+					if (((Boolean)sound.get("paused")).booleanValue()) {
+						/* A pause request came in before it finished
+						loading, so pause it now. */
+						soundPool.pause(streamID);
+					}
 				}
 			}
 			else {
@@ -652,11 +657,14 @@ public class ShockTherapyActivity extends Activity {
 					sound = new HashMap<String,Object>();
 					soundNameMap.put(name, sound);
 					sound.put("name", name);
+					sound.put("paused", Boolean.FALSE);
+					sound.put("volume", Float.valueOf(volume));
 					Integer soundID = soundPool.load(
 						ShockTherapyActivity.this, SOUND_RESOURCE, 1);
 					sound.put("soundID", soundID);
 					soundIdMap.put(soundID, sound);
 				}
+				sound.put("paused", Boolean.FALSE);
 				sound.put("volume", Float.valueOf(volume));
 
 				Integer streamID = (Integer)sound.get("streamID");
@@ -673,6 +681,7 @@ public class ShockTherapyActivity extends Activity {
 			{
 				HashMap<String,Object> sound = soundNameMap.get(name);
 				if (sound != null) {
+					sound.put("paused", Boolean.TRUE);
 					Integer streamID = (Integer)sound.get("streamID");
 					if (streamID != null)
 						soundPool.pause(streamID);
