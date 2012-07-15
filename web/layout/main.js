@@ -49,9 +49,10 @@ loadTheme("..", function (shockTherapyConfig,
 
 		resources.load(function () {
 			resources.addCssToDoc();
-			/* Discard optionsView since it holds
+			/* Update optionsView, since it holds
 			references to the old theme resources. */
-			optionsView = null;
+			if (optionsView !== null)
+				optionsView.setResources(resources);
 			updateView();
 		});
 	}

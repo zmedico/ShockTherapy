@@ -28,6 +28,7 @@ this.ShockTherapyOptionsView = (function(global) {
 		this._content = null;
 		this._req = null;
 		this._popups = {};
+		this._resourcesHaveChanged = false;
 	}
 
 	constructor.prototype._configureActionBar = function() {
@@ -35,6 +36,18 @@ this.ShockTherapyOptionsView = (function(global) {
 		this._actionBar.setUpButtonUri("main.html");
 		this._actionBar.setActions(["Main", "Screen Saver", "About"]);
 		this._actionBar.show();
+	}
+
+	constructor.prototype.setResources = function(resources) {
+		this._resources = resources;
+		if (this._content !== null) {
+			if (this._content.parentNode)
+				this._connectListeners();
+			else
+				/* Schedule a resource update for the next time
+				our content is added to the document. */
+				this._resourcesHaveChanged = true;
+		}
 	}
 
 	constructor.prototype.display = function(container, callback) {
@@ -46,6 +59,10 @@ this.ShockTherapyOptionsView = (function(global) {
 		}
 		else {
 			container.appendChild(this._content);
+			if (this._resourcesHaveChanged) {
+				this._connectListeners();
+				this._resourcesHaveChanged = false;
+			}
 			if (callback)
 				callback.apply(global);
 		}
