@@ -17,6 +17,8 @@ this.ShockTherapy = (function(global) {
 
 		mobile: (navigator.userAgent + navigator.appVersion).toLowerCase().indexOf("mobile") > -1,
 
+		touch: !!(window.Touch || "ontouchstart" in window || "createTouch" in document),
+
 		viewChanged : function(uri) {
 			if (ShockTherapy.android) {
 				ShockTherapy.android.viewChanged(uri);

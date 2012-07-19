@@ -28,7 +28,8 @@ loadTheme("..", function (shockTherapyConfig,
 	if (ShockTherapy.android &&
 		!ShockTherapy.android.hardwareMenuButtonRequired())
 		menuButtonDefault = true;
-	else if (!ShockTherapy.android && ShockTherapy.mobile)
+	else if (!ShockTherapy.android &&
+		(ShockTherapy.mobile || ShockTherapy.touch))
 		/* This may be a touch-based browser without contextmenu,
 		and since it's not our Android app, the menu isn't
 		accessible via a hardware menu button. */

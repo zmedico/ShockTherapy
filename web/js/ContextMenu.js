@@ -15,6 +15,7 @@ this.ContextMenu = (function() {
 		this._boundBlurListener = this._blurListener.bind(this);
 		this._blur_timeout = null;
 		this._mobile = ShockTherapy.mobile || ShockTherapy.sugar;
+		this._touch = ShockTherapy.touch;
 	}
 
 	constructor.prototype._blurListener = function(e) {
@@ -27,7 +28,7 @@ this.ContextMenu = (function() {
 			event to propagate first. Mobile browsers may need
 			a longer timeout if they're slow. */
 			var timeout;
-			if (this._mobile)
+			if (this._mobile || this._touch)
 				timeout = 750;
 			else {
 				this.container.style.setProperty("opacity", "0", null);

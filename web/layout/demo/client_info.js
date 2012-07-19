@@ -29,6 +29,12 @@
 	else
 		html.push("Mobile: no\n");
 	html.push("</p>\n");
+	html.push("<p>\n");
+	if (window.Touch || "ontouchstart" in window || "createTouch" in document)
+		html.push("Touch: yes\n");
+	else
+		html.push("Touch: no\n");
+	html.push("</p>\n");
 	var div = document.createElement("div");
 	div.innerHTML = html.join("");
 	document.body.appendChild(div);
