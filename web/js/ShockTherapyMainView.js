@@ -18,7 +18,6 @@ this.ShockTherapyMainView = (function(global) {
 		this._bound_resize_listener = this._resize_listener.bind(this);
 		this._bound_resize_timeout = this._resize_timeout.bind(this);
 		this._boundContextMenuListener = this._contextMenuListener.bind(this);
-		this._boundWidgetClickListener = this._widgetClickListener.bind(this);
 		this._mainMenu = null;
 		this._contextMenu = null;
 	}
@@ -50,8 +49,6 @@ this.ShockTherapyMainView = (function(global) {
 		this._widget.interactive = true;
 		this._widget.canvas.addEventListener("contextmenu",
 			this._boundContextMenuListener);
-		this._widget.addEventListener("click",
-			this._boundWidgetClickListener);
 		container.appendChild(this._widget.canvas);
 		global.window.addEventListener("resize",
 			this._bound_resize_listener);
@@ -65,8 +62,6 @@ this.ShockTherapyMainView = (function(global) {
 	constructor.prototype.undisplay = function() {
 		this._widget.canvas.removeEventListener("contextmenu",
 			this._boundContextMenuListener);
-		this._widget.removeEventListener("click",
-			this._boundWidgetClickListener);
 		global.window.removeEventListener("resize",
 			this._bound_resize_listener);
 		this._mainMenuButton.style.visibility = "hidden";
@@ -96,13 +91,6 @@ this.ShockTherapyMainView = (function(global) {
 				this._positionMainMenu.bind(this));
 		this._mainMenu();
 		return false;
-	}
-
-	constructor.prototype._widgetClickListener = function(e) {
-		if (this._mainMenu !== null)
-			this._mainMenu.hideMenu();
-		if (this._contextMenu !== null)
-			this._contextMenu.onblur();
 	}
 
 	constructor.prototype._contextMenuListener = function(e) {

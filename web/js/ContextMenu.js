@@ -1,7 +1,6 @@
 
 require([
-	"elementContentOffset",
-	"ShockTherapy"
+	"elementContentOffset"
 ], function() {
 
 this.ContextMenu = (function() {
@@ -13,9 +12,6 @@ this.ContextMenu = (function() {
 		this.container.setAttribute("class", "contextMenu");
 		this._visible = false;
 		this._boundBlurListener = this._blurListener.bind(this);
-		this._blur_timeout = null;
-		this._mobile = ShockTherapy.mobile || ShockTherapy.sugar;
-		this._touch = ShockTherapy.touch;
 	}
 
 	constructor.prototype._blurListener = function(e) {
@@ -23,31 +19,15 @@ this.ContextMenu = (function() {
 			"touchstart", this._boundBlurListener, true);
 		this.parent.ownerDocument.removeEventListener(
 			"mousedown", this._boundBlurListener, true);
-		if (this._visible) {
-			/* Hide, but asynchronously since we want the current
-			event to propagate first. Mobile browsers may need
-			a longer timeout if they're slow. */
-			var timeout;
-			if (this._mobile || this._touch)
-				timeout = 750;
-			else {
-				this.container.style.setProperty("opacity", "0", null);
-				timeout = 250;
-			}
-			this._blur_timeout =
-				this.parent.ownerDocument.defaultView.setTimeout(
-				this._blurTimeoutCb.bind(this), timeout);
+		if (!this._pointerEventIntersects(e)) {
+			/* If the even lands outside the menu then we
+			can blur it immediately. If it lands on the menu,
+			then do nothing, sice if we hide the menu here
+			then it can prevent the menu's event handler from
+			being invoked. */
+			this.onblur();
 		}
 		return true;
-	}
-
-	constructor.prototype._blurTimeoutCb = function(e) {
-		if (this._blur_timeout !== null) {
-			this.parent.ownerDocument.defaultView.clearTimeout(
-				this._blur_timeout)
-			this._blur_timeout = null;
-		}
-		this.onblur();
 	}
 
 	constructor.prototype.onContextMenu = function(e) {
@@ -69,17 +49,39 @@ this.ContextMenu = (function() {
 		this.show();
 	}
 
+	/* Returns true if the given pointer event intersects this.container, and
+	false otherwise. Intersecton with the container does not guarantee that
+	a menu item will be selected, since it's possible (though unlikey) for
+	the event to land on a border between menu items. */
+	constructor.prototype._pointerEventIntersects = function(e) {
+		var offset = elementContentOffset(this.container);
+		var events, i ,x, y;
+		if (e.targetTouches) {
+			events = [e];
+			for (i = 0; i < e.targetTouches.length; i++)
+				events.push(e.targetTouches[i]);
+		}
+		else
+			events = [e];
+		for (i = 0; i < events.length; i++) {
+			e = events[i];
+			if (!(e.which && e.which != 1)) {
+				x = e.pageX - offset.x;
+				y = e.pageY - offset.y;
+				if (x >= 0 && x < this.container.offsetWidth &&
+					y >= 0 && y < this.container.offsetHeight)
+					return true;
+			}
+		}
+		return false;
+	}
+
 	constructor.prototype.moveTo = function(x, y) {
 		this.container.style.setProperty("left", x + "px", null);
 		this.container.style.setProperty("top", y + "px", null);
 	}
 
 	constructor.prototype.show = function(position) {
-		if (this._blur_timeout !== null) {
-			this.parent.ownerDocument.defaultView.clearTimeout(
-				this._blur_timeout)
-			this._blur_timeout = null;
-		}
 		var body = this.parent.ownerDocument.body;
 		if (!this.container.parentNode)
 			body.appendChild(this.container);
