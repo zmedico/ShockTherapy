@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Shock Therapy",
-	"version": "1.0.0.9",
+	"version": "1.0.0.11",
 	"app": {
 		"launch": {
 			"local_path": "layout/main.html"
