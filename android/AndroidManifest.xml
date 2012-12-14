@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
 	<!--
 	Don't require android.hardware.touchscreen, for compatibility with devices
 	that have mouse or remote control input, and no touchscreen.

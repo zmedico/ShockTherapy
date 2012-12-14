@@ -38,7 +38,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-@TargetApi(16)
+@TargetApi(17)
 @SuppressLint("SetJavaScriptEnabled")
 public class ShockTherapyActivity extends Activity {
 
@@ -88,7 +88,11 @@ public class ShockTherapyActivity extends Activity {
 			webview.getSettings().getUserAgentString() + " " +
 			ANROID_USER_AGENT);
 		webview.getSettings().setJavaScriptEnabled(true);
-		webview.addJavascriptInterface(new JavaScriptInterface(), "Android");
+		ShockTherapyJavascriptInterface jsinterface = new JavaScriptInterface();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+			jsinterface = new ShockTherapyJavascriptInterfaceWrapper(jsinterface);
+
+		webview.addJavascriptInterface(jsinterface, "Android");
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			/*
@@ -615,7 +619,7 @@ public class ShockTherapyActivity extends Activity {
 		}
 	}
 
-	private class JavaScriptInterface {
+	private class JavaScriptInterface implements ShockTherapyJavascriptInterface {
 
 		JavaScriptInterface() {
 		}
