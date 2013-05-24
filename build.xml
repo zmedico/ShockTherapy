@@ -11,8 +11,9 @@
 <property name="android.ant.target" value="debug"/>
 <property name="chrome_key"  location="../keys/ShockTherapy.pem"/>
 
-<property name="build" location="build"/>
-<property name="dist"  location="dist"/>
+<property name="output" location="."/>
+<property name="build" location="${output}/build"/>
+<property name="dist"  location="${output}/dist"/>
 <property name="android_project_build"  location="${build}/android_project"/>
 <property name="chrome_build"  location="${build}/chrome_app"/>
 <property name="sugar_build"  location="${build}/ShockTherapy.activity"/>
