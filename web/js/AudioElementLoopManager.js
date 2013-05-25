@@ -50,7 +50,7 @@ this.AudioElementLoopManager = (function(global) {
 			this.ownerDocument.defaultView.setTimeout(function() {
 					throw e;
 				}, 0);
-			this.audioError = True;
+			this.audioError = true;
 		}
 	}
 
