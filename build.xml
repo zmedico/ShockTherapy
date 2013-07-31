@@ -3,7 +3,7 @@
 		Plasma globe simulator
 	</description>
 <property name="app_name"  value="${ant.project.name}"/>
-<property name="android_target_id"  value="android-17"/>
+<property name="android_target_id"  value="android-18"/>
 <property name="android_activity"  value="ShockTherapyActivity"/>
 <property name="android_package"  value="com.googlecode.electroshocktherapy"/>
 <property name="android.key.store" location="../keys/ShockTherapy.keystore"/>
