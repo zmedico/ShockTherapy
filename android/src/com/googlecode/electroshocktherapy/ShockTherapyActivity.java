@@ -19,14 +19,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.util.SparseArray;
 //import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,9 +58,7 @@ public class ShockTherapyActivity extends Activity {
 	private static final int WEBVIEW_FILE_OUTPUT_OI_RESULTCODE = RESULT_FIRST_USER + 4;
 
 	private WebView webview;
-	private SoundPool soundPool;
-	private HashMap<String,HashMap<String,Object>> soundNameMap;
-	private SparseArray<HashMap<String, Object>> soundIdMap;
+	private SoundPoolLoopManager soundLoop;
 	private ValueCallback<Uri> webviewFileInputCb;
 	private HashMap<String,String> webviewFileInputRequest;
 	private String webviewFileOutputDataUrl;
@@ -75,6 +70,8 @@ public class ShockTherapyActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		soundLoop = new SoundPoolLoopManager(this, SOUND_RESOURCE);
 
 		webview = (WebView) findViewById(R.id.webview);
 		webview.setWebViewClient(new WebViewClientOverride());
@@ -219,10 +216,7 @@ public class ShockTherapyActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (soundPool != null) {
-			soundPool.release();
-			soundPool = null;
-		}
+		soundLoop.release();
 	}
 
 	@Override
@@ -233,8 +227,7 @@ public class ShockTherapyActivity extends Activity {
 		* sound is playing.
 		*/
 		if (!hasFocus) {
-			if (soundPool != null)
-				soundPool.autoPause();
+			soundLoop.pause();
 
 			/* At least on Android 2.3, there's no blur event
 			if the user presses the home button while the screensaver
@@ -280,48 +273,6 @@ public class ShockTherapyActivity extends Activity {
 		}
 		}
 		webview.loadUrl(uri);
-	}
-
-	private class SPListener implements SoundPool.OnLoadCompleteListener {
-		@Override
-		public void onLoadComplete(SoundPool soundPool,
-			int sampleId, int status) {
-			HashMap<String,Object> sound = soundIdMap.get(sampleId);
-			if (sound == null) {
-				System.err.println(
-					"soundPool loaded unknown sample: " + sampleId);
-			}
-			else if (status == 0) {;
-				Float volume = (Float)sound.get("volume");
-				Integer streamID = soundPool.play(sampleId,
-						volume, volume, 1, -1, 1f);
-				if (streamID == 0)
-					System.err.println("soundPool.play failed");
-				else {
-					sound.put("streamID", streamID);
-					if (((Boolean)sound.get("paused")).booleanValue()) {
-						/* A pause request came in before it finished
-						loading, so pause it now. */
-						soundPool.pause(streamID);
-					}
-				}
-			}
-			else {
-				System.err.println("soundPool.load failed: " +
-					sound.get("name"));
-			}
-		}
-	}
-
-	private SoundPool getSoundPool() {
-		if (soundPool == null)
-		{
-			soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-			soundPool.setOnLoadCompleteListener(new SPListener());
-			soundNameMap = new HashMap<String,HashMap<String,Object>>();
-			soundIdMap = new SparseArray<HashMap<String,Object>>();
-		}
-		return soundPool;
 	}
 
 	public String getItem(String key) {
@@ -610,8 +561,7 @@ public class ShockTherapyActivity extends Activity {
 						navigate to the interactive main view. Pause the
 						sound too, since it has a tendency to keep running
 						here. */
-						if (soundPool != null)
-							soundPool.autoPause();
+						soundLoop.pause();
 						loadUrl(MAIN_URL);
 					}
 				}
@@ -651,46 +601,13 @@ public class ShockTherapyActivity extends Activity {
 			*/
 			volume = (float) (Math.exp(6.908 * volume) / 1000);
 
-			SoundPool soundPool =
-				ShockTherapyActivity.this.getSoundPool();
-			if (soundPool != null)
-			{
-
-				HashMap<String,Object> sound = soundNameMap.get(name);
-				if (sound == null) {
-					sound = new HashMap<String,Object>();
-					soundNameMap.put(name, sound);
-					sound.put("name", name);
-					sound.put("paused", Boolean.FALSE);
-					sound.put("volume", Float.valueOf(volume));
-					Integer soundID = soundPool.load(
-						ShockTherapyActivity.this, SOUND_RESOURCE, 1);
-					sound.put("soundID", soundID);
-					soundIdMap.put(soundID, sound);
-				}
-				sound.put("paused", Boolean.FALSE);
-				sound.put("volume", Float.valueOf(volume));
-
-				Integer streamID = (Integer)sound.get("streamID");
-				if (streamID != null) {
-					soundPool.setVolume(streamID, volume, volume);
-					soundPool.resume(streamID);
-				}
-			}
+			soundLoop.setVolume(volume);
+			soundLoop.play();
 		}
 
 		@SuppressWarnings("unused")
 		public void stopSoundLoop(String name) {
-			if (soundPool != null)
-			{
-				HashMap<String,Object> sound = soundNameMap.get(name);
-				if (sound != null) {
-					sound.put("paused", Boolean.TRUE);
-					Integer streamID = (Integer)sound.get("streamID");
-					if (streamID != null)
-						soundPool.pause(streamID);
-				}
-			}
+			soundLoop.pause();
 		}
 
 		@SuppressWarnings("unused")
