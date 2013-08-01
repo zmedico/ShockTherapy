@@ -66,8 +66,7 @@ public class AudioTrackLoopManager {
 
 	public void pause() {
 		if (audioTrack != null) {
-			audioTrack.pause();
-			audioTrack.flush();
+			audioTrack.stop();
 		}
 	}
 
