@@ -8,15 +8,18 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.util.Log;
 
 public class AudioTrackLoopManager {
 
+	private static final String TAG =
+		"com.googlecode.electroshocktherapy.AudioTrackLoopManager";
+	private static final int WAV_HEADER_SIZE = 44;
 	private AudioTrack audioTrack;
 	private float volume;
 	private Context context;
 	private int resId;
 	private int loopEnd;
-	private int bytesPerSample = 2;  // 16BIT
 
 	public AudioTrackLoopManager(Context context, int resId) {
 		this.context = context;
@@ -31,11 +34,9 @@ public class AudioTrackLoopManager {
 					context.getResources().openRawResourceFd(resId);
 				int dataLength = (int)afd.getDeclaredLength();
 				InputStream in = afd.createInputStream();
-				// skip the WAV header
-				in.skip(44);
-				dataLength -= 44;
-				int bytesPerSample = 2; // 16BIT
-				loopEnd = dataLength / bytesPerSample;
+				in.skip(WAV_HEADER_SIZE);
+				dataLength -= WAV_HEADER_SIZE;
+				loopEnd = dataLength / 2; // 2 bytes per sample (16BIT)
 				audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
 					44100, AudioFormat.CHANNEL_OUT_MONO,
 					AudioFormat.ENCODING_PCM_16BIT, dataLength,
@@ -43,14 +44,18 @@ public class AudioTrackLoopManager {
 				byte[] buf = new byte[dataLength];
 				int offset, count, written;
 				offset = 0;
-				while ((count = in.read(buf, offset, dataLength - offset)) != -1)
+				while (offset < dataLength &&
+					(count = in.read(buf, offset, dataLength - offset)) != -1)
 					offset += count;
 				written = audioTrack.write(buf, 0, dataLength);
+				if (written != dataLength)
+					Log.e(TAG, String.format("audioTrack.write() returned %d",
+						written));
 				in.close();
 				afd.close();
 			}
 			catch (IOException e) {
-				e.printStackTrace();
+				Log.e(TAG, "error reading resource", e);
 				audioTrack = null;
 			}
 		}
