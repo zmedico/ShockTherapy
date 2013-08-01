@@ -58,7 +58,7 @@ public class ShockTherapyActivity extends Activity {
 	private static final int WEBVIEW_FILE_OUTPUT_OI_RESULTCODE = RESULT_FIRST_USER + 4;
 
 	private WebView webview;
-	private SoundPoolLoopManager soundLoop;
+	private AudioTrackLoopManager soundLoop;
 	private ValueCallback<Uri> webviewFileInputCb;
 	private HashMap<String,String> webviewFileInputRequest;
 	private String webviewFileOutputDataUrl;
@@ -71,7 +71,7 @@ public class ShockTherapyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		soundLoop = new SoundPoolLoopManager(this, SOUND_RESOURCE);
+		soundLoop = new AudioTrackLoopManager(this, SOUND_RESOURCE);
 
 		webview = (WebView) findViewById(R.id.webview);
 		webview.setWebViewClient(new WebViewClientOverride());

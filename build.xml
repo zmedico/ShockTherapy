@@ -217,7 +217,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	<mkdir dir="${build}/util/audio"/>
 	<javac srcdir="util/audio" destdir="${build}/util/audio" includeantruntime="false"/>
 	<java classname="RepeatAudioLoop" failonerror="true">
-		<arg value="20"/>
+		<arg value="1"/>
 		<arg file="web/sounds/electric_discharge.wav"/>
 		<arg file="${android_project_build}/res/raw/electric_discharge.wav"/>
 		<classpath>
