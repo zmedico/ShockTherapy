@@ -11,6 +11,8 @@
 <property name="android.ant.target" value="debug"/>
 <property name="chrome_key"  location="../keys/ShockTherapy.pem"/>
 
+<property environment="env" />
+<property name="PATH" value="${env.PATH}" />
 <property name="output" location="."/>
 <property name="build" location="${output}/build"/>
 <property name="dist"  location="${output}/dist"/>
@@ -45,17 +47,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	importClass(java.io.File);
 	importClass(java.lang.System);
 
-	var envKeys = System.getenv().keySet().toArray();
-	var path = null;
-	for (var i = 0; i < envKeys.length; i++)
-		if (envKeys[i].toUpperCase() == "PATH") {
-			path = System.getenv(envKeys[i]).split(File.pathSeparator);
-			break;
-		}
-
-	if (path === null)
-		throw "PATH variable not found";
-
+	var path = new String(project.getProperty("PATH")).split(File.pathSeparator);
 	var resolvePath = function(filename) {
 		var f = new File(filename);
 		if (f.isAbsolute()) {
