@@ -35,6 +35,9 @@
 	else
 		html.push("Touch: no\n");
 	html.push("</p>\n");
+	html.push("<p>\n");
+	html.push("SVG: " + !!(window.SVGSVGElement) + "\n");
+	html.push("</p>\n");
 	var div = document.createElement("div");
 	div.innerHTML = html.join("");
 	document.body.appendChild(div);
