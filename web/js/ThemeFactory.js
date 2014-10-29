@@ -1,9 +1,9 @@
 
-require([
+define([
 	"Theme",
-], function() {
+], function(Theme) {
 
-this.ThemeFactory = (function(global) {
+	var global = this;
 
 	var constructor = function(uri) {
 		this.uri = uri;
@@ -78,7 +78,5 @@ this.ThemeFactory = (function(global) {
 	}
 
 	return constructor;
-
-}(this));
 
 });

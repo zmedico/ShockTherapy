@@ -1,5 +1,5 @@
 
-require([
+define([
 	"CheckboxWidget",
 	"ColorChooser",
 	"ModalDialog",
@@ -11,9 +11,11 @@ require([
 	"ShockTherapyDefaults",
 	"simulateClick",
 	"SliderWidget",
-], function() {
+], function(CheckboxWidget, ColorChooser, ModalDialog, openFileDialog,
+	saveUrl, RadioGroupWidget, ShockTherapy, ShockTherapyActionBar,
+	ShockTherapyDefaults, simulateClick, SliderWidget) {
 
-this.ShockTherapyOptionsView = (function(global) {
+	var global = this;
 
 	var constructor = function(uri, actionBar,
 		config, resourceFactory, resources, reloadTheme) {
@@ -395,8 +397,6 @@ this.ShockTherapyOptionsView = (function(global) {
 	}
 
 	return constructor;
-
-})(this);
 
 });
 

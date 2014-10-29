@@ -1,12 +1,10 @@
 
-require([
+define([
 	"elementContentOffset",
 	"EventAdapter",
 	"extend",
 	"DrawableCanvas"
-], function() {
-
-this.CanvasWidget = (function() {
+], function(elementContentOffset, EventAdapter, extend, DrawableCanvas) {
 
 	var constructor = function(drawable, element)
 	{
@@ -55,7 +53,5 @@ this.CanvasWidget = (function() {
 	constructor.prototype.onContextMenu = function(e) {}
 
 	return constructor;
-
-}());
 
 });

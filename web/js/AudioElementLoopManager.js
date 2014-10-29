@@ -1,5 +1,5 @@
 
-this.AudioElementLoopManager = (function(global) {
+define(function() {
 
 	var constructor = function(ownerDocument, sources)
 	{
@@ -89,4 +89,4 @@ this.AudioElementLoopManager = (function(global) {
 
 	return constructor;
 
-}(this));
+});

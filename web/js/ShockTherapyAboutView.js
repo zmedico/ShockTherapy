@@ -1,5 +1,7 @@
 
-this.ShockTherapyAboutView = (function(global) {
+define(function() {
+
+	var global = this;
 
 	var constructor = function(uri, actionBar) {
 		this._uri = uri;
@@ -62,4 +64,4 @@ this.ShockTherapyAboutView = (function(global) {
 
 	return constructor;
 
-})(this);
+});

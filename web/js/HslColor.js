@@ -1,9 +1,7 @@
 
-require([
+define([
 	"colorsys"
-], function() {
-
-this.HslColor = (function() {
+], function(colorsys) {
 
 	/*
 	 * Values are 0.0 to 1.0.
@@ -51,7 +49,5 @@ this.HslColor = (function() {
 	}
 
 	return constructor;
-
-}());
 
 });

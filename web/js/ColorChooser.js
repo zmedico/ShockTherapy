@@ -1,10 +1,8 @@
 
-require([
+define([
 	"HslColor",
 	"ColorSlider"
-], function() {
-
-this.ColorChooser = (function() {
+], function(HslColor, ColorSlider) {
 
 	var constructor = function(container, resources)
 	{
@@ -106,7 +104,5 @@ this.ColorChooser = (function() {
 	};
 
 	return constructor;
-
-}());
 
 });

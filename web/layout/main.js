@@ -3,10 +3,9 @@ loadTheme("..", function (shockTherapyConfig,
 	resourceFactory, resources) {
 
 	require([
-		"require",
 		"ShockTherapy",
 		"ShockTherapyDefaults"
-	], function() {
+	], function(ShockTherapy, ShockTherapyDefaults) {
 
 	var getElementById, global;
 	global = this;
@@ -78,7 +77,8 @@ loadTheme("..", function (shockTherapyConfig,
 				require([
 					"ShockTherapyAboutView",
 					"ShockTherapyActionBar"
-				], function() {
+				], function(ShockTherapyAboutView,
+					ShockTherapyActionBar) {
 						if (actionBar === null)
 							actionBar = new ShockTherapyActionBar();
 						aboutView =
@@ -95,7 +95,8 @@ loadTheme("..", function (shockTherapyConfig,
 				require([
 					"ShockTherapyActionBar",
 					"ShockTherapyOptionsView"
-				], function() {
+				], function(ShockTherapyActionBar,
+					ShockTherapyOptionsView) {
 						if (actionBar === null)
 							actionBar = new ShockTherapyActionBar();
 						optionsView = new ShockTherapyOptionsView(
@@ -113,7 +114,8 @@ loadTheme("..", function (shockTherapyConfig,
 				require([
 					"ShockTherapyScreenSaverView",
 					"ShockTherapyWidget"
-				], function() {
+				], function(ShockTherapyScreenSaverView,
+					ShockTherapyWidget) {
 						if (shockTherapyWidget === null)
 							initShockTherapyWidget();
 						screenSaverView =
@@ -130,7 +132,7 @@ loadTheme("..", function (shockTherapyConfig,
 				require([
 					"ShockTherapyMainView",
 					"ShockTherapyWidget"
-				], function() {
+				], function(ShockTherapyMainView, ShockTherapyWidget) {
 						if (shockTherapyWidget === null)
 							initShockTherapyWidget();
 						mainView = new ShockTherapyMainView(shockTherapyWidget);

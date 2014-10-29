@@ -1,4 +1,5 @@
 
+define(function() {
 function elementContentOffset(element)
 {
 
@@ -11,3 +12,5 @@ function elementContentOffset(element)
 
 	return {x: x, y: y};
 }
+return elementContentOffset;
+});

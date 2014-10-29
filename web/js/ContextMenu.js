@@ -1,9 +1,7 @@
 
-require([
+define([
 	"elementContentOffset"
-], function() {
-
-this.ContextMenu = (function() {
+], function(elementContentOffset) {
 
 	var constructor = function(container, parent)
 	{
@@ -102,7 +100,4 @@ this.ContextMenu = (function() {
 	}
 
 	return constructor;
-
-}());
-
 });

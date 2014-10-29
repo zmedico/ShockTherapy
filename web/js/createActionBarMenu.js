@@ -1,9 +1,9 @@
 
-require([
+define([
 	"ContextMenu"
-], function() {
+], function(ContextMenu) {
 
-this.createActionBarMenu = (function(global) {
+	var global = this;
 	var createActionBarMenu = function(actions, positionMenu) {
 
 		var doc = global.window.document;
@@ -62,7 +62,5 @@ this.createActionBarMenu = (function(global) {
 	}
 
 	return createActionBarMenu;
-
-})(this);
 
 });

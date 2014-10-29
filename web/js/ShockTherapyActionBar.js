@@ -1,10 +1,10 @@
 
-require([
+define([
 	"createActionBarMenu",
 	"elementContentOffset",
-], function() {
+], function(createActionBarMenu, elementContentOffset) {
 
-this.ShockTherapyActionBar = (function(global) {
+	var global = this;
 
 	var constructor = function() {
 		var getElementById = global.window.document.getElementById.bind(
@@ -138,7 +138,5 @@ this.ShockTherapyActionBar = (function(global) {
 	}
 
 	return constructor;
-
-})(this);
 
 });

@@ -1,5 +1,6 @@
 
-function addPointerEventListener(canvas, listener, useCapture)
+define(function() {
+var addPointerEventListener = function(canvas, listener, useCapture)
 {
 
 	var callbacks = {};
@@ -99,3 +100,6 @@ function addPointerEventListener(canvas, listener, useCapture)
 
 	return remove;
 }
+
+return addPointerEventListener;
+});

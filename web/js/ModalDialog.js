@@ -1,10 +1,8 @@
 
-require([
+define([
 	"EventAdapter",
 	"extend"
-], function() {
-
-this.ModalDialog = (function() {
+], function(EventAdapter, extend) {
 
 	var constructor = function(content, options)
 	{
@@ -123,7 +121,5 @@ this.ModalDialog = (function() {
 	}
 
 	return constructor;
-
-}());
 
 });

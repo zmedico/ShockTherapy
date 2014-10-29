@@ -1,30 +1,9 @@
-
-// Similar to RequireJS. Set require.path to the base path for scripts,
-// and then call require([name1, name2,...], callback).
+// Similar to RequireJS.
 this.require = (function(global) {
+	var loadedModules = {};
 	var require = function(names, callback) {
-		var callbackID, head, i, info, keys, name, element, refs;
-
-		if (require.path === null) {
-			// use the src attribute of the require.js script tag
-			(function() {
-				var scripts = global.document.getElementsByTagName("script");
-				var srcPattern = /(^|^.*\/)require.js$/;
-				var match, path;
-				for (var i = scripts.length - 1; i >= 0 ; i--) {
-					match = srcPattern.exec(scripts[i].src);
-					if (match !== null) {
-						path = match[1];
-						if (path.length > 0)
-							// strip trailing slash
-							path = path.substr(0, path.length - 1);
-						require.path = path;
-						return
-					}
-				}
-				throw "failed to locate require.js script tag"
-			})();
-		}
+		//console.log("require names = " + JSON.stringify(names));
+		var args, callbackID, head, i, info, keys, name, element, refs;
 
 		head = global.window.document.head;
 		refs = {};
@@ -34,88 +13,108 @@ this.require = (function(global) {
 			name = names[i];
 			match = require._srcPattern.exec(name);
 			if (match === null)
-				throw "invalid require input: " + name
+				throw "invalid require input: " + name;
 			modulePath = match[1];
 			moduleName = match[2];
-			if (!global.hasOwnProperty(moduleName)) {
+			if (!loadedModules.hasOwnProperty(moduleName)) {
 				refs[moduleName] = modulePath;
 				keys.push(moduleName);
 			}
 		}
-		if (keys.length == 0)
-			callback.apply(global);
+		if (keys.length === 0) {
+			args = [];
+			for (i = 0; i < names.length; i++)
+				args.push(loadedModules[names[i]]);
+			//console.log("require callback names: " + JSON.stringify(names));
+			callback.apply(global, args);
+		}
 		else {
 			callbackID = require.callbackID++;
-			info = {callback:callback, refs:refs};
-			for (i = 0; i < keys.length; i++)
-			{
+			info = {
+				callback: callback,
+				refs: refs,
+				names: names
+			};
+			for (i = 0; i < keys.length; i++) {
 				name = keys[i];
 				if (require.pendingElements.hasOwnProperty(name)) {
 					require.pendingElements[name][callbackID] = info;
 					continue;
 				}
 				element = document.createElement("script");
-				element.type = "text/javascript";
+				element.setAttribute("type", "text/javascript");
+				element.setAttribute("async", "true");
 				modulePath = refs[name];
 				var src;
 				if (modulePath)
-					src = modulePath + name
+					src = modulePath + name;
 				else
-					src = name
+					src = name;
 				if (require.path.length > 0)
 					element.src = require.path + "/" + src + ".js";
 				else
 					element.src = src + ".js";
 				head.appendChild(element);
-				if (global.hasOwnProperty(name))
-				{
+				if (loadedModules.hasOwnProperty(name)) {
 					//Handle synchronous load, though it may never happen?
 					delete refs[name];
-				}
-				else {
+				} else {
 					require.pendingElements[name] = {};
 					require.pendingElements[name][callbackID] = info;
 					require.remainingCallbacks += 1;
 					element.onload = require.listener.bind(global, element);
 				}
 			}
-			if (Object.keys(refs).length == 0) {
+			if (Object.keys(refs).length === 0) {
 				// All elements loaded synchronously.
-				callback.apply(global);
+				args = [];
+				for (i = 0; i < names.length; i++)
+					args.push(loadedModules[names[i]]);
+				//console.log("require callback names: " + JSON.stringify(names));
+				callback.apply(global, args);
 			}
 		}
 	};
 
 	// base path for scripts
 	require.path = null;
+	require._srcModRegex = /.*\/(.*)\.[^.]*/;
 	require._srcPattern = /^(.*\/)?([^\/]*)$/;
 	require.callbackID = 0;
 	require.remainingCallbacks = 0;
-	require.pendingElements = {}
+	require.loadedModules = loadedModules;
+	require.pendingElements = {};
 	require.pollNames = {};
-	require.previousKeysHash = null
+	require.previousKeysHash = null;
 	require.timeout = 0;
 	require.timeoutInitial = 0;
 	require.timeoutMax = -1;
 	require.listener = function(element) {
+		var callingModule = require._srcModRegex.exec(element.src)[1];
+		//console.log("onload: " + element.src + " callingModule: " + callingModule);
 		require.remainingCallbacks -= 1;
-		var callbackIDs, callbacks, i, info, j,
+		var args, callbackIDs, callbacks, i, info, j,
 			name, pollNames, remove, src;
-		if (element != null) {
+		if (element !== null) {
 			src = element.src;
 			element.onload = null;
-			name = src.substring(src.lastIndexOf("/")+1, src.lastIndexOf("."));
+			name = src.substring(src.lastIndexOf("/") + 1, src.lastIndexOf("."));
 			require.pollNames[name] = true;
+		}
+
+		if (!require.loadedModules.hasOwnProperty(callingModule) &&
+			window.hasOwnProperty(callingModule)) {
+			require.loadedModules[callingModule] = window[callingModule];
 		}
 
 		/* Execute as many callbacks as possible in a loop, since
 		 * each call can satisfy dependencies for the next loop.
 		 */
 		do {
-			remove = []
+			remove = [];
 			pollNames = Object.keys(require.pollNames);
 			for (i = 0; i < pollNames.length; i++)
-				if (global.hasOwnProperty(pollNames[i])) {
+				if (loadedModules.hasOwnProperty(pollNames[i])) {
 					name = pollNames[i];
 					delete require.pollNames[name];
 					callbacks = require.pendingElements[name];
@@ -124,17 +123,22 @@ this.require = (function(global) {
 					for (j = 0; j < callbackIDs.length; j++) {
 						info = callbacks[callbackIDs[j]];
 						delete info.refs[name];
-						if (Object.keys(info.refs).length == 0)
+						if (Object.keys(info.refs).length === 0)
 							remove.push(info);
 					}
 				}
 
-			for (i = 0; i < remove.length; i++)
-				remove[i].callback.apply(global);
+			for (i = 0; i < remove.length; i++) {
+				args = [];
+				for (j = 0; j < remove[i].names.length; j++)
+					args.push(loadedModules[remove[i].names[j]]);
+				//console.log("require callback names: " + JSON.stringify(remove[i].names));
+				remove[i].callback.apply(global, args);
+			}
 		}
 		while (remove.length > 0);
 
-		if (require.remainingCallbacks == 0) {
+		if (require.remainingCallbacks === 0) {
 			/* This timeout section should only be needed if there
 			 * are registered callbacks that complete asynchronously,
 			 * or if require() has been called with broken scripts
@@ -147,31 +151,75 @@ this.require = (function(global) {
 				keys.sort();
 				var keysHash = keys.join(" ");
 				if (require.timeoutMax < 0)
-					throw "require timeout: " + keysHash
+					throw "require timeout: " + keysHash;
 				if (require.previousKeysHash === null ||
 					require.previousKeysHash != keysHash) {
 					require.timeout = require.timeoutInitial;
-				}
-				else {
-					if (require.timeout == 0)
+				} else {
+					if (require.timeout === 0)
 						require.timeout = 1;
 					else if (require.timeout >= require.timeoutMax)
-						throw "require timeout: " + keysHash
+						throw "require timeout: " + keysHash;
 					require.timeout *= 2;
 				}
 
 				global.window.setTimeout(function() {
-						throw "require retry: " + keysHash;
-					}, 0);
+					throw "require retry: " + keysHash;
+				}, 0);
 
 				require.previousKeysHash = keysHash;
 				require.remainingCallbacks += 1;
 				global.window.setTimeout(function(evt) {
-						require.listener(null);
-					}, require.timeout);
+					require.listener(null);
+				}, require.timeout);
 			}
 		}
-	}
+	};
 
 	return require;
 }(this));
+
+this.define = (function(global) {
+
+	var define = function(names, callback) {
+		if (!(names instanceof Array)) {
+			callback = names;
+			names = [];
+		}
+		var callingModule = require._srcModRegex.exec(document.currentScript.src)[1];
+		//console.log('define callingModule: ' + callingModule + 'names: ' + JSON.stringify(names));
+		require(names, function() {
+			//console.log('define require callback: ' + JSON.stringify(names));
+			require.loadedModules[callingModule] = callback.apply(global, arguments);
+			window[callingModule] = require.loadedModules[callingModule];
+		});
+	};
+	return define;
+})(this);
+
+(function() {
+	var scripts = document.getElementsByTagName("script");
+	var srcPattern = /(^|^.*\/)require.js$/;
+	var match, path;
+	for (var i = scripts.length - 1; i >= 0; i--) {
+		match = srcPattern.exec(scripts[i].src);
+		if (match !== null) {
+			path = match[1];
+			if (path.length > 0)
+			// strip trailing slash
+				path = path.substr(0, path.length - 1);
+			require.path = path;
+			var dataMain =
+				scripts[i].getAttribute("data-main");
+			if (dataMain !== null) {
+				var dataMainElement = document.createElement("script");
+				dataMainElement.setAttribute("type", "text/javascript");
+				dataMainElement.setAttribute("async", "true");
+				dataMainElement.setAttribute("src", dataMain + ".js");
+				document.head.appendChild(dataMainElement);
+			}
+			return;
+		}
+	}
+	throw "failed to locate require.js script tag";
+})();

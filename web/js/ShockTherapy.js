@@ -1,9 +1,7 @@
 
-require([
-	"require"
-], function() {
+define(function() {
 
-this.ShockTherapy = (function(global) {
+	var global = this;
 
 	var module = {
 
@@ -24,7 +22,7 @@ this.ShockTherapy = (function(global) {
 				ShockTherapy.android.viewChanged(uri);
 			}
 			else if (ShockTherapy.sugar) {
-				require(["ShockTherapySugarRequest"], function() {
+				require(["ShockTherapySugarRequest"], function(ShockTherapySugarRequest) {
 					var req = new ShockTherapySugarRequest();
 					req.open("GET", "/ShockTherapy.viewChanged:" + uri);
 					req.send(null);
@@ -43,7 +41,5 @@ this.ShockTherapy = (function(global) {
 		module.sugar = true;
 
 	return module;
-
-}(this));
 
 });

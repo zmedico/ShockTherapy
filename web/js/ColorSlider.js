@@ -1,10 +1,8 @@
 
-require([
+define([
 	"SliderWidget",
 	"extend"
-], function() {
-
-this.ColorSlider = (function() {
+], function(SliderWidget, extend) {
 
 	var constructor = function(element, resources)
 	{
@@ -34,7 +32,5 @@ this.ColorSlider = (function() {
 	});
 
 	return constructor;
-
-}());
 
 });

@@ -1,3 +1,5 @@
+
+define(function() {
 var ShockTherapyDefaults = {
 	"Sound": true,
 	"SoundVolume": 50.0,
@@ -11,3 +13,5 @@ var ShockTherapyDefaults = {
 	"Duration": 50.0,
 	"MenuButton" : false,
 };
+return ShockTherapyDefaults;
+});

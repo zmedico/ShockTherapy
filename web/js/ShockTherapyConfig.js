@@ -1,12 +1,11 @@
 
-require([
+define([
 	"extend",
-	"require",
 	"ShockTherapy",
 	"ShockTherapyReadonlyConfig"
-], function() {
+], function(extend, ShockTherapy, ShockTherapyReadonlyConfig) {
 
-this.ShockTherapyConfig = (function(global) {
+	var global = this;
 
 	var constructor = function(prefix)
 	{
@@ -28,7 +27,8 @@ this.ShockTherapyConfig = (function(global) {
 	constructor.prototype.load = function(callback) {
 		this._callback = callback;
 		if (this.sugar) {
-			require(["ShockTherapySugarRequest"], this._load.bind(this));
+			require(["ShockTherapySugarRequest"],
+				this._loadSugar.bind(this));
 		}
 		else if (this.chrome !== null) {
 			this.chrome.storage.local.get(null,
@@ -54,7 +54,7 @@ this.ShockTherapyConfig = (function(global) {
 		}
 	}
 
-	constructor.prototype._load = function() {
+	constructor.prototype._loadSugar = function(ShockTherapySugarRequest) {
 		global.XMLHttpRequest = ShockTherapySugarRequest;
 		this._req = new ShockTherapySugarRequest()
 		this._req.onreadystatechange = this._loadComplete.bind(this);
@@ -255,7 +255,5 @@ this.ShockTherapyConfig = (function(global) {
 	}
 
 	return constructor;
-
-}(this));
 
 });

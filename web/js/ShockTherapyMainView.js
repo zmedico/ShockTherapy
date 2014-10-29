@@ -1,12 +1,13 @@
 
-require([
+define([
 	"ContextMenu",
 	"createActionBarMenu",
 	"elementContentOffset",
 	"ShockTherapyDefaults",
-], function() {
+], function(ContextMenu, createActionBarMenu,
+	elementContentOffset, ShockTherapyDefaults) {
 
-this.ShockTherapyMainView = (function(global) {
+	var global = this;
 
 	var constructor = function(widget) {
 		this._widget = widget;
@@ -151,7 +152,5 @@ this.ShockTherapyMainView = (function(global) {
 	}
 
 	return constructor;
-
-})(this);
 
 });

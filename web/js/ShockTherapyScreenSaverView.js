@@ -1,9 +1,9 @@
 
-require([
+define([
 	"ShockTherapy"
-], function() {
+], function(ShockTherapy) {
 
-this.ShockTherapyScreenSaverView = (function(global) {
+	var global = this;
 
 	var constructor = function(widget) {
 		this._widget = widget;
@@ -130,7 +130,5 @@ this.ShockTherapyScreenSaverView = (function(global) {
 	}
 
 	return constructor;
-
-})(this);
 
 });

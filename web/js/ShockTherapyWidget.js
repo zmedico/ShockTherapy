@@ -1,5 +1,5 @@
 
-require([
+define([
 	"addPointerEventListener",
 	"extend",
 	"CanvasWidget",
@@ -7,9 +7,10 @@ require([
 	"requestAnimFrame",
 	"ShockTherapy",
 	"ShockTherapyDefaults"
-], function() {
+], function(addPointerEventListener, extend, CanvasWidget, ElectricArc,
+	requestAnimFrame, ShockTherapy, ShockTherapyDefaults) {
 
-this.ShockTherapyWidget = (function(global) {
+	var global = this;
 
 	var constructor = function(baseuri, config, element)
 	{
@@ -69,7 +70,8 @@ this.ShockTherapyWidget = (function(global) {
 		if (this.android) {
 		}
 		else if (this.AudioContext) {
-			require(["WebAudioLoopManager"], (function() {
+			require(["WebAudioLoopManager"],
+			(function(WebAudioLoopManager) {
 				this.audio = new WebAudioLoopManager(
 					new this.AudioContext(),
 					[
@@ -83,7 +85,8 @@ this.ShockTherapyWidget = (function(global) {
 			}).bind(this));
 		}
 		else {
-			require(["AudioElementLoopManager"], (function() {
+			require(["AudioElementLoopManager"],
+				(function(AudioElementLoopManager) {
 				this.audio = new AudioElementLoopManager(
 					this.canvas.ownerDocument,
 					[
@@ -338,7 +341,5 @@ this.ShockTherapyWidget = (function(global) {
 	}
 
 	return constructor;
-
-}(this));
 
 });

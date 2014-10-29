@@ -1,9 +1,10 @@
 
-require([
+define([
 	"simulateClick"
-], function() {
+], function(simulateClick) {
 
-this.saveUrl = (function(global) {
+	var global = this;
+
 	var saveUrl = function(url, filename) {
 		var link = global.window.document.createElement("a");
 		link.href = url;
@@ -11,6 +12,5 @@ this.saveUrl = (function(global) {
 		simulateClick(link);
 	};
 	return saveUrl;
-}(this));
 
 });

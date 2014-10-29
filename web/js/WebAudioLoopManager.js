@@ -1,5 +1,7 @@
 
-this.WebAudioLoopManager = (function(global) {
+define(function() {
+
+	var global = this;
 
 	var constructor = function(context, sources)
 	{
@@ -81,4 +83,4 @@ this.WebAudioLoopManager = (function(global) {
 
 	return constructor;
 
-}(this));
+});

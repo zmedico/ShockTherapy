@@ -1,12 +1,10 @@
 
-require([
+define([
 	"extend",
 	"HslColor",
 	"colorsys",
 	"SliderDrawable"
-], function() {
-
-this.ColorSliderDrawable = (function() {
+], function(extend, HslColor, colorsys, SliderDrawable) {
 
 	var constructor = function(resources)
 	{
@@ -131,7 +129,4 @@ this.ColorSliderDrawable = (function() {
 	}
 
 	return constructor;
-
-}());
-
 });

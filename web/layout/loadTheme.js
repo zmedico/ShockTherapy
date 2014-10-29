@@ -6,7 +6,7 @@ this.loadTheme = (function(global) {
 	require([
 		"ShockTherapyConfig",
 		"ThemeFactory"
-	], function() {
+	], function(ShockTherapyConfig, ThemeFactory) {
 
 		var shockTherapyConfig = new ShockTherapyConfig("shockTherapy");
 		shockTherapyConfig.load(

@@ -1,6 +1,6 @@
 // requestAnim shim layer by Paul Irish
-this.requestAnimFrame = (function(global){
-	var win = global.window;
+define(function(){
+	var win = window;
 	return  win.requestAnimationFrame       ||
 			win.webkitRequestAnimationFrame ||
 			win.mozRequestAnimationFrame    ||
@@ -9,4 +9,4 @@ this.requestAnimFrame = (function(global){
 			function(/* function */ callback, /* DOMElement */ element){
 				win.setTimeout(callback, 1000 / 60);
 			};
-})(this);
+});

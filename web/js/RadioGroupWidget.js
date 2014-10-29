@@ -1,10 +1,8 @@
 
-require([
+define([
 	"RadioButtonWidget",
 	"extend",
-], function() {
-
-this.RadioGroupWidget = (function() {
+], function(RadioButtonWidget, extend) {
 
 	var constructor = function(container, resources, choices) {
 		this.container = container;
@@ -75,7 +73,5 @@ this.RadioGroupWidget = (function() {
 	}
 
 	return constructor;
-
-}());
 
 });

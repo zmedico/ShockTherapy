@@ -1,5 +1,7 @@
 
-this.SliderDrawable = function(resources)
+define(function() {
+
+var SliderDrawable = function(resources)
 {
 	this.resources = resources;
 	this.model = null;
@@ -81,3 +83,7 @@ SliderDrawable.prototype.mapValueFromPointer = function(p)
 	var ratio = (x - xMin) / (xMax - xMin);
 	return this.model.min + Math.floor(ratio * (this.model.max - this.model.min));
 }
+
+return SliderDrawable;
+
+});

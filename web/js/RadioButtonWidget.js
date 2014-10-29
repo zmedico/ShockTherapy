@@ -1,10 +1,8 @@
 
-require([
+define([
 	"CheckboxWidget",
 	"extend",
-], function() {
-
-this.RadioButtonWidget = (function() {
+], function(CheckboxWidget, extend) {
 
 	var constructor = function(element, resources)
 	{
@@ -17,5 +15,4 @@ this.RadioButtonWidget = (function() {
 
 	return constructor;
 
-}());
 });

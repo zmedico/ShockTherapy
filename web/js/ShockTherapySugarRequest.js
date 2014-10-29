@@ -3,12 +3,12 @@
  * http://code.google.com/p/pywebkitgtk/wiki/HowDoI
  */
 
-require([
+define([
 	"PseudoXMLHttpRequest",
 	"extend"
-], function() {
+], function(PseudoXMLHttpRequest, extend) {
 
-this.ShockTherapySugarRequest = (function(global) {
+	var global = this;
 
 	var constructor = function() {
 		constructor.base.constructor.call(this);
@@ -75,7 +75,5 @@ this.ShockTherapySugarRequest = (function(global) {
 	}
 
 	return constructor;
-
-}(this));
 
 });

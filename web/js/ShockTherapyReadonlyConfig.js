@@ -1,5 +1,5 @@
 
-this.ShockTherapyReadonlyConfig = (function(global) {
+define(function() {
 
 	var constructor = function(data)
 	{
@@ -70,4 +70,4 @@ this.ShockTherapyReadonlyConfig = (function(global) {
 
 	return constructor;
 
-}(this));
+});

@@ -1,5 +1,7 @@
 
-this.RadioButtonDrawable = function(resources)
+define(function() {
+
+var RadioButtonDrawable = function(resources)
 {
 	this.resources = resources;
 	this.model = null;
@@ -65,3 +67,6 @@ RadioButtonDrawable.prototype.draw = function(context)
 		context.closePath();
 	}
 }
+return RadioButtonDrawable;
+});
+

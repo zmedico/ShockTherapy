@@ -1,12 +1,11 @@
 
-require([
+define([
 	"addPointerEventListener",
 	"CanvasWidget",
 	"CheckboxModel",
 	"extend",
-], function() {
-
-this.CheckboxWidget = (function() {
+], function(addPointerEventListener, CanvasWidget,
+	CheckboxModel, extend) {
 
 	var constructor = function(element, resources)
 	{
@@ -61,7 +60,5 @@ this.CheckboxWidget = (function() {
 	}
 
 	return constructor;
-
-}());
 
 });

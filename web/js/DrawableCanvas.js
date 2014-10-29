@@ -1,5 +1,5 @@
 
-this.DrawableCanvas = (function() {
+define(function() {
 
 	var constructor = function(drawable, element)
 	{
@@ -56,4 +56,4 @@ this.DrawableCanvas = (function() {
 
 	return constructor;
 
-}());
+});

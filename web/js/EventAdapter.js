@@ -1,5 +1,8 @@
 
-this.EventAdapter = (function(global) {
+define(function() {
+
+	var global = this;
+
 	var constructor = function(source)
 	{
 		this.source = source;
@@ -42,4 +45,5 @@ this.EventAdapter = (function(global) {
 	}
 
 	return constructor;
-}(this));
+
+});

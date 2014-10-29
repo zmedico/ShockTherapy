@@ -1,10 +1,9 @@
 
-require([
+define([
 	"regExpEscape",
-	"require",
-], function() {
+], function(regExpEscape) {
 
-this.Theme = (function(global) {
+	var global = this;
 
 	var constructor = function(profiles, profileKey, uri) {
 		this._profiles = profiles;
@@ -255,7 +254,5 @@ this.Theme = (function(global) {
 	}
 
 	return constructor;
-
-}(this));
 
 });

@@ -1,12 +1,11 @@
 
-require([
+define([
 	"addPointerEventListener",
 	"CanvasWidget",
 	"extend",
 	"SliderModel"
-], function() {
-
-this.SliderWidget = (function() {
+], function(addPointerEventListener, CanvasWidget,
+	extend, SliderModel) {
 
 	var constructor = function(element, resources)
 	{
@@ -97,7 +96,5 @@ this.SliderWidget = (function() {
 	}
 
 	return constructor;
-
-}());
 
 });

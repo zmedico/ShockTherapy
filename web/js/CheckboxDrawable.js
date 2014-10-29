@@ -1,5 +1,7 @@
 
-this.CheckboxDrawable = function(resources)
+define(function() {
+
+var CheckboxDrawable = function(resources)
 {
 	this.resources = resources;
 	this.model = null;
@@ -59,3 +61,7 @@ CheckboxDrawable.prototype.draw = function(context)
 		context.closePath();
 	}
 }
+
+	return CheckboxDrawable;
+
+});

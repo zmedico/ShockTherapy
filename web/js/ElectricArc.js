@@ -1,8 +1,8 @@
 
-require([
+define([
 	"HslColor",
 	"ShockTherapyDefaults"
-], function() {
+], function(HslColor, ShockTherapyDefaults) {
 
 this.ElectricArcColor = (function() {
 
@@ -28,8 +28,6 @@ this.ElectricArcColor = (function() {
 	return constructor;
 
 }());
-
-this.ElectricArc = (function() {
 
 	var constructor = function(target, frameCounter, color)
 	{
@@ -244,7 +242,5 @@ this.ElectricArc = (function() {
 	}
 
 	return constructor;
-
-}());
 
 });

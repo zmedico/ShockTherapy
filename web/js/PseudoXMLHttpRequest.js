@@ -1,5 +1,5 @@
 
-this.PseudoXMLHttpRequest = (function() {
+define(function() {
 
 	var constructor = function() {
 		this.onabort = null;
@@ -37,4 +37,4 @@ this.PseudoXMLHttpRequest = (function() {
 	}
 
 	return constructor;
-}());
+});

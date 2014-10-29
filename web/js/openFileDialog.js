@@ -1,4 +1,5 @@
-this.openFileDialog = (function(global) {
+define(function() {
+	var global = this;
 	var openFileDialog = function(callback) {
 		var doc = global.window.document, fileInput = doc.createElement("input");
 		fileInput.type = "file";
@@ -16,4 +17,4 @@ this.openFileDialog = (function(global) {
 		}, 0);
 	};
 	return openFileDialog;
-}(this));
+});
