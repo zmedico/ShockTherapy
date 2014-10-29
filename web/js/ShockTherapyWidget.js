@@ -39,6 +39,8 @@ this.ShockTherapyWidget = (function(global) {
 		this._boundStartLater = this._startLater.bind(this);
 		this._touchStartTime = null;
 		this._startInterval = null;
+		this.AudioContext =
+			global.AudioContext || global.webkitAudioContext
 	}
 
 	extend(CanvasWidget, constructor);
@@ -66,10 +68,10 @@ this.ShockTherapyWidget = (function(global) {
 	constructor.prototype._initAudio = function() {
 		if (this.android) {
 		}
-		else if (global.webkitAudioContext) {
+		else if (this.AudioContext) {
 			require(["WebAudioLoopManager"], (function() {
 				this.audio = new WebAudioLoopManager(
-					new webkitAudioContext(),
+					new this.AudioContext(),
 					[
 						{
 							type: "audio/wav",
