@@ -14,6 +14,10 @@ this.ShockTherapyConfig = (function(global) {
 		this.prefix = prefix;
 		this.android = ShockTherapy.android;
 		this.sugar = ShockTherapy.sugar;
+		if (global.chrome && global.chrome.storage)
+			this.chrome = global.chrome
+		else
+			this.chrome = null
 		this._callback = null;
 		this._req = null;
 		this._disable_commit = 0;
@@ -26,7 +30,25 @@ this.ShockTherapyConfig = (function(global) {
 		if (this.sugar) {
 			require(["ShockTherapySugarRequest"], this._load.bind(this));
 		}
+		else if (this.chrome !== null) {
+			this.chrome.storage.local.get(null,
+				this._loadChrome.bind(this));
+		}
 		else {
+			this._callback.apply(global);
+			this._callback = null;
+		}
+	}
+
+	constructor.prototype._loadChrome = function(items) {
+		this._data = {};
+		for (var i = 0; i < this._known_keys.length; i++) {
+			var k = this._known_keys[i];
+			var prefixedKey = this.prefix + k;
+			if (items.hasOwnProperty(prefixedKey))
+				this._data[k] = items[prefixedKey];
+		}
+		if (this._callback !== null) {
 			this._callback.apply(global);
 			this._callback = null;
 		}
@@ -62,6 +84,21 @@ this.ShockTherapyConfig = (function(global) {
 				JSON.stringify(this.exportConfig(), null, "\t"));
 			req.send(null);
 		}
+		else if (this.chrome !== null) {
+			var config, value;
+			config = {};
+			for (var i = 0; i < this._known_keys.length; i++) {
+				value = this.getString(this._known_keys[i], null);
+				if (value !== null)
+					config[this.prefix + this._known_keys[i]] = value;
+			}
+			this.chrome.storage.local.set(config,
+				this._commitComplete.bind(this));
+		}
+	}
+
+	constructor.prototype._commitComplete = function() {
+		// settings saved
 	}
 
 	constructor.prototype.getString = function(key, defValue)
@@ -74,7 +111,7 @@ this.ShockTherapyConfig = (function(global) {
 			if (value == null)
 				value = null;
 		}
-		else if (this.sugar)
+		else if (this.sugar || this.chrome !== null)
 		{
 			if (this._data.hasOwnProperty(key))
 				value = this._data[key];
@@ -98,7 +135,7 @@ this.ShockTherapyConfig = (function(global) {
 		{
 			global.Android.setItem(key, value);
 		}
-		else if (this.sugar)
+		else if (this.sugar || this.chrome !== null)
 		{
 			this._data[key] = value;
 			this._commit();
