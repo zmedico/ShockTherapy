@@ -153,7 +153,7 @@ define([
 		{
 			global.Android.remove(key);
 		}
-		else if (this.sugar)
+		else if (this.sugar || this.chrome !== null)
 		{
 			delete this._data[key];
 			this._commit();
