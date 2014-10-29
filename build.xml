@@ -44,6 +44,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 
 <script language="javascript"> <![CDATA[
 
+	this.importClass || load("nashorn:mozilla_compat.js");
 	importClass(java.io.File);
 	importClass(java.lang.System);
 
@@ -267,6 +268,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 
 	<script language="javascript"> <![CDATA[
 
+		this.importClass || load("nashorn:mozilla_compat.js");
 		importClass(java.io.File);
 		importClass(java.lang.System);
 
@@ -329,6 +331,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	</copy>
 	<script language="javascript"> <![CDATA[
 
+		this.importClass || load("nashorn:mozilla_compat.js");
 		importClass(java.io.File);
 		importClass(java.lang.System);
 
