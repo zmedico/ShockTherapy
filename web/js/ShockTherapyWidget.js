@@ -25,6 +25,8 @@ define([
 		this.vibrating = false;
 		this.android = ShockTherapy.android;
 		this.audio = null;
+		this.AudioContext =
+			global.AudioContext || global.webkitAudioContext || null
 		// pre-init audio for next click
 		this._initAudio();
 		this.audioPlaying = false;
@@ -40,8 +42,6 @@ define([
 		this._boundStartLater = this._startLater.bind(this);
 		this._touchStartTime = null;
 		this._startInterval = null;
-		this.AudioContext =
-			global.AudioContext || global.webkitAudioContext
 	}
 
 	extend(CanvasWidget, constructor);
@@ -69,7 +69,7 @@ define([
 	constructor.prototype._initAudio = function() {
 		if (this.android) {
 		}
-		else if (this.AudioContext) {
+		else if (this.AudioContext !== null) {
 			require(["WebAudioLoopManager"],
 			(function(WebAudioLoopManager) {
 				this.audio = new WebAudioLoopManager(

@@ -9,7 +9,8 @@ define(function() {
 		this.sources = sources;
 		this._buffer = null;
 		this._buffer_source = null;
-		this._gainNode = context.createGainNode();
+		var createGain = context.createGain || context.createGainNode
+		this._gainNode = createGain.apply(context);
 		this._gainNode.connect(context.destination);
 		this._error = null;
 		this.playing = false;
@@ -63,7 +64,8 @@ define(function() {
 			source.buffer = this._buffer;
 			source.loop = true;
 			source.connect(this._gainNode);
-			source.noteOn(0);
+			var start = source.start || source.noteOn.bind(source, 0)
+			start.apply(source);
 		}
 	}
 
@@ -72,7 +74,9 @@ define(function() {
 		if (!this._error)
 		{
 			if (this._buffer_source !== null) {
-				this._buffer_source.noteOff(0);
+				var stop = this._buffer_source.stop ||
+					this._buffer_source.noteOff.bind(source, 0);
+				stop.apply(this._buffer_source);
 				// noteOn() and noteOff() can only be called once
 				// for a given AudioBufferSourceNode
 				this._buffer_source.disconnect(0);
