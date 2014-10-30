@@ -4,31 +4,6 @@ define([
 	"ShockTherapyDefaults"
 ], function(HslColor, ShockTherapyDefaults) {
 
-this.ElectricArcColor = (function() {
-
-	var constructor = function()
-	{
-		this.color = new HslColor()
-		this.hueVariance = ShockTherapyDefaults.HueVariance;
-		this.brightnessVariance = ShockTherapyDefaults.BrightnessVariance;
-	}
-
-	constructor.prototype.generate = function()
-	{
-		var currentColor = this.color.copy();
-		currentColor.l += (1 - currentColor.l) * this.brightnessVariance / 100.0 * Math.random();
-		currentColor.h += this.hueVariance / 100.0 * (Math.random() - 0.5);
-		if (currentColor.h > 1.0)
-			currentColor.h -= 1.0;
-		else if (currentColor.h < 0.0)
-			currentColor.h += 1.0;
-		return currentColor;
-	}
-
-	return constructor;
-
-}());
-
 	var constructor = function(target, frameCounter, color)
 	{
 		this.target = target;
@@ -240,6 +215,34 @@ this.ElectricArcColor = (function() {
 		}
 		return {x: x, y: y};
 	}
+
+	constructor.ColorGenerator = (function() {
+
+		var constructor = function()
+		{
+			this.color = new HslColor()
+			this.hueVariance = ShockTherapyDefaults.HueVariance;
+			this.brightnessVariance =
+				ShockTherapyDefaults.BrightnessVariance;
+		}
+
+		constructor.prototype.generate = function()
+		{
+			var currentColor = this.color.copy();
+			currentColor.l += (1 - currentColor.l) *
+				this.brightnessVariance / 100.0 * Math.random();
+			currentColor.h += this.hueVariance / 100.0 *
+				(Math.random() - 0.5);
+			if (currentColor.h > 1.0)
+				currentColor.h -= 1.0;
+			else if (currentColor.h < 0.0)
+				currentColor.h += 1.0;
+			return currentColor;
+		}
+
+		return constructor;
+
+	}());
 
 	return constructor;
 

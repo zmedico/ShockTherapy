@@ -32,7 +32,7 @@ define([
 		this.audioPlaying = false;
 		this.running = false;
 		this.drawables = new Array(this.drawableCount);
-		this.arcColor = new ElectricArcColor();
+		this.arcColor = new ElectricArc.ColorGenerator();
 		for (var i = 0; i < this.drawableCount ; i++)
 		{
 			this.drawables[i] = new ElectricArc(
