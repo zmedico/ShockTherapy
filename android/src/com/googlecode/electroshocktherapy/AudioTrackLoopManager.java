@@ -70,8 +70,12 @@ public class AudioTrackLoopManager {
 	}
 
 	public void pause() {
+		/* The stop method fails on Android 4.4.4,
+		so use release instead. */
 		if (audioTrack != null) {
-			audioTrack.stop();
+			audioTrack.release();
+			audioTrack = null;
+			getAudioTrack();
 		}
 	}
 
