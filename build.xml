@@ -148,7 +148,14 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	</java>
 </target>
 
-<target name="build.android" depends="init, build.icons">
+<target name="build.favicon" depends="build.icons">
+<exec executable="grunt">
+<arg value="--output=${output}"/>
+<arg value="generate-favicon"/>
+</exec>
+</target>
+
+<target name="build.android" depends="init, build.icons, build.favicon">
 	<exec executable="${android_exec}" searchpath="true" failonerror="true">
 		<arg value="create"/>
 		<arg value="project"/>
@@ -180,6 +187,9 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	<mkdir dir="${android_project_build}/assets/icons"/>
 	<copy file="${build}/icons/High_voltage_warning_48.png"
 		tofile="${android_project_build}/assets/icons/High_voltage_warning_48.png">
+	</copy>
+	<copy file="${build}/icons/High_voltage_warning_48.ico"
+		tofile="${android_project_build}/assets/icons/High_voltage_warning_48.ico">
 	</copy>
 	<copy file="${build}/icons/Overflow_button_32.png"
 		tofile="${android_project_build}/assets/icons/Overflow_button_32.png">
@@ -256,6 +266,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 		<fileset dir="${build}">
 			<include name="icons/High_voltage_warning_16.png"/>
 			<include name="icons/High_voltage_warning_48.png"/>
+			<include name="icons/High_voltage_warning_48.ico"/>
 			<include name="icons/High_voltage_warning_128.png"/>
 			<include name="icons/Overflow_button_32.png"/>
 			<include name="icons/Up_button_48.png"/>
@@ -322,6 +333,9 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 	<mkdir dir="${sugar_build}/web/icons"/>
 	<copy file="${build}/icons/High_voltage_warning_48.png"
 		tofile="${sugar_build}/web/icons/High_voltage_warning_48.png">
+	</copy>
+	<copy file="${build}/icons/High_voltage_warning_48.ico"
+		tofile="${sugar_build}/web/icons/High_voltage_warning_48.ico">
 	</copy>
 	<copy file="${build}/icons/Overflow_button_32.png"
 		tofile="${sugar_build}/web/icons/Overflow_button_32.png">
