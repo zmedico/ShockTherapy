@@ -1,14 +1,14 @@
 
 define([
 	"addPointerEventListener",
+	"animFrame",
 	"extend",
 	"CanvasWidget",
 	"ElectricArc",
-	"requestAnimFrame",
 	"ShockTherapy",
 	"ShockTherapyDefaults"
-], function(addPointerEventListener, extend, CanvasWidget, ElectricArc,
-	requestAnimFrame, ShockTherapy, ShockTherapyDefaults) {
+], function(addPointerEventListener, animFrame, extend, CanvasWidget,
+	ElectricArc, ShockTherapy, ShockTherapyDefaults) {
 
 	var global = this;
 
@@ -284,8 +284,8 @@ define([
 	constructor.prototype._requestAnimFrame = function(func)
 	{
 		if (this._animateRequest !== null)
-			window.cancelAnimFrame(this._animateRequest);
-		this._animateRequest = requestAnimFrame(func);
+			animFrame.cancel(this._animateRequest);
+		this._animateRequest = animFrame.request(func);
 	}
 
 	constructor.prototype.onMouseUp = function(e)
@@ -312,7 +312,7 @@ define([
 			}
 			if (this._animateRequest !== null)
 			{
-				window.cancelAnimFrame(this._animateRequest);
+				animFrame.cancel(this._animateRequest);
 				this._animateRequest = null;
 			}
 			if (this._animateTimeout !== null) {
@@ -351,7 +351,7 @@ define([
 			return
 
 		if (this._screenBlankAnimFrameID !== null)
-			window.cancelAnimFrame(this._screenBlankAnimFrameID);
+			animFrame.cancel(this._screenBlankAnimFrameID);
 
 		this._screenBlankAnimFrameID = this._requestAnimFrame(
 			this._screenBlankAnimFrame.bind(this));
