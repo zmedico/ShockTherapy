@@ -44,6 +44,14 @@ define([
 		this._startInterval = null;
 		this._animateTimeout = null;
 		this._animateRequest = null;
+
+		/* As a workaround for repaint failures with Android 4.4.4,
+		retry screen blanking. */
+		this._screenBlankTimeout = null;
+		this._screenBlankInterval = 50;
+		this._screenBlankCount = 0;
+		this._screenBlankMax = 8;
+		this._screenBlankAnimFrameID = null;
 	}
 
 	extend(CanvasWidget, constructor);
@@ -276,7 +284,7 @@ define([
 	constructor.prototype._requestAnimFrame = function(func)
 	{
 		if (this._animateRequest !== null)
-			window.cancelAnimationFrame(this._animateRequest);
+			window.cancelAnimFrame(this._animateRequest);
 		this._animateRequest = requestAnimFrame(func);
 	}
 
@@ -304,18 +312,12 @@ define([
 			}
 			if (this._animateRequest !== null)
 			{
-				window.cancelAnimationFrame(this._animateRequest);
+				window.cancelAnimFrame(this._animateRequest);
 				this._animateRequest = null;
 			}
 			if (this._animateTimeout !== null) {
 				clearTimeout(this._animateTimeout);
 				this._animateTimeout = null;
-			}
-			// paint at least one frame before stopping
-			var delayErase = false;
-			if (this.frameCounter.frames == 0) {
-				delayErase = true;
-				this.repaint();
 			}
 			this.running = false;
 			this.frameCounter.startTime = null;
@@ -330,12 +332,39 @@ define([
 			{
 				global.Android.stopVibrator();
 			}
-			if (delayErase)
-				this._animateTimeout =
-					window.setTimeout(this.repaint.bind(this), 15);
-			else
-				this.repaint();
+			this._screenBlankCount = 0;
+			this._screenBlank();
 		}
+	}
+
+	constructor.prototype._screenBlank = function() {
+		if (this._screenBlankTimeout !== null)
+			window.clearTimeout(this._screenBlankTimeout)
+		this._screenBlankTimeout = window.setTimeout(
+			this._screenBlankTimeoutCB.bind(this),
+			this._screenBlankInterval);
+	}
+
+	constructor.prototype._screenBlankTimeoutCB = function() {
+		this._screenBlankTimeout = null;
+		if (this.running)
+			return
+
+		if (this._screenBlankAnimFrameID !== null)
+			window.cancelAnimFrame(this._screenBlankAnimFrameID);
+
+		this._screenBlankAnimFrameID = this._requestAnimFrame(
+			this._screenBlankAnimFrame.bind(this));
+	}
+
+	constructor.prototype._screenBlankAnimFrame = function() {
+		if (this.running)
+			return
+
+		this.repaint();
+		this._screenBlankCount += 1;
+		if (this._screenBlankCount < this._screenBlankMax)
+			this._screenBlank();
 	}
 
 	constructor.prototype.eraseCanvas = function(context)
