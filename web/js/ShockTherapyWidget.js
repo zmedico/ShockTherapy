@@ -42,6 +42,8 @@ define([
 		this._boundStartLater = this._startLater.bind(this);
 		this._touchStartTime = null;
 		this._startInterval = null;
+		this._animateTimeout = null;
+		this._animateRequest = null;
 	}
 
 	extend(CanvasWidget, constructor);
@@ -234,7 +236,7 @@ define([
 			var _this = this
 			var delayedAnimate = function()
 			{
-				requestAnimFrame(animate);
+				_this._requestAnimFrame(animate);
 			}
 			var animate = function()
 				{
@@ -251,22 +253,31 @@ define([
 								// performance should be optimal during
 								// requestAnimationFrame calls.
 								durationPause = true;
-								_this.canvas.ownerDocument.defaultView.setTimeout(
+								if (_this._animateTimeout !== null)
+									clearTimeout(_this._animateTimeout);
+								_this._animateTimeout = window.setTimeout(
 									delayedAnimate,
 									duration - (currentTime - _this.lastDrawTimestamp));
 							}
 						}
 						if (!durationPause)
 						{
-							requestAnimFrame(animate);
+							_this._requestAnimFrame(animate);
 							_this.lastDrawTimestamp = new Date().getTime();
 							_this.frameCounter.frames++;
 							_this.repaint();
 						}
 					}
 				}
-			requestAnimFrame( animate );
+				this._requestAnimFrame(animate);
 		}
+	}
+
+	constructor.prototype._requestAnimFrame = function(func)
+	{
+		if (this._animateRequest !== null)
+			window.cancelAnimationFrame(this._animateRequest);
+		this._animateRequest = requestAnimFrame(func);
 	}
 
 	constructor.prototype.onMouseUp = function(e)
@@ -287,6 +298,19 @@ define([
 
 	constructor.prototype.stop = function() {
 		if (this.running) {
+			if (this._startInterval !== null) {
+				window.clearInterval(this._startInterval);
+				this._startInterval = null;
+			}
+			if (this._animateRequest !== null)
+			{
+				window.cancelAnimationFrame(this._animateRequest);
+				this._animateRequest = null;
+			}
+			if (this._animateTimeout !== null) {
+				clearTimeout(this._animateTimeout);
+				this._animateTimeout = null;
+			}
 			// paint at least one frame before stopping
 			var delayErase = false;
 			if (this.frameCounter.frames == 0) {
@@ -307,7 +331,8 @@ define([
 				global.Android.stopVibrator();
 			}
 			if (delayErase)
-				window.setTimeout(this.repaint.bind(this), 15);
+				this._animateTimeout =
+					window.setTimeout(this.repaint.bind(this), 15);
 			else
 				this.repaint();
 		}
