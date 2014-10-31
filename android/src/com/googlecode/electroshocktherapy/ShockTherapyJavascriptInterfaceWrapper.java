@@ -64,4 +64,10 @@ public class ShockTherapyJavascriptInterfaceWrapper implements ShockTherapyJavas
 	public void getTextFile(String mimeType, String encoding, String prompt) {
 		this.imp.getTextFile(mimeType, encoding, prompt);
 	}
+
+	@JavascriptInterface
+	public void saveFile(String prompt, String fileName,
+		String mimeType, String encoding, String content) {
+		this.imp.saveFile(prompt, fileName, mimeType, encoding, content);
+	}
 }

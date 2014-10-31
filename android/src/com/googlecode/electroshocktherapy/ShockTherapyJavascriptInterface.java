@@ -21,4 +21,7 @@ public interface ShockTherapyJavascriptInterface {
 	public void remove(String key);
 
 	public void getTextFile(String mimeType, String encoding, String prompt);
+
+	public void saveFile(String prompt, String fileName,
+			String mimeType, String encoding, String content);
 }

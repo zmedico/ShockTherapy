@@ -287,7 +287,15 @@ define("ShockTherapyOptionsView", [
 					window.MozBlobBuilder ||
 					window.MSBlobBuilder;
 
-				if (!ShockTherapy.android && (Blob || BlobBuilder) && URL) {
+				if (ShockTherapy.android) {
+					var encoding = doc.contentEncoding || "utf-8";
+					ShockTherapy.android.saveFile(
+						"Export Options",
+						"ShockTherapyOptions.json",
+						"application/json", encoding,
+						JSON.stringify(options, null, "\t"));
+				}
+				else if ((Blob || BlobBuilder) && URL) {
 					/* The saveUrl() / data URI approach stopped working in
 					Chrome 19, so use BlobBuilder and createObjectURL instead.
 					*/
