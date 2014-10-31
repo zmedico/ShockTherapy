@@ -562,7 +562,9 @@ public class ShockTherapyActivity extends Activity {
 						sound too, since it has a tendency to keep running
 						here. */
 						soundLoop.pause();
-						loadUrl(MAIN_URL);
+						/* Force reload here, since otherwise WebView will
+						crash on Android 4.4.4 */
+						loadUrl(MAIN_URL, true);
 					}
 				}
 			}
