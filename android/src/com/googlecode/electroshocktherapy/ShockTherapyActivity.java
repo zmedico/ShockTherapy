@@ -14,7 +14,6 @@ import com.googlecode.electroshocktherapy.R;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -286,6 +285,35 @@ public class ShockTherapyActivity extends Activity {
 		editor.apply();
 	}
 
+	protected String getFilePathFromIntent(Intent intent) {
+		String chosenFile = null;
+		Uri uri = intent.getData();
+
+		Cursor c = getContentResolver().query(uri,
+			new String[] {MediaStore.MediaColumns.DATA},
+			null, null, null);
+		if (c != null && c.moveToFirst()) {
+			do {
+				int id = c.getColumnIndex(
+					MediaStore.MediaColumns.DATA);
+				if (id != -1) {
+					chosenFile = c.getString(id);
+					break;
+				}
+			} while (c.moveToNext());
+		}
+
+		if (chosenFile == null) {
+			String scheme = uri.getScheme().toLowerCase();
+			if (scheme.equals("content") ||
+				scheme.equals("file")) {
+				chosenFile = uri.getPath();
+			}
+		}
+
+		return chosenFile;
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
@@ -304,26 +332,9 @@ public class ShockTherapyActivity extends Activity {
 		case WEBVIEW_FILE_INPUT_JS_OI_RESULTCODE:
 			if (webviewFileInputRequest != null) {
 				if (intent != null && resultCode == RESULT_OK) {
-					if (requestCode == WEBVIEW_FILE_INPUT_JS_RESULTCODE) {
-						Cursor c = getContentResolver().query(intent.getData(),
-							new String[] {MediaStore.MediaColumns.DATA},
-						null, null, null);
-						if (c != null && c.moveToFirst()){
-							do {
-								int id = c.getColumnIndex(
-									MediaStore.MediaColumns.DATA);
-								if (id != -1) {
-									chosenFile = c.getString(id);
-									break;
-								}
-							} while (c.moveToNext());
-						}
-					}
-					else {
-						Uri fileUri = intent.getData();
-						if (fileUri != null)
-							chosenFile = fileUri.getPath();
-					}
+
+					chosenFile = this.getFilePathFromIntent(intent);
+
 					if (chosenFile != null) {
 						try {
 							BufferedReader f = new BufferedReader(
@@ -343,8 +354,8 @@ public class ShockTherapyActivity extends Activity {
 							e.printStackTrace();
 						}
 					}
+					webviewFileInputRequest = null;
 				}
-				webviewFileInputRequest = null;
 			}
 			break;
 
@@ -369,8 +380,8 @@ public class ShockTherapyActivity extends Activity {
 							}
 						}
 					}
+					webviewFileOutputRequest = null;
 				}
-				webviewFileOutputRequest = null;
 			}
 			break;
 
@@ -378,45 +389,20 @@ public class ShockTherapyActivity extends Activity {
 			if (webviewFileOutputRequest != null) {
 				if (intent != null && resultCode == RESULT_OK)
 				{
-					String outputData =
-						webviewFileOutputRequest.get("content");
-					Uri uri = intent.getData();
-
-					Cursor c = getContentResolver().query(uri,
-						new String[] {MediaStore.MediaColumns.DATA},
-						null, null, null);
-					if (c != null && c.moveToFirst()) {
-						do {
-							int id = c.getColumnIndex(
-								MediaStore.MediaColumns.DATA);
-							if (id != -1) {
-								chosenFile = c.getString(id);
-								break;
-							}
-						} while (c.moveToNext());
-					}
-
-					if (chosenFile == null) {
-						String scheme = uri.getScheme().toLowerCase();
-						if (scheme.equals("content") ||
-							scheme.equals("file")) {
-							chosenFile = uri.getPath();
-						}
-					}
+					chosenFile = this.getFilePathFromIntent(intent);
 
 					if (chosenFile != null) {
-						//System.err.println("chosenFile: " + chosenFile);
 						try {
 							FileWriter f = new FileWriter(chosenFile);
-							f.write(outputData);
+							f.write(webviewFileOutputRequest.get("content"));
 							f.close();
 						}
 						catch (IOException e) {
 							e.printStackTrace();
 						}
 					}
+					webviewFileOutputRequest = null;
 				}
-				webviewFileOutputRequest = null;
 			}
 			break;
 		}
@@ -665,9 +651,9 @@ public class ShockTherapyActivity extends Activity {
 			//intent.putExtra(FileManagerIntents.EXTRA_TITLE, getString(R.string.save_title));
 			//intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, getString(R.string.save_button));
 
-			try {
+			if (ShockTherapyActivity.this.getPackageManager().resolveActivity(intent, 0) != null)
 				startActivityForResult(intent, WEBVIEW_FILE_OUTPUT_OI_RESULTCODE);
-			} catch (ActivityNotFoundException e) {
+			else {
 				intent = new Intent(Intent.ACTION_GET_CONTENT);
 				intent.setType(mimeType);
 				intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -676,7 +662,6 @@ public class ShockTherapyActivity extends Activity {
 					ShockTherapyActivity.WEBVIEW_FILE_OUTPUT_RESULTCODE);
 			}
 		}
-
 
 		@SuppressWarnings("unused")
 		public void getTextFile(String mimeType, String encoding, String prompt) {
@@ -696,12 +681,11 @@ public class ShockTherapyActivity extends Activity {
 			//intent.putExtra(FileManagerIntents.EXTRA_TITLE, getString(R.string.save_title));
 			//intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, getString(R.string.save_button));
 
-			try {
+			if (ShockTherapyActivity.this.getPackageManager().resolveActivity(intent, 0) != null)
 				startActivityForResult(intent, WEBVIEW_FILE_INPUT_JS_OI_RESULTCODE);
-			} catch (ActivityNotFoundException e) {
+			else {
 				intent = new Intent(Intent.ACTION_GET_CONTENT);
-				intent.setType("text/plain");
-				//i.setType("*/*");
+				intent.setType(mimeType);
 				intent.addCategory(Intent.CATEGORY_OPENABLE);
 				ShockTherapyActivity.this.startActivityForResult(
 					Intent.createChooser(intent, "File Chooser"),
