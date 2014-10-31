@@ -39,9 +39,6 @@ define("ShockTherapyWidget", [
 				this.target, this.frameCounter, this.arcColor);
 		}
 
-		this._boundStartLater = this._startLater.bind(this);
-		this._touchStartTime = null;
-		this._startInterval = null;
 		this._animateTimeout = null;
 		this._animateRequest = null;
 
@@ -171,32 +168,9 @@ define("ShockTherapyWidget", [
 			this.fireEvent("click");
 			var offset = this.getPointerOffset(e);
 			this.moveTarget(offset.x, offset.y);
-
-			/* Ignore duplicate touchstart/touchend event pairs triggered
-			by a short single tap in Android 4.1.1 WebView. If we don't ignore
-			these events then they trigger a quick start/stop cycle that
-			creates an unintended echo-like effect. */
-			if (this.android) {
-				this._touchStartTime = new Date().getTime();
-				if (this._startInterval === null)
-					this._startInterval = window.setInterval(
-						this._boundStartLater, 20);
-			}
-			else
-				this.start();
-		}
-		return false;
-	}
-
-	constructor.prototype._startLater = function() {
-		if ((new Date().getTime() - this._touchStartTime) >= 20) {
-			if (this._startInterval !== null) {
-				window.clearInterval(this._startInterval);
-				this._startInterval = null;
-			}
-			this._touchStartTime = null;
 			this.start();
 		}
+		return false;
 	}
 
 	constructor.prototype.start = function() {
@@ -293,23 +267,12 @@ define("ShockTherapyWidget", [
 		if (!(e.which && e.which != 1)) {
 			if (this.running)
 				this.stop()
-			else if (this._startInterval !== null) {
-				/* If the touchend event arrives before this interval
-				has cleared itself, then the touchstart/touchend pair
-				is discarded as a duplicate. */
-				window.clearInterval(this._startInterval);
-				this._startInterval = null;
-			}
 		}
 		return false;
 	}
 
 	constructor.prototype.stop = function() {
 		if (this.running) {
-			if (this._startInterval !== null) {
-				window.clearInterval(this._startInterval);
-				this._startInterval = null;
-			}
 			if (this._animateRequest !== null)
 			{
 				animFrame.cancel(this._animateRequest);
