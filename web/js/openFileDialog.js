@@ -1,4 +1,4 @@
-define(function() {
+define("openFileDialog", function() {
 	var global = this;
 	var openFileDialog = function(callback) {
 		var doc = global.window.document, fileInput = doc.createElement("input");

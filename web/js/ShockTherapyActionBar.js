@@ -1,5 +1,5 @@
 
-define([
+define("ShockTherapyActionBar", [
 	"createActionBarMenu",
 	"elementContentOffset",
 ], function(createActionBarMenu, elementContentOffset) {

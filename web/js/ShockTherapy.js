@@ -1,5 +1,5 @@
 
-define(function() {
+define("ShockTherapy", function() {
 
 	var global = this;
 

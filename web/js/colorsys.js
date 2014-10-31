@@ -3,7 +3,7 @@
  * modulus operator (%) in Python produces an absolute value,
  * while in JavaScript is preserves sign.
  */
-define(function() {
+define("colorsys", function() {
 
 	var colorsys = {};
 

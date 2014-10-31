@@ -1,5 +1,5 @@
 
-define(function(){
+define("animFrame", function(){
 
 	var win = window;
 

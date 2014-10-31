@@ -1,5 +1,5 @@
 
-define([
+define("CheckboxWidget", [
 	"addPointerEventListener",
 	"CanvasWidget",
 	"CheckboxModel",

@@ -1,5 +1,5 @@
 // example from https://developer.mozilla.org/en/DOM/event.initMouseEvent
-define(function() {
+define("simulateClick", function() {
 	var simulateClick = function(element) {
 		var event = element.ownerDocument.createEvent("MouseEvents");
 		event.initMouseEvent("click", true, true,

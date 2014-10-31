@@ -1,5 +1,5 @@
 
-define(function() {
+define("EventAdapter", function() {
 
 	var global = this;
 

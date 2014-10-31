@@ -1,5 +1,5 @@
 
-define([
+define("SliderWidget", [
 	"addPointerEventListener",
 	"CanvasWidget",
 	"extend",

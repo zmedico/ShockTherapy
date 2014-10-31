@@ -1,5 +1,5 @@
 
-define([
+define("ShockTherapyWidget", [
 	"addPointerEventListener",
 	"animFrame",
 	"extend",

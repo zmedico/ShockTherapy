@@ -1,5 +1,5 @@
 
-define([
+define("ShockTherapyScreenSaverView", [
 	"ShockTherapy"
 ], function(ShockTherapy) {
 

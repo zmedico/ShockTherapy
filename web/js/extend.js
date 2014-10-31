@@ -1,6 +1,6 @@
 // Javascript Inheritance Done Right, by Juan Mendes
 // http://js-bits.blogspot.com/2010/08/javascript-inheritance-done-right.html
-define(function() {
+define("extend", function() {
 function extend(base, sub) {
     var surrogateCtor = function() {};
 	surrogateCtor.prototype = base.prototype;

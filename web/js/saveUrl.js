@@ -1,5 +1,5 @@
 
-define([
+define("saveUrl", [
 	"simulateClick"
 ], function(simulateClick) {
 

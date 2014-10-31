@@ -1,5 +1,5 @@
 
-define([
+define("ModalDialog", [
 	"EventAdapter",
 	"extend"
 ], function(EventAdapter, extend) {

@@ -1,5 +1,5 @@
 
-define([
+define("ColorSliderDrawable", [
 	"extend",
 	"HslColor",
 	"colorsys",

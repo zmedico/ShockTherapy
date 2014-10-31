@@ -1,5 +1,5 @@
 
-define([
+define("ThemeFactory", [
 	"Theme",
 ], function(Theme) {
 

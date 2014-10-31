@@ -1,5 +1,5 @@
 
-define([
+define("RadioButtonWidget", [
 	"CheckboxWidget",
 	"extend",
 ], function(CheckboxWidget, extend) {

@@ -3,7 +3,7 @@
  * http://code.google.com/p/pywebkitgtk/wiki/HowDoI
  */
 
-define([
+define("ShockTherapySugarRequest", [
 	"PseudoXMLHttpRequest",
 	"extend"
 ], function(PseudoXMLHttpRequest, extend) {

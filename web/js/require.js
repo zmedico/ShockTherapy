@@ -181,12 +181,29 @@ this.require = (function(global) {
 
 this.define = (function(global) {
 
-	var define = function(names, callback) {
-		if (!(names instanceof Array)) {
-			callback = names;
-			names = [];
+	/* NOTE: The module name must be explicitly specified for
+	Android 2.x support, since document.currentScript is not
+	implemented by Android 2.x */
+	var define = function() {
+		var callingModule = null,
+			names = null,
+			callback = null;
+		var i, arg;
+		for (i = 0; i < arguments.length; i++) {
+			arg = arguments[i];
+			if (arg instanceof Array)
+				names = arg;
+			else if (arg instanceof Function)
+				callback = arg;
+			else if (!!arg)
+				callingModule = arg
 		}
-		var callingModule = require._srcModRegex.exec(document.currentScript.src)[1];
+		if (names === null)
+			names = [];
+
+		if (callingModule === null)
+			callingModule = require._srcModRegex.exec(
+				document.currentScript.src)[1];
 		//console.log('define callingModule: ' + callingModule + 'names: ' + JSON.stringify(names));
 		require(names, function() {
 			//console.log('define require callback: ' + JSON.stringify(names));

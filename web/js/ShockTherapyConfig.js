@@ -1,5 +1,5 @@
 
-define([
+define("ShockTherapyConfig", [
 	"extend",
 	"ShockTherapy",
 	"ShockTherapyReadonlyConfig"

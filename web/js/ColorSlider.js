@@ -1,5 +1,5 @@
 
-define([
+define("ColorSlider", [
 	"SliderWidget",
 	"extend"
 ], function(SliderWidget, extend) {

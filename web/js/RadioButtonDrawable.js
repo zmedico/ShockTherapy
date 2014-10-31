@@ -1,5 +1,5 @@
 
-define(function() {
+define("RadioButtonDrawable", function() {
 
 var RadioButtonDrawable = function(resources)
 {

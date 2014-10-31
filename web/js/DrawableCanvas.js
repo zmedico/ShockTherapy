@@ -1,5 +1,5 @@
 
-define(function() {
+define("DrawableCanvas", function() {
 
 	var constructor = function(drawable, element)
 	{

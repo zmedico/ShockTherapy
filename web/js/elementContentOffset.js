@@ -1,5 +1,5 @@
 
-define(function() {
+define("elementContentOffset", function() {
 function elementContentOffset(element)
 {
 

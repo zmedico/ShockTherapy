@@ -1,5 +1,5 @@
 
-define(function() {
+define("ShockTherapyReadonlyConfig", function() {
 
 	var constructor = function(data)
 	{

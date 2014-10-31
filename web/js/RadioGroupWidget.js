@@ -1,5 +1,5 @@
 
-define([
+define("RadioGroupWidget", [
 	"RadioButtonWidget",
 	"extend",
 ], function(RadioButtonWidget, extend) {

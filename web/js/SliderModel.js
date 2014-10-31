@@ -1,4 +1,4 @@
-define(function() {
+define("SliderModel", function() {
 function SliderModel()
 {
 	this.min = 0;

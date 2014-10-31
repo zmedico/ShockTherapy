@@ -1,5 +1,5 @@
 
-define([
+define("ContextMenu", [
 	"elementContentOffset"
 ], function(elementContentOffset) {
 

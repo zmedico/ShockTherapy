@@ -1,5 +1,5 @@
 
-define(function() {
+define("PseudoXMLHttpRequest", function() {
 
 	var constructor = function() {
 		this.onabort = null;

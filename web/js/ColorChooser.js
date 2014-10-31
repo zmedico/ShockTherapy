@@ -1,5 +1,5 @@
 
-define([
+define("ColorChooser", [
 	"HslColor",
 	"ColorSlider"
 ], function(HslColor, ColorSlider) {

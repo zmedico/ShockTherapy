@@ -1,5 +1,5 @@
 
-define(function() {
+define("AudioElementLoopManager", function() {
 
 	var constructor = function(ownerDocument, sources)
 	{

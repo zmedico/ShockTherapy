@@ -1,5 +1,5 @@
 
-define(function() {
+define("WebAudioLoopManager", function() {
 
 	var global = this;
 

@@ -1,5 +1,5 @@
 
-define([
+define("HslColor", [
 	"colorsys"
 ], function(colorsys) {
 

@@ -1,5 +1,5 @@
 
-define(function() {
+define("CheckboxDrawable", function() {
 
 var CheckboxDrawable = function(resources)
 {

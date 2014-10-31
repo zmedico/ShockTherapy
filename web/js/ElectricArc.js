@@ -1,5 +1,5 @@
 
-define([
+define("ElectricArc", [
 	"HslColor",
 	"ShockTherapyDefaults"
 ], function(HslColor, ShockTherapyDefaults) {

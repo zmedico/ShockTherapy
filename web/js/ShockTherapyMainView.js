@@ -1,5 +1,5 @@
 
-define([
+define("ShockTherapyMainView", [
 	"ContextMenu",
 	"createActionBarMenu",
 	"elementContentOffset",

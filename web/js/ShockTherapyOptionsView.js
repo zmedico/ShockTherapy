@@ -1,5 +1,5 @@
 
-define([
+define("ShockTherapyOptionsView", [
 	"CheckboxWidget",
 	"ColorChooser",
 	"ModalDialog",

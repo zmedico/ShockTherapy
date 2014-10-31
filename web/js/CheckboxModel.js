@@ -1,4 +1,4 @@
-define(function() {
+define("CheckboxModel", function() {
 function CheckboxModel()
 {
 	this.checked = false;

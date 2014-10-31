@@ -1,5 +1,5 @@
 
-define([
+define("Theme", [
 	"regExpEscape",
 ], function(regExpEscape) {
 

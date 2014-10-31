@@ -1,5 +1,5 @@
 
-define(function() {
+define("addPointerEventListener", function() {
 var addPointerEventListener = function(canvas, listener, useCapture)
 {
 

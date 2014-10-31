@@ -1,5 +1,5 @@
 
-define(function() {
+define("ShockTherapyDefaults", function() {
 var ShockTherapyDefaults = {
 	"Sound": true,
 	"SoundVolume": 50.0,

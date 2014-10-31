@@ -1,5 +1,5 @@
 
-define(function() {
+define("SliderDrawable", function() {
 
 var SliderDrawable = function(resources)
 {

@@ -1,5 +1,5 @@
 
-define([
+define("createActionBarMenu", [
 	"ContextMenu"
 ], function(ContextMenu) {
 

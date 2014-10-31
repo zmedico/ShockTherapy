@@ -1,5 +1,5 @@
 
-define([
+define("CanvasWidget", [
 	"elementContentOffset",
 	"EventAdapter",
 	"extend",
