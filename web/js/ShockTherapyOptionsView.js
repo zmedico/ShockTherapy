@@ -294,6 +294,7 @@ define("ShockTherapyOptionsView", [
 						"ShockTherapyOptions.json",
 						"application/json", encoding,
 						JSON.stringify(options, null, "\t"));
+					return false;
 				}
 				else if ((Blob || BlobBuilder) && URL) {
 					/* The saveUrl() / data URI approach stopped working in
