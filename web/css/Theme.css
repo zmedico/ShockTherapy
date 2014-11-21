@@ -1,7 +1,12 @@
+html {
+	overflow: visible; /* needed for chrome app since chrome-39 */
+}
+
 body {
 	background-color: Screen.background-color;
 	color: Text.Primary.color;
 	font-family: sans-serif;
+	overflow: visible; /* needed for chrome app since chrome-39 */
 }
 
 .header {
