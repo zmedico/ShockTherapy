@@ -4,19 +4,15 @@ ShockTherapy
 Plasma globe simulator with support for touch-based input
 ---------------------------------------------------------
 
-* [Project Home Page](https://code.google.com/p/electroshocktherapy/)
+* [Project Home Page](https://sites.google.com/site/shocktherapyhtml5/)
 
 * [GitHub Repo](https://github.com/zmedico/ShockTherapy)
 
-* [Web App](http://electroshocktherapy.googlecode.com/git/web/layout/main.html)
+* [Web App](http://zmedico.github.io/ShockTherapy/src/web/layout/main.html)
 
-* [Project Wiki](https://code.google.com/p/electroshocktherapy/w/list)
+* [Generate GIF](https://sites.google.com/site/shocktherapyhtml5/demonstrations/animated-gif/)
 
-* [Embed as Gadget](https://code.google.com/p/electroshocktherapy/wiki/OpenSocialGadget)
-
-* [Generate GIF](https://code.google.com/p/electroshocktherapy/wiki/AnimatedGIF)
-
-* [Android Market](https://market.android.com/details?id=com.googlecode.electroshocktherapy)
+* [Android Market](https://play.google.com/store/apps/details?id=com.googlecode.electroshocktherapy)
 
 * [Chrome Web Store](https://chrome.google.com/webstore/detail/nffddiemcoeobmmmikodhmdhihpfnamn)
 
