@@ -39,7 +39,7 @@ import android.webkit.WebViewClient;
 public class ShockTherapyActivity extends Activity {
 
 	private static final String ANROID_USER_AGENT = "android:com.googlecode.electroshocktherapy";
-	private static final String HOMEPAGE ="http://electroshocktherapy.googlecode.com/";
+	private static final String HOMEPAGE ="https://sites.google.com/site/shocktherapyhtml5/";
 	private static final String BASE_URL = "file:///android_asset/layout/";
 	private static final String MAIN_URL = BASE_URL + "main.html";
 	private static final String SCREENSAVER_URL = MAIN_URL + "#screensaver";
