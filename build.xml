@@ -149,7 +149,7 @@ C:/Program Files (x86)/Google/Chrome/Application/chrome.exe
 </target>
 
 <target name="build.favicon" depends="build.icons">
-<exec executable="grunt">
+<exec executable="./node_modules/grunt-cli/bin/grunt">
 <arg value="--output=${output}"/>
 <arg value="generate-favicon"/>
 </exec>
